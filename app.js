@@ -29,6 +29,10 @@
       tableBookingUrl: 'https://linktr.ee/stairsprawirotaman',
       venueReservationUrl: 'https://linktr.ee/stairsprawirotaman',
       tiktokUrl: 'https://www.tiktok.com/@stairsprawirotaman',
+      displayFont: 'Bricolage Grotesque',
+      bodyFont: 'Manrope',
+      accentColor: '#ef2d27',
+      secondaryColor: '#2118a8',
       defaultLanguage: 'id',
       defaultTheme: 'dark'
     },
@@ -176,6 +180,54 @@
   const esc = (value='') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
+  const FONT_STACKS = {
+    'Bricolage Grotesque': "'Bricolage Grotesque',system-ui,sans-serif",
+    'Manrope': "'Manrope',system-ui,sans-serif",
+    'Space Grotesk': "'Space Grotesk',system-ui,sans-serif",
+    'Plus Jakarta Sans': "'Plus Jakarta Sans',system-ui,sans-serif",
+    'DM Sans': "'DM Sans',system-ui,sans-serif",
+    'Sora': "'Sora',system-ui,sans-serif",
+    'Outfit': "'Outfit',system-ui,sans-serif",
+    'Syne': "'Syne',system-ui,sans-serif"
+  };
+  const MENU_IMAGE_FALLBACKS = {
+    m3:'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=82',
+    m10:'https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=900&q=82',
+    m13:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=82',
+    m18:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=82',
+    m28:'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=900&q=82',
+    m32:'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=900&q=82',
+    m34:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=82',
+    m44:'assets/ig-cocktail.png',
+    m22:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82',
+    m12:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=82'
+  };
+  const CATEGORY_IMAGE_FALLBACKS = {
+    Breakfast:'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=900&q=82',
+    Bites:'https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=900&q=82',
+    Pizza:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=82',
+    Salads:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=82',
+    Comfort:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82',
+    Pasta:'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=900&q=82',
+    Mains:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=82',
+    Coffee:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=82',
+    Tea:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=900&q=82',
+    Fermented:'assets/ig-cocktail.png',
+    'Non Coffee':'assets/ig-cocktail.png',
+    Cocktails:'assets/ig-cocktail.png'
+  };
+  const getMenuImage = item => item.image || MENU_IMAGE_FALLBACKS[item.id] || CATEGORY_IMAGE_FALLBACKS[item.category] || 'assets/ig-cocktail.png';
+
+  function applyAppearance() {
+    const root = document.documentElement;
+    const display = FONT_STACKS[data.settings.displayFont] || FONT_STACKS['Bricolage Grotesque'];
+    const body = FONT_STACKS[data.settings.bodyFont] || FONT_STACKS['Manrope'];
+    root.style.setProperty('--font-display', display);
+    root.style.setProperty('--font-body', body);
+    if (/^#[0-9a-f]{6}$/i.test(data.settings.accentColor || '')) root.style.setProperty('--red', data.settings.accentColor);
+    if (/^#[0-9a-f]{6}$/i.test(data.settings.secondaryColor || '')) root.style.setProperty('--blue', data.settings.secondaryColor);
+  }
+
   function loadData() {
     try {
       const raw = localStorage.getItem(CONTENT_KEY);
@@ -292,12 +344,19 @@
 
     grid.innerHTML = sourceItems.map((item,index) => {
       const description = language === 'id' ? (item.descriptionId || item.description || '') : (item.descriptionEn || item.description || '');
-      return `<article class="menu-card">
-        <div class="menu-index">${String(index+1).padStart(2,'0')}</div>
-        <div class="menu-copy"><span>${esc(tr(item.category))}</span><h3>${esc(item.name)}</h3><p>${esc(description)}</p></div>
-        <strong>${esc(item.price || '—')}</strong>
+      const image = getMenuImage(item);
+      const driftX = index % 2 === 0 ? -22 : 22;
+      const driftY = 18 + (index % 3) * 7;
+      return `<article class="menu-card menu-card-photo" data-kinetic data-depth="${(.35 + (index%4)*.08).toFixed(2)}" data-drift-x="${driftX}" data-drift-y="${driftY}">
+        <div class="menu-photo"><img src="${esc(image)}" alt="${esc(item.name)}" loading="lazy" referrerpolicy="no-referrer"><span>${esc(tr(item.category))}</span></div>
+        <div class="menu-card-body">
+          <div class="menu-index">${String(index+1).padStart(2,'0')}</div>
+          <div class="menu-copy"><span>${esc(tr(item.category))}</span><h3>${esc(item.name)}</h3><p>${esc(description)}</p></div>
+          <strong>${esc(item.price || '—')}</strong>
+        </div>
       </article>`;
     }).join('') || `<p class="empty-state">${language === 'id' ? 'Belum ada menu di kategori ini.' : 'No menu items in this category yet.'}</p>`;
+    bindImageFallbacks(grid);
 
     if (status) {
       const total = activeCategory === 'Featured' ? data.menu.length : data.menu.filter(item => item.category === activeCategory).length;
@@ -317,11 +376,27 @@
       if (img.dataset.fallbackBound === '1') return;
       img.dataset.fallbackBound = '1';
       img.addEventListener('error', () => {
-        const media = img.closest('.gallery-media');
+        const media = img.closest('.gallery-media, .menu-photo, .location-card, .kinetic-card, .feed-track figure');
         if (media) media.classList.add('media-broken');
         img.hidden = true;
       });
     });
+  }
+
+  function renderFeed() {
+    const track = $('#feedTrack');
+    if (!track) return;
+    const items = data.gallery.length ? data.gallery : defaults.gallery;
+    track.innerHTML = items.map((item,index) => {
+      const title = language === 'id' ? (item.titleId || item.title || `STAIRS ${index+1}`) : (item.titleEn || item.title || `STAIRS ${index+1}`);
+      const media = item.type === 'video'
+        ? `<video src="${esc(item.url)}" muted loop autoplay playsinline preload="metadata"></video>`
+        : `<img src="${esc(item.url)}" alt="${esc(title)}" loading="lazy" referrerpolicy="no-referrer">`;
+      return `<figure>${media}<figcaption>${esc(title)}</figcaption></figure>`;
+    }).join('');
+    track.dataset.loopReady = '';
+    bindImageFallbacks(track);
+    initFeedLoop();
   }
 
   function renderGallery() {
@@ -346,6 +421,7 @@
     bindImageFallbacks(track);
     updateGallery(false);
     $$('[data-gallery-dot]', dots).forEach(button => button.addEventListener('click', () => goGallery(Number(button.dataset.galleryDot), true)));
+    renderFeed();
   }
 
   function updateGallery(animate = true) {
@@ -503,6 +579,33 @@
     originals.forEach(node => track.appendChild(node.cloneNode(true)));
   }
 
+  function initKineticScroll() {
+    if (reduceMotion) return;
+    const items = $$('[data-kinetic]');
+    if (!items.length) return;
+    let ticking = false;
+    const update = () => {
+      const vh = Math.max(window.innerHeight, 1);
+      items.forEach((item,index) => {
+        const rect = item.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const progress = Math.max(-1, Math.min(1, (center - vh / 2) / (vh * .68)));
+        const depth = Math.max(.05, Math.min(1.5, Number(item.dataset.depth) || .5));
+        const driftX = Number(item.dataset.driftX) || (index % 2 ? 18 : -18);
+        const driftY = Number(item.dataset.driftY) || 24;
+        item.style.setProperty('--kin-x', `${(-progress * driftX * depth).toFixed(2)}px`);
+        item.style.setProperty('--kin-y', `${(-progress * driftY * depth).toFixed(2)}px`);
+        item.style.setProperty('--kin-r', `${(progress * depth * (index % 2 ? 1.6 : -1.3)).toFixed(2)}deg`);
+        item.style.setProperty('--kin-s', `${(1 - Math.abs(progress) * .018 * depth).toFixed(4)}`);
+      });
+      ticking = false;
+    };
+    const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', request, {passive:true});
+    window.addEventListener('resize', request, {passive:true});
+    update();
+  }
+
   function initMobileNav() {
     const toggle = $('.menu-toggle');
     const nav = $('#mobileNav');
@@ -534,9 +637,11 @@
   };
 
   safeRun('settings', applySettings);
+  safeRun('appearance', applyAppearance);
   safeRun('theme', applyTheme);
   safeRun('language', applyLanguage);
   safeRun('slide motion', initSlideMotion);
+  safeRun('kinetic scroll', initKineticScroll);
   safeRun('hero orbit', initHeroOrbit);
   safeRun('cursor motion', initCursorMotion);
   safeRun('feed loop', initFeedLoop);

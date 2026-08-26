@@ -6,15 +6,15 @@
   <title>STAIRS — Admin Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=4.2" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=4.4" />
 </head>
 <body>
   <div class="login-screen" id="loginScreen">
     <form class="login-card" id="loginForm">
-      <div class="login-brand"><span class="mini-stairs"><i></i><i></i><i></i></span><strong>STAIRS</strong><small>CONTROL ROOM</small></div>
-      <h1>Content dashboard.</h1>
-      <p>Kelola konten demo website STAIRS tanpa animasi dashboard yang mengganggu.</p>
+      <div class="login-brand"><span class="mini-stairs"><i></i><i></i><i></i></span><strong>STAIRS</strong><small>CMS / CONTROL ROOM</small></div>
+      <h1>STAIRS CMS.</h1>
+      <p>Kelola halaman, menu, foto, link, dan tampilan website dari satu dashboard CMS.</p>
       <label>Password demo<input id="demoPassword" type="password" placeholder="Ketik: stairs" autocomplete="current-password" required></label>
       <button type="submit" class="primary-btn">Enter dashboard</button>
       <span class="login-hint">Password demo: <b>stairs</b></span>
@@ -30,7 +30,8 @@
         <button type="button" class="nav-item" data-view="menu"><span>≡</span><b data-admin-i18n="menu">Menu</b></button>
         <button type="button" class="nav-item" data-view="gallery"><span>◇</span><b data-admin-i18n="gallery">Gallery</b></button>
         <button type="button" class="nav-item" data-view="reviews"><span>☆</span><b data-admin-i18n="reviews">Reviews</b></button>
-        <button type="button" class="nav-item" data-view="settings"><span>⚙</span><b data-admin-i18n="settings">Settings</b></button>
+        <button type="button" class="nav-item" data-view="appearance"><span>Aa</span><b>Appearance</b></button>
+        <button type="button" class="nav-item" data-view="settings"><span>⚙</span><b data-admin-i18n="settings">Site content</b></button>
       </nav>
       <div class="sidebar-bottom">
         <a href="index.html" target="_blank" class="ghost-btn" data-admin-i18n="viewWebsite">View website ↗</a>
@@ -65,6 +66,11 @@
             <article class="stat-card accent-card"><span>SITE MODE</span><strong>DEMO</strong><small>localStorage CMS</small></article>
           </div>
 
+          <div class="cms-actions">
+            <div><span class="micro">CMS TOOLS</span><h3>Backup & portability</h3><p>Export konten CMS ke JSON, import kembali, atau reset ke konten demo bawaan.</p></div>
+            <div class="cms-action-buttons"><button type="button" class="ghost-btn" id="exportCmsBtn">Export JSON</button><label class="ghost-btn import-label">Import JSON<input type="file" id="importCmsInput" accept="application/json,.json"></label><button type="button" class="danger-btn" id="resetCmsBtn">Reset demo</button></div>
+          </div>
+
           <div class="overview-grid">
             <article class="panel">
               <div class="panel-head"><div><span class="micro">SITE FEATURES</span><h3 data-admin-i18n="featureStatus">Feature status</h3></div></div>
@@ -85,7 +91,7 @@
 
         <section class="view" data-view-panel="menu">
           <div class="section-toolbar"><div><span class="micro">FOOD & BEVERAGE</span><h2 data-admin-i18n="menuManagement">Menu management</h2><p data-admin-i18n="menuDesc">Tambah, edit, atau hapus menu bilingual.</p></div><button type="button" class="primary-btn" id="addMenuBtn" data-admin-i18n="addMenu">+ Add menu</button></div>
-          <div class="table-panel"><div class="table-scroll"><table><thead><tr><th>Item</th><th>Category</th><th>Price</th><th>Description ID</th><th>Description EN</th><th></th></tr></thead><tbody id="menuTable"></tbody></table></div></div>
+          <div class="table-panel"><div class="table-scroll"><table><thead><tr><th>Visual</th><th>Item</th><th>Category</th><th>Price</th><th>Description ID</th><th>Description EN</th><th></th></tr></thead><tbody id="menuTable"></tbody></table></div></div>
         </section>
 
         <section class="view" data-view-panel="gallery">
@@ -98,8 +104,26 @@
           <div class="review-admin-list" id="adminReviewList"></div>
         </section>
 
+        <section class="view" data-view-panel="appearance">
+          <div class="section-toolbar"><div><span class="micro">DESIGN SYSTEM</span><h2>Appearance</h2><p>Ubah model font dan warna utama website tanpa menyentuh kode.</p></div><button type="button" class="primary-btn" id="saveAppearanceBtn">Save appearance</button></div>
+          <div class="appearance-layout">
+            <form class="appearance-form" id="appearanceForm">
+              <label class="field-card"><span>Headline / display font</span><select name="displayFont"><option>Bricolage Grotesque</option><option>Space Grotesk</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Sora</option><option>Outfit</option><option>Syne</option><option>Manrope</option></select></label>
+              <label class="field-card"><span>Body / UI font</span><select name="bodyFont"><option>Manrope</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Space Grotesk</option><option>Sora</option><option>Outfit</option><option>Bricolage Grotesque</option></select></label>
+              <label class="field-card"><span>Primary accent</span><input name="accentColor" type="color" value="#ef2d27"></label>
+              <label class="field-card"><span>Secondary / night blue</span><input name="secondaryColor" type="color" value="#2118a8"></label>
+            </form>
+            <div class="appearance-preview" id="appearancePreview">
+              <span>LIVE TYPE PREVIEW</span>
+              <h3>FOOD.<br><em>COCKTAILS.</em><br>LATE NIGHTS.</h3>
+              <p>Modern, friendly, bold enough for a bar and comfortable enough for a restaurant.</p>
+              <div><button type="button">Book a table</button><small>Prawirotaman · Yogyakarta</small></div>
+            </div>
+          </div>
+        </section>
+
         <section class="view" data-view-panel="settings">
-          <div class="section-toolbar"><div><span class="micro">GLOBAL</span><h2 data-admin-i18n="siteSettings">Site settings</h2><p data-admin-i18n="settingsDesc">Kontrol informasi utama dan default bahasa/theme website.</p></div><button type="button" class="primary-btn" id="saveSettingsBtn" data-admin-i18n="saveChanges">Save changes</button></div>
+          <div class="section-toolbar"><div><span class="micro">PAGES & LINKS</span><h2 data-admin-i18n="siteSettings">Site content</h2><p data-admin-i18n="settingsDesc">Kontrol headline, lokasi, jam buka, bahasa, theme, dan semua destination link.</p></div><button type="button" class="primary-btn" id="saveSettingsBtn" data-admin-i18n="saveChanges">Save changes</button></div>
           <form class="settings-grid" id="settingsForm">
             <label class="field-card"><span>Hero title — Indonesia <small>HTML allowed</small></span><textarea name="heroTitleId" rows="3"></textarea></label>
             <label class="field-card"><span>Hero title — English <small>HTML allowed</small></span><textarea name="heroTitleEn" rows="3"></textarea></label>
@@ -139,6 +163,6 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><div><b>Saved</b><small>Website content updated.</small></div></div>
-  <script src="admin.js?v=4.2"></script>
+  <script src="admin.js?v=4.4"></script>
 </body>
 </html>

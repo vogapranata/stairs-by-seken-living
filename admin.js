@@ -16,7 +16,7 @@
     linktreeUrl:'https://linktr.ee/stairsprawirotaman', workFromStairsUrl:'https://linktr.ee/stairsprawirotaman', allRedPromoUrl:'https://linktr.ee/stairsprawirotaman',
     gofoodUrl:'https://linktr.ee/stairsprawirotaman', grabfoodUrl:'https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE',
     foodMenuUrl:'https://linktr.ee/stairsprawirotaman', barMenuUrl:'https://linktr.ee/stairsprawirotaman', tableBookingUrl:'https://linktr.ee/stairsprawirotaman',
-    venueReservationUrl:'https://linktr.ee/stairsprawirotaman', tiktokUrl:'https://www.tiktok.com/@stairsprawirotaman', defaultLanguage:'id', defaultTheme:'dark'
+    venueReservationUrl:'https://linktr.ee/stairsprawirotaman', tiktokUrl:'https://www.tiktok.com/@stairsprawirotaman', displayFont:'Bricolage Grotesque', bodyFont:'Manrope', accentColor:'#ef2d27', secondaryColor:'#2118a8', defaultLanguage:'id', defaultTheme:'dark'
   };
 
   const menuDefault = [
@@ -79,6 +79,34 @@
     ["m57","Fresh Juice Selection","Non Coffee","—","Aneka jus segar yang muncul di liputan pengunjung.","Fresh juice selections seen in visitor coverage." ],
     ["m58","Signature Cocktail Selection","Cocktails","—","Pilihan cocktail menjadi bagian dari identitas late-night STAIRS.","A cocktail selection forms part of STAIRS’ late-night identity." ]
   ].map(([id,name,category,price,descriptionId,descriptionEn]) => ({id,name,category,price,descriptionId,descriptionEn}));
+
+
+  const MENU_IMAGE_FALLBACKS = {
+    m3:'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=700&q=78',
+    m10:'https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=700&q=78',
+    m13:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=78',
+    m18:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=78',
+    m28:'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=700&q=78',
+    m32:'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=700&q=78',
+    m34:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=700&q=78',
+    m44:'assets/ig-cocktail.png'
+  };
+  const CATEGORY_IMAGE_FALLBACKS = {
+    Breakfast:'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=700&q=78',
+    Bites:'https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=700&q=78',
+    Pizza:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=78',
+    Salads:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=78',
+    Comfort:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=78',
+    Pasta:'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=700&q=78',
+    Mains:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=700&q=78',
+    Coffee:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=78',
+    Tea:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=700&q=78',
+    Fermented:'assets/ig-cocktail.png','Non Coffee':'assets/ig-cocktail.png',Cocktails:'assets/ig-cocktail.png'
+  };
+  const getMenuImage = item => item.image || MENU_IMAGE_FALLBACKS[item.id] || CATEGORY_IMAGE_FALLBACKS[item.category] || 'assets/ig-cocktail.png';
+  const FONT_STACKS = {
+    'Bricolage Grotesque':"'Bricolage Grotesque',system-ui,sans-serif",'Manrope':"'Manrope',system-ui,sans-serif",'Space Grotesk':"'Space Grotesk',system-ui,sans-serif",'Plus Jakarta Sans':"'Plus Jakarta Sans',system-ui,sans-serif",'DM Sans':"'DM Sans',system-ui,sans-serif",'Sora':"'Sora',system-ui,sans-serif",'Outfit':"'Outfit',system-ui,sans-serif",'Syne':"'Syne',system-ui,sans-serif"
+  };
 
   const galleryDefault = [
     {id:'g1',type:'image',url:'https://image.idntimes.com/post/20240305/2023-10-25-11zon-a9b86914ba33fca85ab078094226c771-befb7adf121bb364245db37c100f80c3.jpg',titleId:'Suasana STAIRS',titleEn:'STAIRS Atmosphere',captionId:'Foto pengunjung dari listing Google Maps STAIRS, dipakai sebagai referensi visual untuk demo website.',captionEn:'A visitor photo from the STAIRS Google Maps listing, used as a visual reference for this website demo.',source:'Google Maps / im maya · via IDN Times'},
@@ -157,12 +185,12 @@
     $('#menuCount').textContent = data.menu.length;
     $('#galleryCount').textContent = data.gallery.length;
     $('#reviewCount').textContent = data.reviews.length;
-    renderMenu(); renderGallery(); renderReviews(); renderSettings();
+    renderMenu(); renderGallery(); renderReviews(); renderSettings(); renderAppearance();
   }
 
   function setViewTitle(view) {
-    const mapping = {overview:'overview',menu:'menu',gallery:'gallery',reviews:'reviews',settings:'settings'};
-    $('#viewTitle').textContent = adminText[adminLanguage][mapping[view]] || view;
+    const mapping = {overview:'overview',menu:'menu',gallery:'gallery',reviews:'reviews',appearance:'appearance',settings:'settings'};
+    $('#viewTitle').textContent = adminText[adminLanguage][mapping[view]] || (view === 'appearance' ? 'Appearance' : view);
   }
 
   function switchView(view) {
@@ -204,7 +232,8 @@
 
   function renderMenu() {
     const table=$('#menuTable'); if(!table)return;
-    table.innerHTML=data.menu.map(item=>`<tr><td><strong>${esc(item.name)}</strong></td><td><span class="tag">${esc(item.category)}</span></td><td>${esc(item.price)}</td><td class="muted-cell">${esc(item.descriptionId||'')}</td><td class="muted-cell">${esc(item.descriptionEn||'')}</td><td><div class="row-actions"><button type="button" data-edit-menu="${esc(item.id)}">Edit</button><button type="button" class="danger" data-del-menu="${esc(item.id)}">Delete</button></div></td></tr>`).join('')||'<tr><td colspan="6" class="empty-row">No menu items yet.</td></tr>';
+    table.innerHTML=data.menu.map(item=>`<tr><td><div class="menu-thumb"><img src="${esc(getMenuImage(item))}" alt="${esc(item.name)}" referrerpolicy="no-referrer"></div></td><td><strong>${esc(item.name)}</strong></td><td><span class="tag">${esc(item.category)}</span></td><td>${esc(item.price)}</td><td class="muted-cell">${esc(item.descriptionId||'')}</td><td class="muted-cell">${esc(item.descriptionEn||'')}</td><td><div class="row-actions"><button type="button" data-edit-menu="${esc(item.id)}">Edit</button><button type="button" class="danger" data-del-menu="${esc(item.id)}">Delete</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="empty-row">No menu items yet.</td></tr>';
+    $$('img',table).forEach(img=>img.addEventListener('error',()=>{img.hidden=true;img.closest('.menu-thumb')?.classList.add('media-broken');}));
     $$('[data-edit-menu]',table).forEach(button=>button.addEventListener('click',()=>openEditor('menu',button.dataset.editMenu)));
     $$('[data-del-menu]',table).forEach(button=>button.addEventListener('click',()=>removeItem('menu',button.dataset.delMenu)));
   }
@@ -229,10 +258,47 @@
     Object.entries(data.settings).forEach(([key,value])=>{if(form.elements[key])form.elements[key].value=value||'';});
   }
 
+
+  function renderAppearance() {
+    const form=$('#appearanceForm'); if(!form)return;
+    ['displayFont','bodyFont','accentColor','secondaryColor'].forEach(key=>{if(form.elements[key])form.elements[key].value=data.settings[key]||settingsDefault[key];});
+    updateAppearancePreview();
+  }
+  function updateAppearancePreview() {
+    const form=$('#appearanceForm'); const preview=$('#appearancePreview'); if(!form||!preview)return;
+    const display=form.elements.displayFont?.value||data.settings.displayFont||'Bricolage Grotesque';
+    const body=form.elements.bodyFont?.value||data.settings.bodyFont||'Manrope';
+    const accent=form.elements.accentColor?.value||data.settings.accentColor||'#ef2d27';
+    const secondary=form.elements.secondaryColor?.value||data.settings.secondaryColor||'#2118a8';
+    preview.style.setProperty('--preview-display',FONT_STACKS[display]||FONT_STACKS['Bricolage Grotesque']);
+    preview.style.setProperty('--preview-body',FONT_STACKS[body]||FONT_STACKS['Manrope']);
+    preview.style.setProperty('--preview-accent',accent); preview.style.setProperty('--preview-secondary',secondary);
+  }
+  $('#appearanceForm')?.addEventListener('input',updateAppearancePreview);
+  $('#saveAppearanceBtn')?.addEventListener('click',()=>{
+    const form=$('#appearanceForm'); if(!form)return; const fd=new FormData(form);
+    for(const [key,value] of fd.entries()) data.settings[key]=String(value).trim();
+    save('Website appearance updated.');
+  });
+
   $('#saveSettingsBtn')?.addEventListener('click',()=>{
     const form=$('#settingsForm'); if(!form)return;
     const fd=new FormData(form); for(const [key,value] of fd.entries()) data.settings[key]=String(value).trim();
     save();
+  });
+
+  $('#exportCmsBtn')?.addEventListener('click',()=>{
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a');
+    a.href=url; a.download='stairs-cms-content.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),500); showToast('Exported','CMS JSON downloaded.');
+  });
+  $('#importCmsInput')?.addEventListener('change',async event=>{
+    const file=event.target.files?.[0]; if(!file)return;
+    try { const parsed=JSON.parse(await file.text()); if(!parsed||!Array.isArray(parsed.menu)||!Array.isArray(parsed.gallery)||!parsed.settings) throw new Error('Invalid CMS file'); data={settings:{...settingsDefault,...parsed.settings},menu:parsed.menu,gallery:parsed.gallery,reviews:Array.isArray(parsed.reviews)?parsed.reviews:[]}; save('CMS JSON imported.'); }
+    catch(error){showToast('Import failed','File JSON tidak sesuai format STAIRS CMS.');}
+    event.target.value='';
+  });
+  $('#resetCmsBtn')?.addEventListener('click',()=>{
+    if(!confirm(adminLanguage==='id'?'Reset seluruh konten demo ke bawaan?':'Reset all demo content to defaults?'))return; data=clone(defaults); save('Demo content reset.');
   });
 
   function removeItem(type,id) {
@@ -248,11 +314,19 @@
     const control=type==='textarea'?`<textarea name="${name}" rows="4" required>${esc(value)}</textarea>`:`<input name="${name}" type="${type}" value="${esc(value)}" ${min?`min="${min}"`:''} ${max?`max="${max}"`:''} required>`;
     return `<label class="${full?'full':''}"><span>${label}</span>${control}</label>`;
   }
+  function optionalField(name,label,value='',type='text',full=false) { return `<label class="${full?'full':''}"><span>${label}</span><input name="${name}" type="${type}" value="${esc(value||'')}" placeholder="Optional"></label>`; }
+  function fileField(name,label,full=true) { return `<label class="${full?'full':''}"><span>${label}</span><input name="${name}" type="file" accept="image/*"><small class="upload-note">Upload akan dikompres untuk demo CMS lokal.</small></label>`; }
   function selectField(name,label,value,options) { return `<label><span>${label}</span><select name="${name}">${options.map(option=>`<option value="${esc(option)}" ${option===value?'selected':''}>${esc(option)}</option>`).join('')}</select></label>`; }
 
+  async function imageFileToDataUrl(file,max=1200,quality=.82) {
+    if(!file||!file.type?.startsWith('image/'))return '';
+    const img=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=reader.result;};reader.onerror=reject;reader.readAsDataURL(file);});
+    const ratio=Math.min(1,max/Math.max(img.width,img.height)); const canvas=document.createElement('canvas'); canvas.width=Math.max(1,Math.round(img.width*ratio)); canvas.height=Math.max(1,Math.round(img.height*ratio)); const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0,canvas.width,canvas.height); return canvas.toDataURL('image/jpeg',quality);
+  }
+
   function fieldsFor(type,item={}) {
-    if(type==='menu') return [field('name','Item name',item.name),selectField('category','Category',item.category||'Breakfast',['Breakfast','Bites','Pizza','Salads','Comfort','Pasta','Mains','Coffee','Tea','Fermented','Non Coffee','Cocktails']),field('price','Price',item.price),field('descriptionId','Description ID',item.descriptionId,'textarea',true),field('descriptionEn','Description EN',item.descriptionEn,'textarea',true)];
-    if(type==='gallery') return [selectField('type','Media type',item.type||'image',['image','video']),field('url','Media URL',item.url,'url',true),field('titleId','Title ID',item.titleId),field('titleEn','Title EN',item.titleEn),field('captionId','Caption ID',item.captionId,'textarea',true),field('captionEn','Caption EN',item.captionEn,'textarea',true),field('source','Source / credit',item.source,'text',true)];
+    if(type==='menu') return [optionalField('image','Menu image URL',item.image,'url',true),fileField('imageUpload','Atau upload foto menu',true),field('name','Item name',item.name),selectField('category','Category',item.category||'Breakfast',['Breakfast','Bites','Pizza','Salads','Comfort','Pasta','Mains','Coffee','Tea','Fermented','Non Coffee','Cocktails']),field('price','Price',item.price),field('descriptionId','Description ID',item.descriptionId,'textarea',true),field('descriptionEn','Description EN',item.descriptionEn,'textarea',true)];
+    if(type==='gallery') return [selectField('type','Media type',item.type||'image',['image','video']),optionalField('url','Media URL',item.url,'url',true),fileField('mediaUpload','Atau upload foto',true),field('titleId','Title ID',item.titleId),field('titleEn','Title EN',item.titleEn),field('captionId','Caption ID',item.captionId,'textarea',true),field('captionEn','Caption EN',item.captionEn,'textarea',true),field('source','Source / credit',item.source,'text',true)];
     return [field('name','Display name',item.name),field('rating','Rating 1–5',item.rating||5,'number',false,'1','5'),field('textId','Review ID',item.textId,'textarea',true),field('textEn','Review EN',item.textEn,'textarea',true)];
   }
 
@@ -265,10 +339,16 @@
   function closeEditor(){const dialog=$('#editorDialog'); if(typeof dialog.close==='function')dialog.close(); else dialog.removeAttribute('open');}
   $('#dialogCancel')?.addEventListener('click',closeEditor);
   $('.dialog-close')?.addEventListener('click',event=>{event.preventDefault();closeEditor();});
-  $('#editorForm')?.addEventListener('submit',event=>{
-    event.preventDefault(); const object=Object.fromEntries(new FormData(event.currentTarget).entries());
+  $('#editorForm')?.addEventListener('submit',async event=>{
+    event.preventDefault(); const fd=new FormData(event.currentTarget); const existing=editing.id?data[editing.type].find(item=>item.id===editing.id)||{}:{}; const object={};
+    for(const [key,value] of fd.entries()) if(!(value instanceof File)) object[key]=String(value).trim();
+    const imageUpload=fd.get('imageUpload'); const mediaUpload=fd.get('mediaUpload');
+    try {
+      if(editing.type==='menu') { const uploaded=await imageFileToDataUrl(imageUpload); if(uploaded)object.image=uploaded; else if(!object.image&&existing.image)object.image=existing.image; }
+      if(editing.type==='gallery') { const uploaded=await imageFileToDataUrl(mediaUpload); if(uploaded){object.url=uploaded;object.type='image';} else if(!object.url&&existing.url)object.url=existing.url; }
+    } catch { showToast('Image error','Foto gagal diproses. Gunakan URL gambar atau file lain.'); return; }
     if(editing.type==='reviews')object.rating=Math.max(1,Math.min(5,Number(object.rating)||5));
-    if(editing.id){object.id=editing.id;data[editing.type]=data[editing.type].map(item=>item.id===editing.id?object:item);} else {object.id=`${editing.type[0]}${Date.now()}`;data[editing.type].push(object);}
+    if(editing.id){object.id=editing.id;data[editing.type]=data[editing.type].map(item=>item.id===editing.id?{...existing,...object}:item);} else {object.id=`${editing.type[0]}${Date.now()}`;data[editing.type].push(object);}
     closeEditor(); save();
   });
 

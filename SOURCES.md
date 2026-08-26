@@ -1,45 +1,18 @@
-# STAIRS v4 — Research & Asset Notes
+# Source / reference notes — STAIRS v4.4
 
-## Official/public discovery
-- Linktree: https://linktr.ee/stairsprawirotaman
-  - WORK FROM STAIRS
-  - ALL RED DAILY PROMO
-  - GOFOOD
-  - GRABFOOD
-  - STAIRS MENU BOOK
-  - STAIRS BAR MENU
-  - TABLE BOOKING
-  - VENUE RESERVATION
-  - LOCATION
-  - Instagram
-  - TikTok
-- Instagram profile: https://www.instagram.com/stairsprawirotaman/
-- Google Maps: STAIRS by Seken Living / STAIRS at Prawirotaman
-- Grab listing: https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE
+This is a pitching demo, not an official STAIRS website.
 
-## Public references used for copy/menu research
-- Restaurant Guru — current hours, rating, features and reviews.
-- Amazing Jogja — food menu references.
-- Kumparan — food/drink menu references attributed to @stairsprawirotaman.
-- Scribd indexed copy of “STAIRS-MENU BAR NEW_AGUSTUS 2024 II” — signature/classic cocktail and bar-menu reference.
-- What’s New Indonesia nightlife guide — STAIRS described as an evening lifestyle venue with cocktail bar, VIP lounge and regular live music/DJ sets.
-- IDN Times — venue imagery attributed to Google Maps/Instagram.
+Public references used while shaping the content:
+- Official Linktree: https://linktr.ee/stairsprawirotaman
+- Public Instagram profile mirror/index: @stairsprawirotaman profile description and activity
+- Kumparan / Seputar Yogyakarta: menu names/prices attributed to @stairsprawirotaman
+- Restaurant Guru: current listing, rating, phone, address and opening-hour reference
+- Lemon8 visitor coverage: STAIRS venue atmosphere and examples such as mushroom soup, cheese stick, cromboloni and juices
+- Other recent public venue coverage describing the bar / late-night / live-music character
+- Instagram grid screenshot supplied directly in this ChatGPT project was cropped into local demo assets under `assets/`.
 
-## Instagram tone scan
-The supplied Instagram-grid screenshot was sampled locally. Approximate dominant clusters:
-- #161415 — charcoal/near-black (~24%)
-- #1E1777 — deep ultramarine/indigo (~24%)
-- #5B2F30 — warm wine/brown (~15%)
-- #E30B0E — signal red (~12%)
-- #76615C — warm neutral (~9%)
-- #B49F9B — pale warm neutral (~7%)
-- #BD834D — amber (~6%)
-- #ECE9EA — near-white (~2%)
+## Menu photos
+Official/supplied STAIRS visual assets are preferred. Where an exact menu photo was not publicly available in a stable form, v4.4 uses generic Unsplash food photography as a demo placeholder. Those images should be replaced with STAIRS-owned photography before official production.
 
-The v4 visual system deliberately prioritizes charcoal + ultramarine + signal red, with amber/warm neutrals reserved for photography.
-
-## Local demo assets
-Files in `assets/ig-*.png` are crops derived from the Instagram-grid screenshot supplied by the user in this conversation. They are used as pitch/demo references. Replace with licensed/original STAIRS media before official production.
-
-## Linktree destination limitation
-The public Linktree crawler exposes all card labels but does not expose every hidden outbound destination. For those cards the website opens the official Linktree as a safe live fallback, while direct URLs are used where independently verifiable (Maps, Instagram, TikTok, Grab).
+## Rights note
+Publicly indexed and user-supplied imagery is used only as a visual pitching reference. Obtain appropriate rights/permission and host approved official assets before production use.

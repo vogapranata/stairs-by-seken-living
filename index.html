@@ -8,8 +8,8 @@
   <title>STAIRS — Prawirotaman After Dark</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.3" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=4.4" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -137,17 +137,7 @@
         <a class="text-link" data-setting-link="instagramUrl" href="https://www.instagram.com/stairsprawirotaman/" target="_blank" rel="noreferrer">Instagram ↗</a>
       </div>
       <div class="feed-marquee slide-content" aria-label="STAIRS social feed references">
-        <div class="feed-track">
-          <figure><img src="assets/ig-must21.png" alt="STAIRS Instagram event poster"><figcaption>Event culture</figcaption></figure>
-          <figure><img src="assets/ig-pour-show-photo.png" alt="STAIRS nightlife post"><figcaption>Pour & Show</figcaption></figure>
-          <figure><img src="assets/ig-greatest-showman.png" alt="STAIRS Instagram poster"><figcaption>Show nights</figcaption></figure>
-          <figure><img src="assets/ig-crowd.png" alt="Crowd at STAIRS"><figcaption>Night crowd</figcaption></figure>
-          <figure><img src="assets/ig-pour-show-poster.png" alt="STAIRS guest bar event poster"><figcaption>Guest bar</figcaption></figure>
-          <figure><img src="assets/ig-drysol.png" alt="STAIRS tequila event poster"><figcaption>Bar takeover</figcaption></figure>
-          <figure><img src="assets/ig-cocktail.png" alt="Cocktail at STAIRS"><figcaption>Cocktails</figcaption></figure>
-          <figure><img src="assets/ig-madlab.png" alt="STAIRS event poster"><figcaption>Creative nights</figcaption></figure>
-          <figure><img src="assets/ig-night-crowd.png" alt="Night crowd at STAIRS"><figcaption>Late energy</figcaption></figure>
-        </div>
+        <div class="feed-track" id="feedTrack"></div>
       </div>
     </section>
 
@@ -159,6 +149,11 @@
           <p>Highlights from a publicly indexed STAIRS bar menu. Prices can change—use the official bar-menu link for the latest list.</p>
         </div>
         <a class="pill outline" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer">Full bar menu ↗</a>
+      </div>
+      <div class="bar-kinetic slide-content" aria-label="STAIRS bar visual references">
+        <figure class="kinetic-card kinetic-card-a" data-kinetic data-depth="1.1" data-drift-x="-42" data-drift-y="30"><img src="assets/ig-cocktail.png" alt="Cocktail visual from STAIRS Instagram feed"><figcaption>Cocktail culture</figcaption></figure>
+        <figure class="kinetic-card kinetic-card-b" data-kinetic data-depth=".75" data-drift-x="36" data-drift-y="-24"><img src="assets/ig-pour-show-photo.png" alt="Pour and Show night at STAIRS"><figcaption>Guest bar nights</figcaption></figure>
+        <figure class="kinetic-card kinetic-card-c" data-kinetic data-depth=".9" data-drift-x="18" data-drift-y="36"><img src="assets/ig-night-crowd.png" alt="STAIRS late night crowd"><figcaption>Late set energy</figcaption></figure>
       </div>
       <div class="cocktail-grid slide-content">
         <article><span>01</span><h3>THE POP</h3><p>Bourbon · Amaretto · Espresso · Hazelnut · Banana · Coconut · Lime</p><strong>110K</strong></article>
@@ -180,7 +175,10 @@
         <a class="text-link" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer" data-i18n="officialMenu">Official Menu ↗</a>
       </div>
       <div class="menu-filter slide-content" id="menuFilter" aria-label="Filter menu"></div>
-      <div class="menu-grid slide-content" id="menuGrid" aria-live="polite"></div>
+      <div class="menu-stage slide-content">
+        <div class="menu-stage-note"><span>CMS / LIVE</span><p>Foto, harga, copy, dan kategori menu dapat diubah dari dashboard.</p></div>
+        <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+      </div>
       <div class="menu-compact-footer slide-content">
         <p id="menuCompactStatus">Menampilkan pilihan menu.</p>
         <div class="menu-compact-actions">
@@ -195,7 +193,7 @@
         <div class="section-label"><span>05</span> SPACE & PLATES</div>
         <h2>Concrete outside.<br><span>Electric inside.</span></h2>
       </div>
-      <div class="gallery-slider slide-content" id="gallerySlider">
+      <div class="gallery-slider slide-content kinetic-gallery" id="gallerySlider" data-kinetic data-depth=".22" data-drift-y="18">
         <div class="gallery-track" id="galleryTrack"></div>
         <div class="gallery-controls"><button type="button" class="gallery-arrow" id="galleryPrev" aria-label="Previous photo">←</button><div class="gallery-dots" id="galleryDots"></div><button type="button" class="gallery-arrow" id="galleryNext" aria-label="Next photo">→</button></div>
       </div>
@@ -232,8 +230,15 @@
 
     <section class="visit section-shell slide-section" id="visit" data-motion="right">
       <div class="visit-panel slide-content">
-        <div><div class="section-label"><span>08</span> VISIT</div><h2>Come for dinner.<br><span>Stay for the night.</span></h2></div>
-        <div class="visit-info"><p class="label">ADDRESS</p><p data-setting="location">Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153</p><p class="label">HOURS</p><p data-setting="openingHours">Mon–Fri 11.00 — 01.00 · Sat–Sun 11.00 — 02.00</p><p class="label">PHONE</p><p data-setting="phone">+62 852-1565-5565</p><div class="visit-actions"><a class="pill" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/">Directions</a><a class="text-link" data-setting-link="instagramUrl" target="_blank" rel="noreferrer" href="https://www.instagram.com/stairsprawirotaman/">Instagram ↗</a></div></div>
+        <div class="visit-copy"><div class="section-label"><span>08</span> VISIT</div><h2>Come for dinner.<br><span>Stay for the night.</span></h2>
+          <div class="visit-info"><p class="label">ADDRESS</p><p data-setting="location">Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153</p><p class="label">HOURS</p><p data-setting="openingHours">Mon–Fri 11.00 — 01.00 · Sat–Sun 11.00 — 02.00</p><p class="label">PHONE</p><p data-setting="phone">+62 852-1565-5565</p><div class="visit-actions"><a class="pill" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/">Directions</a><a class="text-link" data-setting-link="instagramUrl" target="_blank" rel="noreferrer" href="https://www.instagram.com/stairsprawirotaman/">Instagram ↗</a></div></div>
+        </div>
+        <div class="visit-kinetic" aria-label="STAIRS location atmosphere">
+          <div class="location-card location-main" data-kinetic data-depth=".55" data-drift-x="-18" data-drift-y="26"><img src="assets/ig-craft.png" alt="STAIRS bar and venue detail"><span>PRAWIROTAMAN</span></div>
+          <div class="location-card location-event" data-kinetic data-depth="1.05" data-drift-x="34" data-drift-y="-36"><img src="assets/ig-must21.png" alt="STAIRS event poster"><span>AFTER DARK</span></div>
+          <div class="location-card location-crowd" data-kinetic data-depth=".82" data-drift-x="-30" data-drift-y="-18"><img src="assets/ig-crowd.png" alt="Crowd at STAIRS"><span>LIVE NIGHTS</span></div>
+          <div class="location-pin"><i></i><b>STAIRS</b><small>Jl. Prawirotaman · Yogyakarta</small></div>
+        </div>
       </div>
     </section>
   </main>
@@ -242,6 +247,6 @@
 
   <div class="mobile-nav" id="mobileNav" aria-hidden="true"><button type="button" class="mobile-close" aria-label="Tutup menu">×</button><a href="#night">After Dark</a><a href="#bar">Bar</a><a href="#menu">Menu</a><a href="#feed">Feed</a><a href="#links">Links</a><a href="#visit">Visit</a><div class="mobile-controls"><button type="button" data-mobile-lang>Bahasa / English</button><button type="button" data-mobile-theme>Dark / Light</button></div></div>
 
-  <script src="app.js?v=4.3"></script>
+  <script src="app.js?v=4.4"></script>
 </body>
 </html>

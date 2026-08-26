@@ -1,32 +1,24 @@
-# STAIRS at Prawirotaman — v4 Nightlife Redesign
+# STAIRS at Prawirotaman — v4.4 Kinetic CMS Demo
 
-Static HTML/CSS/JS demo website + localStorage admin dashboard.
+Static HTML/CSS/JavaScript concept website for pitching STAIRS at Prawirotaman.
 
-## v4 changes
-- Nightlife/bar/DJ-led art direction based on the supplied current Instagram grid.
-- Dominant palette: near-black, ultramarine/indigo, signal red, warm amber.
-- Animated red/blue light beams, cursor glow, equalizer and layered hero cards.
-- Section-by-section slide animations with reduced-motion support.
-- Instagram-feed marquee using local crops from the supplied screenshot.
-- Signature-cocktail section sourced from a publicly indexed STAIRS bar-menu reference.
-- All Linktree card labels surfaced in an “All Access” section.
-- Food menu, gallery, reviews, language switch and dark/light mode retained.
-- Admin remains intentionally static/no motion.
+## v4.4 changes
+- Kinetic scroll motion inspired by the supplied reference video: menu photos, bar visuals, gallery and location imagery drift/scale subtly with scroll.
+- Menu cards now include photos. Public STAIRS/Instagram assets are used where available; generic food imagery is used as a clearly replaceable demo fallback when an exact official photo is not available.
+- Instagram/feed section is now driven by the same CMS media collection as the gallery.
+- Admin is upgraded into a lightweight browser CMS: edit menu, menu photos, media, reviews, page/site content and links.
+- Menu and gallery editors support image URL or local image upload. Uploads are compressed and stored in browser localStorage for this demo.
+- Appearance panel can change display font, body font, red accent and night-blue accent without editing code.
+- Supported web fonts: Bricolage Grotesque, Manrope, Space Grotesk, Plus Jakarta Sans, DM Sans, Sora, Outfit and Syne.
+- CMS JSON export/import/reset tools added.
+- Dashboard remains intentionally static/no animation.
 
 ## Admin
-Open `/admin` or `/admin.html`.
+Open `/admin` or `admin.html`.
 Demo password: `stairs`
 
-## Update safety
-Content uses localStorage key `stairsDemoContentV4`, so older demo content cannot overwrite the new v4 art direction by accident.
+## Important CMS limitation
+This is a localStorage CMS demo. Changes are stored only in the browser/device where they were made. For an official multi-user website, migrate the CMS data and media to Supabase or another hosted database/storage solution.
 
-## Production note
-Replace pitch/reference images with original STAIRS-owned media before using this as the official site.
-
-
-## v4.2 Typography
-Updated to Bricolage Grotesque (display) + Manrope (body/UI) for a modern, friendly nightlife feel.
-
-
-## v4.3 Orbit Hero
-Hero visual menggunakan kinetic orbit collage berdasarkan referensi video user: cards mengorbit kontinu dengan depth/scale/opacity dinamis.
+## Deployment
+Static project; Vercel can deploy directly from the GitHub repository. No build command or environment variable is required.
