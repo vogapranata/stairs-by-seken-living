@@ -143,7 +143,7 @@
       storyP2:'Konsep website ini menerjemahkan identitas fisik tersebut lewat layer tangga, gerak yang terarah, referensi venue asli, dan transisi berbeda di setiap section.',
       menuLabel:'MENU', menuTitle:'Dari brunch sampai late night.',
       menuIntro:'Referensi menu disusun dari listing menu publik STAIRS dan liputan yang terhubung dengan Instagram. Harga dapat berubah.',
-      officialMenu:'Menu Resmi ↗', menuDisclaimer:'Ini adalah website demo/pitching. Konfirmasi menu dan harga terbaru langsung dengan STAIRS sebelum digunakan sebagai website resmi.',
+      officialMenu:'Menu Resmi ↗', fullFoodMenu:'Lihat menu makanan lengkap ↗', fullBarMenu:'Lihat bar menu ↗', Featured:'Pilihan', menuDisclaimer:'Ini adalah website demo/pitching. Konfirmasi menu dan harga terbaru langsung dengan STAIRS sebelum digunakan sebagai website resmi.',
       spaceLabel:'SUASANA & HIDANGAN', spaceTitle:'Concrete by day.<br><span>Electric after dark.</span>',
       spaceIntro:'Referensi visual di bawah memakai foto publik yang terindeks dan terkait langsung dengan STAIRS, termasuk liputan yang mengkreditkan Instagram mereka.',
       reviewLabel:'KATA PENGUNJUNG', reviewSummary:'Dikenal karena ambience, late-night dining, pizza, kopi, dan arsitektur yang berbeda.', readGoogle:'Baca di Google Maps ↗',
@@ -160,7 +160,7 @@
       storyP2:'This concept site mirrors that physical identity through layered stairs, directional motion, real venue references, and section-by-section transitions.',
       menuLabel:'MENU', menuTitle:'From brunch to late night.',
       menuIntro:'Menu references are compiled from STAIRS’ public menu listings and Instagram-linked coverage. Prices may change.',
-      officialMenu:'Official Menu ↗', menuDisclaimer:'This is a pitching/demo website. Confirm the latest official menu and prices with STAIRS before publishing as the official site.',
+      officialMenu:'Official Menu ↗', fullFoodMenu:'View full food menu ↗', fullBarMenu:'View bar menu ↗', Featured:'Featured', menuDisclaimer:'This is a pitching/demo website. Confirm the latest official menu and prices with STAIRS before publishing as the official site.',
       spaceLabel:'SPACE & PLATES', spaceTitle:'Concrete by day.<br><span>Electric after dark.</span>',
       spaceIntro:'Visual references below use publicly indexed photos associated with STAIRS, including Instagram-attributed coverage and venue listings.',
       reviewLabel:'WHAT PEOPLE SAY', reviewSummary:'Known for atmosphere, late-night dining, pizza, coffee and a distinctive space.', readGoogle:'Read on Google Maps ↗',
@@ -198,7 +198,7 @@
   let theme = localStorage.getItem(THEME_KEY) || data.settings.defaultTheme || 'dark';
   if (!['id','en'].includes(language)) language = 'id';
   if (!['dark','light'].includes(theme)) theme = 'dark';
-  let activeCategory = 'All';
+  let activeCategory = 'Featured';
   let galleryIndex = 0;
   let galleryTimer = null;
 
@@ -259,20 +259,38 @@
     applyTheme();
   }
 
+  const FEATURED_MENU_IDS = ['m3','m10','m13','m18','m28','m32','m34','m44'];
+  const FEATURED_LIMIT = 8;
+  const CATEGORY_LIMIT = 4;
+
   function renderMenu() {
     const filter = $('#menuFilter');
     const grid = $('#menuGrid');
+    const status = $('#menuCompactStatus');
     if (!filter || !grid) return;
-    const categories = ['All', ...new Set(data.menu.map(item => item.category).filter(Boolean))];
-    if (!categories.includes(activeCategory)) activeCategory = 'All';
+
+    const categories = ['Featured', ...new Set(data.menu.map(item => item.category).filter(Boolean))];
+    if (!categories.includes(activeCategory)) activeCategory = 'Featured';
 
     filter.innerHTML = categories.map(category => {
-      const label = category === 'All' ? tr('all') : tr(category);
+      const label = category === 'Featured' ? tr('Featured') : tr(category);
       return `<button type="button" class="${category === activeCategory ? 'active' : ''}" data-cat="${esc(category)}">${esc(label)}</button>`;
     }).join('');
 
-    const items = activeCategory === 'All' ? data.menu : data.menu.filter(item => item.category === activeCategory);
-    grid.innerHTML = items.map((item,index) => {
+    let sourceItems;
+    if (activeCategory === 'Featured') {
+      const byId = new Map(data.menu.map(item => [item.id, item]));
+      sourceItems = FEATURED_MENU_IDS.map(id => byId.get(id)).filter(Boolean);
+      if (sourceItems.length < FEATURED_LIMIT) {
+        const used = new Set(sourceItems.map(item => item.id));
+        sourceItems.push(...data.menu.filter(item => !used.has(item.id)).slice(0, FEATURED_LIMIT - sourceItems.length));
+      }
+      sourceItems = sourceItems.slice(0, FEATURED_LIMIT);
+    } else {
+      sourceItems = data.menu.filter(item => item.category === activeCategory).slice(0, CATEGORY_LIMIT);
+    }
+
+    grid.innerHTML = sourceItems.map((item,index) => {
       const description = language === 'id' ? (item.descriptionId || item.description || '') : (item.descriptionEn || item.description || '');
       return `<article class="menu-card">
         <div class="menu-index">${String(index+1).padStart(2,'0')}</div>
@@ -280,6 +298,13 @@
         <strong>${esc(item.price || '—')}</strong>
       </article>`;
     }).join('') || `<p class="empty-state">${language === 'id' ? 'Belum ada menu di kategori ini.' : 'No menu items in this category yet.'}</p>`;
+
+    if (status) {
+      const total = activeCategory === 'Featured' ? data.menu.length : data.menu.filter(item => item.category === activeCategory).length;
+      status.textContent = language === 'id'
+        ? (activeCategory === 'Featured' ? `Menampilkan ${sourceItems.length} pilihan dari ${total} menu.` : `Menampilkan ${sourceItems.length} dari ${total} item kategori ini.`)
+        : (activeCategory === 'Featured' ? `Showing ${sourceItems.length} featured picks from ${total} menu items.` : `Showing ${sourceItems.length} of ${total} items in this category.`);
+    }
 
     $$('button[data-cat]', filter).forEach(button => button.addEventListener('click', () => {
       activeCategory = button.dataset.cat;
