@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5.1" />
+  <link rel="stylesheet" href="styles.css?v=5.2" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -233,7 +233,12 @@
         <a data-setting-link="instagramUrl" href="https://www.instagram.com/stairsprawirotaman/" target="_blank" rel="noreferrer"><span>SOCIAL</span><b>Instagram</b><i>↗</i></a>
         <a data-setting-link="tiktokUrl" href="https://www.tiktok.com/@stairsprawirotaman" target="_blank" rel="noreferrer"><span>SOCIAL</span><b>TikTok</b><i>↗</i></a>
       </div>
-      <div class="access-hint slide-content"><span>Scroll / swipe</span><i>→</i></div>
+      <div class="access-controls slide-content" aria-label="All Access carousel controls">
+        <button type="button" class="access-arrow" id="accessPrev" aria-label="Previous links">←</button>
+        <div class="access-progress" aria-hidden="true"><i id="accessProgress"></i></div>
+        <span class="access-count" id="accessCount">01 / 11</span>
+        <button type="button" class="access-arrow" id="accessNext" aria-label="Next links">→</button>
+      </div>
     </section>
 
     <section class="review-section section-shell slide-section" id="reviews" data-motion="left">
@@ -282,6 +287,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=5.1"></script>
+  <script src="app.js?v=5.2"></script>
 </body>
 </html>

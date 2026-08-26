@@ -758,3 +758,165 @@ html.reference-motion .menu-carousel{
   .links-head-compact h2{font-size:clamp(36px,12vw,50px)!important}
   .links-head-compact p{font-size:13px}
 }
+
+/* v5.2 — compact SPACE & PLATES + explicit ACCESS controls + stronger scroll scenes */
+.gallery{
+  padding-top:70px!important;
+  padding-bottom:70px!important;
+}
+.gallery-head{margin-bottom:22px!important}
+.gallery-head .section-label{margin-bottom:18px}
+.gallery-head h2{
+  font-size:clamp(40px,4.35vw,62px)!important;
+  line-height:.94!important;
+  margin-bottom:0!important;
+}
+.gallery-slider{
+  position:relative;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 18px 48px color-mix(in srgb,#000 8%,transparent);
+}
+.gallery-slide{
+  grid-template-columns:minmax(0,1.58fr) minmax(260px,.62fr)!important;
+  min-height:410px!important;
+}
+.gallery-media{min-height:410px!important;height:410px}
+.gallery-slide-copy{padding:28px 30px!important;min-height:0!important}
+.gallery-no{top:25px!important}
+.gallery-slide-copy h3{font-size:clamp(25px,2.2vw,32px)!important}
+.gallery-slide-copy p{font-size:12px!important;line-height:1.58!important}
+.gallery-source{margin-top:12px!important}
+.gallery-controls{
+  position:absolute;
+  right:20px;
+  bottom:18px;
+  z-index:8;
+  width:auto;
+  padding:7px;
+  border:1px solid color-mix(in srgb,var(--text) 12%,transparent)!important;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--bg) 62%,transparent);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  gap:8px!important;
+}
+.gallery-arrow{width:36px!important;height:36px!important;background:color-mix(in srgb,var(--panel) 42%,transparent)!important}
+.gallery-dots button{width:18px!important}
+
+.links-section{
+  padding-top:50px!important;
+  padding-bottom:50px!important;
+}
+.links-head-compact{gap:28px!important}
+.links-head-compact .section-label{margin-bottom:13px!important}
+.links-head-compact h2{font-size:clamp(34px,3.5vw,50px)!important}
+.links-head-compact p{font-size:12px!important;line-height:1.55!important;max-width:430px!important}
+.quick-links.access-carousel{
+  grid-auto-columns:minmax(190px,21.5%)!important;
+  margin-top:22px!important;
+  padding-bottom:4px!important;
+}
+.quick-links.access-carousel a{min-height:112px!important;padding:15px 16px 14px!important;border-radius:16px!important;gap:12px!important}
+.quick-links.access-carousel a:hover{padding:15px 16px 14px!important}
+.quick-links.access-carousel b{font-size:15px!important;max-width:150px!important}
+.quick-links.access-carousel i{right:14px!important;bottom:11px!important}
+.access-hint{display:none!important}
+.access-controls{
+  display:grid;
+  grid-template-columns:38px minmax(120px,230px) auto 38px;
+  align-items:center;
+  justify-content:end;
+  gap:10px;
+  margin-top:14px;
+}
+.access-arrow{
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+  background:color-mix(in srgb,var(--panel) 72%,transparent);color:var(--text);cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease,opacity .2s ease;
+}
+.access-arrow:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--red) 55%,var(--line));background:color-mix(in srgb,var(--red) 7%,var(--panel))}
+.access-arrow:disabled{opacity:.28;cursor:default;transform:none}
+.access-progress{height:4px;border-radius:999px;background:color-mix(in srgb,var(--text) 12%,transparent);overflow:hidden}
+.access-progress i{display:block;width:22%;height:100%;border-radius:inherit;background:var(--red);transform:translateX(0);transition:transform .22s ease,width .22s ease}
+.access-count{font:700 10px var(--font-body);letter-spacing:.1em;color:var(--muted);white-space:nowrap}
+
+/* The reference video has a clear enter -> settle -> leave choreography. These variables are driven every frame by JS. */
+html.reference-motion.force-motion .slide-section{
+  --section-lift:0px;
+  --section-scale:1;
+  --section-opacity:1;
+  opacity:var(--section-opacity)!important;
+  transform:translate3d(0,var(--section-lift),0) scale(var(--section-scale))!important;
+  transform-origin:50% 40%;
+  will-change:transform,opacity;
+}
+html.reference-motion.force-motion .slide-section > .slide-content:not([data-kinetic]){
+  opacity:var(--ref-opacity,1)!important;
+  filter:blur(var(--ref-blur,0px))!important;
+  transform:translate3d(var(--ref-x,0px),var(--ref-y,0px),0) scale(var(--ref-scale,1))!important;
+}
+html.reference-motion.force-motion .feed-track figure,
+html.reference-motion.force-motion .cocktail-grid article,
+html.reference-motion.force-motion .quick-links a,
+html.reference-motion.force-motion .review-card{
+  opacity:var(--micro-o,1)!important;
+  transform:translate3d(var(--micro-x,0px),var(--micro-y,0px),0) rotate(var(--micro-r,0deg)) scale(var(--micro-s,1))!important;
+}
+html.reference-motion.force-motion .menu-card.menu-card-photo{
+  opacity:var(--card-o,1)!important;
+  transform:translate3d(var(--card-x,0px),var(--card-y,0px),0) rotate(var(--card-r,0deg)) scale(var(--card-s,1))!important;
+}
+html.reference-motion.force-motion [data-kinetic]{
+  transform:translate3d(var(--kin-x,0px),var(--kin-y,0px),0) rotate(var(--kin-r,0deg)) scale(var(--kin-s,1))!important;
+}
+
+/* Stronger visual movement for photo-heavy blocks, close to the supplied scroll reference. */
+html.reference-motion.force-motion .gallery-slider{transform-origin:52% 58%}
+html.reference-motion.force-motion .bar-kinetic{transform-origin:48% 56%}
+html.reference-motion.force-motion .visit-panel{transform-origin:50% 58%}
+
+@media(max-width:1050px){
+  .gallery-slide{grid-template-columns:1.35fr .65fr!important;min-height:370px!important}
+  .gallery-media{min-height:370px!important;height:370px}
+  .quick-links.access-carousel{grid-auto-columns:minmax(190px,31%)!important}
+}
+@media(max-width:720px){
+  .gallery{padding-top:54px!important;padding-bottom:54px!important}
+  .gallery-head h2{font-size:clamp(38px,12vw,52px)!important}
+  .gallery-slide{grid-template-columns:1fr!important;min-height:0!important}
+  .gallery-media{height:290px!important;min-height:290px!important}
+  .gallery-slide-copy{padding:22px 20px 76px!important}
+  .gallery-controls{right:14px;bottom:14px}
+  .links-section{padding-top:42px!important;padding-bottom:42px!important}
+  .quick-links.access-carousel{grid-auto-columns:minmax(178px,68%)!important;margin-top:18px!important}
+  .quick-links.access-carousel a{min-height:106px!important}
+  .access-controls{grid-template-columns:38px minmax(90px,1fr) auto 38px;justify-content:stretch}
+}
+
+/* This site intentionally ships in full-motion mode because the motion is part of the requested art direction. */
+@media(prefers-reduced-motion:reduce){
+  html.force-motion.reference-motion .slide-section{
+    opacity:var(--section-opacity,1)!important;
+    transform:translate3d(0,var(--section-lift,0px),0) scale(var(--section-scale,1))!important;
+  }
+  html.force-motion.reference-motion .slide-section > .slide-content:not([data-kinetic]){
+    opacity:var(--ref-opacity,1)!important;
+    filter:blur(var(--ref-blur,0px))!important;
+    transform:translate3d(var(--ref-x,0px),var(--ref-y,0px),0) scale(var(--ref-scale,1))!important;
+  }
+  html.force-motion.reference-motion .feed-track figure,
+  html.force-motion.reference-motion .cocktail-grid article,
+  html.force-motion.reference-motion .quick-links a,
+  html.force-motion.reference-motion .review-card{
+    opacity:var(--micro-o,1)!important;
+    transform:translate3d(var(--micro-x,0px),var(--micro-y,0px),0) rotate(var(--micro-r,0deg)) scale(var(--micro-s,1))!important;
+  }
+  html.force-motion.reference-motion .menu-card.menu-card-photo{
+    opacity:var(--card-o,1)!important;
+    transform:translate3d(var(--card-x,0px),var(--card-y,0px),0) rotate(var(--card-r,0deg)) scale(var(--card-s,1))!important;
+  }
+  html.force-motion.reference-motion [data-kinetic]{
+    transform:translate3d(var(--kin-x,0px),var(--kin-y,0px),0) rotate(var(--kin-r,0deg)) scale(var(--kin-s,1))!important;
+  }
+}

@@ -178,7 +178,8 @@
   const $ = (selector, context = document) => context.querySelector(selector);
   const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
   const esc = (value='') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  const reduceMotion = false; // Full-motion art direction requested for this experience.
+  document.documentElement.classList.add('force-motion');
 
   const FONT_STACKS = {
     'Bricolage Grotesque': "'Bricolage Grotesque',system-ui,sans-serif",
@@ -842,17 +843,25 @@
         const leave = smooth(clamp((vh * .22 - rect.bottom) / Math.max(vh * .48,1),0,1));
         const direction = section.dataset.motion || (sectionIndex % 2 ? 'left' : 'right');
 
+        // Whole-section choreography: rise + scale into place, then gently lift away.
+        const sectionLift = (1-enter) * (mobile ? 42 : 86) - leave * (mobile ? 30 : 58);
+        const sectionScale = .965 + enter * .035 - leave * .012;
+        const sectionOpacity = clamp(.34 + enter * .66 - leave * .28, .08, 1);
+        setVar(section,'--section-lift',`${sectionLift.toFixed(2)}px`);
+        setVar(section,'--section-scale',sectionScale.toFixed(4));
+        setVar(section,'--section-opacity',sectionOpacity.toFixed(4));
+
         $$('.slide-content:not([data-kinetic])',section).forEach((item,index) => {
           const lag = Math.min(.32,index * .075);
           const local = expo(clamp((enter-lag) / Math.max(1-lag,.001),0,1));
           const side = direction === 'left' ? -1 : direction === 'right' ? 1 : (index % 2 ? 1 : -1);
-          const startX = direction === 'up' ? side * (mobile ? 22 : 42) : side * (mobile ? 52 : 118);
-          const startY = direction === 'up' ? (mobile ? 68 : 132) : (mobile ? 42 : 72);
+          const startX = direction === 'up' ? side * (mobile ? 34 : 68) : side * (mobile ? 72 : 156);
+          const startY = direction === 'up' ? (mobile ? 92 : 176) : (mobile ? 58 : 104);
           const x = (1-local)*startX + leave*(-side * (mobile ? 18 : 50));
           const y = (1-local)*startY - leave*(mobile ? 52 : 96);
-          const scale = .90 + local*.10 - leave*.04;
+          const scale = .86 + local*.14 - leave*.045;
           const opacity = clamp((.03 + local*.97) * (1-leave*.76),0,1);
-          const blur = (1-local)*(mobile ? 5 : 12) + leave*(mobile ? 4 : 8);
+          const blur = (1-local)*(mobile ? 7 : 16) + leave*(mobile ? 5 : 10);
 
           setVar(item,'--ref-x',`${x.toFixed(2)}px`);
           setVar(item,'--ref-y',`${y.toFixed(2)}px`);
@@ -1078,6 +1087,51 @@
     if (event.key === THEME_KEY && event.newValue) { theme = event.newValue; applyTheme(); }
   });
 
+
+  function updateAccessCarouselControls() {
+    const viewport = $('.quick-links.access-carousel');
+    const prev = $('#accessPrev');
+    const next = $('#accessNext');
+    const progress = $('#accessProgress');
+    const count = $('#accessCount');
+    if (!viewport || !prev || !next || !progress || !count) return;
+
+    const cards = $$('a', viewport);
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const ratio = max > 1 ? Math.max(0, Math.min(1, viewport.scrollLeft / max)) : 0;
+    const first = cards[0];
+    const gap = 12;
+    const step = first ? first.getBoundingClientRect().width + gap : Math.max(viewport.clientWidth, 1);
+    const current = Math.min(cards.length, Math.floor((viewport.scrollLeft + step * .42) / Math.max(step,1)) + 1);
+    const visible = Math.max(1, Math.round(viewport.clientWidth / Math.max(step,1)));
+    const thumb = Math.min(100, Math.max(18, visible / Math.max(cards.length,1) * 100));
+    const travel = Math.max(0, 100 - thumb);
+
+    progress.style.width = `${thumb.toFixed(2)}%`;
+    progress.style.transform = `translateX(${(ratio * travel / Math.max(thumb/100, .001)).toFixed(2)}%)`;
+    count.textContent = `${String(current).padStart(2,'0')} / ${String(cards.length).padStart(2,'0')}`;
+    prev.disabled = viewport.scrollLeft <= 3;
+    next.disabled = viewport.scrollLeft >= max - 3;
+  }
+
+  function initAccessCarousel() {
+    const viewport = $('.quick-links.access-carousel');
+    const prev = $('#accessPrev');
+    const next = $('#accessNext');
+    if (!viewport || !prev || !next || viewport.dataset.controlsReady === '1') return;
+    viewport.dataset.controlsReady = '1';
+    const move = direction => {
+      const first = $('a', viewport);
+      const amount = first ? (first.getBoundingClientRect().width + 12) * Math.max(1, Math.floor(viewport.clientWidth / Math.max(first.getBoundingClientRect().width + 12,1)) - 1) : viewport.clientWidth * .8;
+      viewport.scrollBy({left: direction * amount, behavior:'smooth'});
+    };
+    prev.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    viewport.addEventListener('scroll', updateAccessCarouselControls, {passive:true});
+    window.addEventListener('resize', updateAccessCarouselControls, {passive:true});
+    requestAnimationFrame(updateAccessCarouselControls);
+  }
+
   const safeRun = (name, task) => {
     try { return task(); }
     catch (error) { console.error(`[STAIRS] ${name} failed`, error); return null; }
@@ -1094,6 +1148,7 @@
   safeRun('cursor motion', initCursorMotion);
   safeRun('feed loop', initFeedLoop);
   safeRun('menu carousel', initMenuCarousel);
+  safeRun('access carousel', initAccessCarousel);
   safeRun('photo lightbox', initPhotoLightbox);
   safeRun('mobile navigation', initMobileNav);
   safeRun('gallery autoplay', startGalleryAutoplay);
