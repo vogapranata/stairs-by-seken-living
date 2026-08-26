@@ -1,18 +1,22 @@
 (() => {
   'use strict';
 
-  const KEY = 'stairsDemoContentV3';
-  const SESSION_KEY = 'stairsDemoAdminSessionV3';
+  const KEY = 'stairsDemoContentV4';
+  const SESSION_KEY = 'stairsDemoAdminSessionV4';
   const ADMIN_LANG_KEY = 'stairsAdminLanguage';
   const ADMIN_THEME_KEY = 'stairsAdminTheme';
 
   const settingsDefault = {
-    heroTitleId:'Saatnya<br><span>step out</span> dari yang biasa.', heroTitleEn:'A place to<br><span>step out</span> of ordinary.',
-    heroSubtitleId:'Global-inspired food, cocktails, late night, dan ruang yang terasa berbeda di setiap langkah.', heroSubtitleEn:'Global-inspired food, cocktails, late nights, and a space built to be experienced one step at a time.',
-    openingHoursShort:'11.00 — 01.00', openingHoursId:'Senin–Jumat 11.00 — 01.00 · Sabtu–Minggu 11.00 — 02.00', openingHoursEn:'Mon–Fri 11.00 — 01.00 · Sat–Sun 11.00 — 02.00',
+    heroTitleId:'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.', heroTitleEn:'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.',
+    heroSubtitleId:'Global-inspired food, cocktails, guest bars, musik, dan energi malam Prawirotaman dalam satu tempat.', heroSubtitleEn:'Global-inspired food, cocktails, guest bars, music and Prawirotaman late-night energy in one place.',
+    openingHoursShort:'11.00 — 01.00', openingHoursId:'Buka setiap hari 11.00 — 01.00 · akhir pekan sampai 02.00', openingHoursEn:'Open daily 11.00 — 01.00 · weekends until 02.00',
     location:'Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153', phone:'+62 852-1565-5565',
     mapsUrl:'https://www.google.com/maps/place/STAIRS+by+Seken+Living/@-7.8191966,110.3696288,21z/data=!4m6!3m5!1s0x2e7a57835710d665:0x88af7340ff73c90b!8m2!3d-7.8191034!4d110.3695626!16s%2Fg%2F11v3h5kb1l?entry=ttu',
-    instagramUrl:'https://www.instagram.com/stairsprawirotaman/', reservationUrl:'https://linktr.ee/stairsprawirotaman', defaultLanguage:'id', defaultTheme:'dark'
+    instagramUrl:'https://www.instagram.com/stairsprawirotaman/', reservationUrl:'https://linktr.ee/stairsprawirotaman',
+    linktreeUrl:'https://linktr.ee/stairsprawirotaman', workFromStairsUrl:'https://linktr.ee/stairsprawirotaman', allRedPromoUrl:'https://linktr.ee/stairsprawirotaman',
+    gofoodUrl:'https://linktr.ee/stairsprawirotaman', grabfoodUrl:'https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE',
+    foodMenuUrl:'https://linktr.ee/stairsprawirotaman', barMenuUrl:'https://linktr.ee/stairsprawirotaman', tableBookingUrl:'https://linktr.ee/stairsprawirotaman',
+    venueReservationUrl:'https://linktr.ee/stairsprawirotaman', tiktokUrl:'https://www.tiktok.com/@stairsprawirotaman', defaultLanguage:'id', defaultTheme:'dark'
   };
 
   const menuDefault = [
@@ -79,8 +83,8 @@
   const galleryDefault = [
     {id:'g1',type:'image',url:'https://image.idntimes.com/post/20240305/2023-10-25-11zon-a9b86914ba33fca85ab078094226c771-befb7adf121bb364245db37c100f80c3.jpg',titleId:'Suasana STAIRS',titleEn:'STAIRS Atmosphere',captionId:'Foto pengunjung dari listing Google Maps STAIRS, dipakai sebagai referensi visual untuk demo website.',captionEn:'A visitor photo from the STAIRS Google Maps listing, used as a visual reference for this website demo.',source:'Google Maps / im maya · via IDN Times'},
     {id:'g2',type:'image',url:'https://image.idntimes.com/post/20240506/img-5011-15fe9b9bfabc636515b6203565331b9a-ffeb8ae543a355cb2c7b2fa28ae5fdaf.jpeg',titleId:'Table Culture',titleEn:'Table Culture',captionId:'Suasana makan bersama yang dipublikasikan dalam liputan Prawirotaman dan dikreditkan ke Instagram STAIRS.',captionEn:'A communal dining moment published in Prawirotaman coverage and attributed to STAIRS’ Instagram.',source:'Instagram @stairsprawirotaman via IDN Times'},
-    {id:'g3',type:'image',url:'https://ak-d.tripcdn.com/images/1mi5s224x8ym7uj762755.jpg?proc=source%2Ftrip',titleId:'Night Mood',titleEn:'Night Mood',captionId:'Referensi suasana dan hospitality STAIRS dari foto traveler publik.',captionEn:'A STAIRS atmosphere and hospitality reference from a public traveler photo.',source:'STAIRS public venue photo · traveler reference'},
-    {id:'g4',type:'image',url:'https://ak-d.tripcdn.com/images/1mi68224x8ym87kz7D46C.jpg?proc=source%2Ftrip',titleId:'Food & Drinks',titleEn:'Food & Drinks',captionId:'Referensi venue STAIRS dari foto traveler publik untuk melengkapi slider demo.',captionEn:'A public traveler reference of the STAIRS venue used to complete the demo slider.',source:'STAIRS public venue photo · traveler reference'}
+    {id:'g3',type:'image',url:'assets/ig-night-crowd.png',titleId:'Late Night Energy',titleEn:'Late Night Energy',captionId:'Potongan feed Instagram yang kamu kirim, menampilkan energi malam STAIRS.',captionEn:'A crop from the Instagram feed you supplied, showing STAIRS late-night energy.',source:'Instagram @stairsprawirotaman · supplied feed reference'},
+    {id:'g4',type:'image',url:'assets/ig-cocktail.png',titleId:'Cocktail Culture',titleEn:'Cocktail Culture',captionId:'Visual cocktail dari feed Instagram yang kamu kirim untuk menguatkan karakter bar.',captionEn:'A cocktail visual from the supplied Instagram feed to reinforce the bar identity.',source:'Instagram @stairsprawirotaman · supplied feed reference'}
   ];
 
   const reviewsDefault = [

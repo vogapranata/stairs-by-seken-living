@@ -1,24 +1,34 @@
 (() => {
   'use strict';
 
-  const CONTENT_KEY = 'stairsDemoContentV3';
+  const CONTENT_KEY = 'stairsDemoContentV4';
   const LANG_KEY = 'stairsUiLanguage';
   const THEME_KEY = 'stairsUiTheme';
 
   const defaults = {
     settings: {
-      heroTitleId: 'Saatnya<br><span>step out</span> dari yang biasa.',
-      heroTitleEn: 'A place to<br><span>step out</span> of ordinary.',
-      heroSubtitleId: 'Global-inspired food, cocktails, late night, dan ruang yang terasa berbeda di setiap langkah.',
-      heroSubtitleEn: 'Global-inspired food, cocktails, late nights, and a space built to be experienced one step at a time.',
+      heroTitleId: 'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.',
+      heroTitleEn: 'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.',
+      heroSubtitleId: 'Global-inspired food, cocktails, guest bars, musik, dan energi malam Prawirotaman dalam satu tempat.',
+      heroSubtitleEn: 'Global-inspired food, cocktails, guest bars, music and Prawirotaman late-night energy in one place.',
       openingHoursShort: '11.00 — 01.00',
-      openingHoursId: 'Senin–Jumat 11.00 — 01.00 · Sabtu–Minggu 11.00 — 02.00',
-      openingHoursEn: 'Mon–Fri 11.00 — 01.00 · Sat–Sun 11.00 — 02.00',
+      openingHoursId: 'Buka setiap hari 11.00 — 01.00 · akhir pekan sampai 02.00',
+      openingHoursEn: 'Open daily 11.00 — 01.00 · weekends until 02.00',
       location: 'Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153',
       phone: '+62 852-1565-5565',
       mapsUrl: 'https://www.google.com/maps/place/STAIRS+by+Seken+Living/@-7.8191966,110.3696288,21z/data=!4m6!3m5!1s0x2e7a57835710d665:0x88af7340ff73c90b!8m2!3d-7.8191034!4d110.3695626!16s%2Fg%2F11v3h5kb1l?entry=ttu',
       instagramUrl: 'https://www.instagram.com/stairsprawirotaman/',
       reservationUrl: 'https://linktr.ee/stairsprawirotaman',
+      linktreeUrl: 'https://linktr.ee/stairsprawirotaman',
+      workFromStairsUrl: 'https://linktr.ee/stairsprawirotaman',
+      allRedPromoUrl: 'https://linktr.ee/stairsprawirotaman',
+      gofoodUrl: 'https://linktr.ee/stairsprawirotaman',
+      grabfoodUrl: 'https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE',
+      foodMenuUrl: 'https://linktr.ee/stairsprawirotaman',
+      barMenuUrl: 'https://linktr.ee/stairsprawirotaman',
+      tableBookingUrl: 'https://linktr.ee/stairsprawirotaman',
+      venueReservationUrl: 'https://linktr.ee/stairsprawirotaman',
+      tiktokUrl: 'https://www.tiktok.com/@stairsprawirotaman',
       defaultLanguage: 'id',
       defaultTheme: 'dark'
     },
@@ -101,19 +111,19 @@
       },
       {
         id:'g3', type:'image',
-        url:'https://ak-d.tripcdn.com/images/1mi5s224x8ym7uj762755.jpg?proc=source%2Ftrip',
-        titleId:'Night Mood', titleEn:'Night Mood',
-        captionId:'Referensi suasana dan hospitality STAIRS dari foto traveler publik.',
-        captionEn:'A STAIRS atmosphere and hospitality reference from a public traveler photo.',
-        source:'STAIRS public venue photo · traveler reference'
+        url:'assets/ig-night-crowd.png',
+        titleId:'Late Night Energy', titleEn:'Late Night Energy',
+        captionId:'Potongan feed Instagram yang kamu kirim, menampilkan energi malam STAIRS.',
+        captionEn:'A crop from the Instagram feed you supplied, showing STAIRS late-night energy.',
+        source:'Instagram @stairsprawirotaman · supplied feed reference'
       },
       {
         id:'g4', type:'image',
-        url:'https://ak-d.tripcdn.com/images/1mi68224x8ym87kz7D46C.jpg?proc=source%2Ftrip',
-        titleId:'Food & Drinks', titleEn:'Food & Drinks',
-        captionId:'Referensi venue STAIRS dari foto traveler publik untuk melengkapi slider demo.',
-        captionEn:'A public traveler reference of the STAIRS venue used to complete the demo slider.',
-        source:'STAIRS public venue photo · traveler reference'
+        url:'assets/ig-cocktail.png',
+        titleId:'Cocktail Culture', titleEn:'Cocktail Culture',
+        captionId:'Visual cocktail dari feed Instagram yang kamu kirim untuk menguatkan karakter bar.',
+        captionEn:'A cocktail visual from the supplied Instagram feed to reinforce the bar identity.',
+        source:'Instagram @stairsprawirotaman · supplied feed reference'
       }
     ],
     reviews: [
@@ -398,6 +408,15 @@
     window.addEventListener('pagehide', () => cancelAnimationFrame(frame), { once:true });
   }
 
+
+  function initFeedLoop() {
+    const track = $('.feed-track');
+    if (!track || track.dataset.loopReady === '1') return;
+    track.dataset.loopReady = '1';
+    const originals = [...track.children];
+    originals.forEach(node => track.appendChild(node.cloneNode(true)));
+  }
+
   function initMobileNav() {
     const toggle = $('.menu-toggle');
     const nav = $('#mobileNav');
@@ -433,6 +452,7 @@
   safeRun('language', applyLanguage);
   safeRun('slide motion', initSlideMotion);
   safeRun('cursor motion', initCursorMotion);
+  safeRun('feed loop', initFeedLoop);
   safeRun('mobile navigation', initMobileNav);
   safeRun('gallery autoplay', startGalleryAutoplay);
 })();

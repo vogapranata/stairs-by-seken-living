@@ -1,31 +1,45 @@
-# Public References Used for STAIRS Demo v3.2
+# STAIRS v4 — Research & Asset Notes
 
-Checked: 26 August 2026.
+## Official/public discovery
+- Linktree: https://linktr.ee/stairsprawirotaman
+  - WORK FROM STAIRS
+  - ALL RED DAILY PROMO
+  - GOFOOD
+  - GRABFOOD
+  - STAIRS MENU BOOK
+  - STAIRS BAR MENU
+  - TABLE BOOKING
+  - VENUE RESERVATION
+  - LOCATION
+  - Instagram
+  - TikTok
+- Instagram profile: https://www.instagram.com/stairsprawirotaman/
+- Google Maps: STAIRS by Seken Living / STAIRS at Prawirotaman
+- Grab listing: https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE
 
-## Official/public identity
+## Public references used for copy/menu research
+- Restaurant Guru — current hours, rating, features and reviews.
+- Amazing Jogja — food menu references.
+- Kumparan — food/drink menu references attributed to @stairsprawirotaman.
+- Scribd indexed copy of “STAIRS-MENU BAR NEW_AGUSTUS 2024 II” — signature/classic cocktail and bar-menu reference.
+- What’s New Indonesia nightlife guide — STAIRS described as an evening lifestyle venue with cocktail bar, VIP lounge and regular live music/DJ sets.
+- IDN Times — venue imagery attributed to Google Maps/Instagram.
 
-- STAIRS Linktree: https://linktr.ee/stairsprawirotaman
-- Instagram: https://www.instagram.com/stairsprawirotaman/
-- Google Maps listing: STAIRS at Prawirotaman, Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta.
+## Instagram tone scan
+The supplied Instagram-grid screenshot was sampled locally. Approximate dominant clusters:
+- #161415 — charcoal/near-black (~24%)
+- #1E1777 — deep ultramarine/indigo (~24%)
+- #5B2F30 — warm wine/brown (~15%)
+- #E30B0E — signal red (~12%)
+- #76615C — warm neutral (~9%)
+- #B49F9B — pale warm neutral (~7%)
+- #BD834D — amber (~6%)
+- #ECE9EA — near-white (~2%)
 
-## Menu references
+The v4 visual system deliberately prioritizes charcoal + ultramarine + signal red, with amber/warm neutrals reserved for photography.
 
-- Amazing Jogja — “STAIRS Jogja by Seken Living: Daya Tarik, Menu, dan Info Lengkap”.
-- STAIRS public Linktree/menu references.
-- Public venue/review coverage was only used where current official prices could not be verified. Unverified prices remain `—`.
+## Local demo assets
+Files in `assets/ig-*.png` are crops derived from the Instagram-grid screenshot supplied by the user in this conversation. They are used as pitch/demo references. Replace with licensed/original STAIRS media before official production.
 
-## Photo references used in v3.2
-
-- Hero + Gallery 01: STAIRS by Seken Living photo credited by IDN Times to **Google Maps / im maya**.
-- Gallery 02: STAIRS atmosphere photo credited by IDN Times to **Instagram @stairsprawirotaman**.
-- Gallery 03–04: publicly indexed traveler photos of the STAIRS venue surfaced through Trip.com.
-
-## Reliability change in v3.2
-
-The previous demo used temporary image proxy URLs. Those can stop loading outside the original session. v3.2 replaces them with public source URLs and adds a branded fallback card, so the layout never becomes blank when an external host blocks or removes an image.
-
-The section animation is now progressive enhancement: content is visible by default and motion is enabled only after JavaScript initializes successfully. A JavaScript/image failure therefore no longer makes whole sections disappear.
-
-## Production note
-
-These external assets are for pitching/reference only. For the official site, ask STAIRS for original licensed photos and host them in the project/CMS storage.
+## Linktree destination limitation
+The public Linktree crawler exposes all card labels but does not expose every hidden outbound destination. For those cards the website opens the official Linktree as a safe live fallback, while direct URLs are used where independently verifiable (Maps, Instagram, TikTok, Grab).

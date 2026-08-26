@@ -3,184 +3,203 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="STAIRS at Prawirotaman — global-inspired food, cocktails and late nights in Yogyakarta." />
-  <meta name="theme-color" content="#0a0a0a" />
-  <title>STAIRS — Prawirotaman</title>
+  <meta name="description" content="STAIRS at Prawirotaman — global-inspired food, cocktails, late nights, live music and DJ sets in Yogyakarta." />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>STAIRS — Prawirotaman After Dark</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.2" />
+  <link rel="stylesheet" href="styles.css?v=4.0" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
   <div class="cursor-light" aria-hidden="true"></div>
+  <div class="beam beam-a" aria-hidden="true"></div>
+  <div class="beam beam-b" aria-hidden="true"></div>
 
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="STAIRS home">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
       <span>STAIRS</span>
     </a>
-
     <nav class="nav" aria-label="Navigasi utama">
-      <a href="#story" data-i18n="navStory">Story</a>
+      <a href="#night" data-i18n="navStory">Story</a>
+      <a href="#bar">Bar</a>
       <a href="#menu" data-i18n="navMenu">Menu</a>
-      <a href="#gallery" data-i18n="navSpace">Space</a>
+      <a href="#feed">Feed</a>
       <a href="#visit" data-i18n="navVisit">Visit</a>
     </nav>
-
     <div class="header-actions">
-      <div class="ui-switches" aria-label="Display controls">
-        <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language"><span class="lang-current">ID</span><span class="lang-sep">/</span><span class="lang-other">EN</span></button>
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme"><span class="theme-icon" aria-hidden="true">◐</span><span class="theme-label" data-i18n="themeDark">Dark</span></button>
-      </div>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language"><span class="lang-current">ID</span><span>/</span><span class="lang-other">EN</span></button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme"><span class="theme-icon">◐</span><span class="theme-label" data-i18n="themeDark">Dark</span></button>
       <a class="pill pill-small" data-setting-link="reservationUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer" data-i18n="reserve">Reserve</a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Buka menu">☰</button>
     </div>
   </header>
 
   <main>
-    <section class="hero section-shell slide-section" data-slide="hero" data-motion="up">
+    <section class="hero section-shell slide-section" data-motion="up">
       <div class="hero-copy slide-content">
-        <p class="eyebrow">PRAWIROTAMAN · YOGYAKARTA</p>
-        <h1 data-setting="heroTitle">A place to<br><span>step out</span> of ordinary.</h1>
-        <p class="hero-sub" data-setting="heroSubtitle">Global-inspired food, cocktails, late nights, and a space built to be experienced one step at a time.</p>
+        <p class="eyebrow"><span class="live-pulse"></span>PRAWIROTAMAN · YOGYAKARTA · AFTER DARK</p>
+        <h1 data-setting="heroTitle">FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.</h1>
+        <p class="hero-sub" data-setting="heroSubtitle">Global-inspired dining by day. A red-and-blue playground of cocktails, guest bars, music and late-night energy after dark.</p>
         <div class="hero-actions">
-          <a class="pill" href="#menu" data-i18n="exploreMenu">Explore Menu</a>
-          <a class="text-link" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/@-7.8191966,110.3696288,21z/data=!4m6!3m5!1s0x2e7a57835710d665:0x88af7340ff73c90b!8m2!3d-7.8191034!4d110.3695626!16s%2Fg%2F11v3h5kb1l?entry=ttu" data-i18n="openMaps">Open Maps ↗</a>
+          <a class="pill" data-setting-link="reservationUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer">Book a table</a>
+          <a class="text-link" href="#feed">See the nights ↓</a>
         </div>
         <div class="hero-meta">
           <span><b>4.7</b><small data-i18n="googleRating">Google rating</small></span>
           <span><b>11AM</b><small data-i18n="opensDaily">opens daily</small></span>
-          <span><b>01–02AM</b><small data-i18n="lateNights">late nights</small></span>
+          <span><b>1–2AM</b><small data-i18n="lateNights">late nights</small></span>
         </div>
       </div>
 
-      <div class="hero-visual slide-content" id="heroVisual" aria-label="STAIRS Prawirotaman entrance">
-        <div class="hero-photo" role="img" aria-label="STAIRS Prawirotaman entrance"></div>
-        <div class="photo-source"><span data-i18n="photoReference">Public photo reference</span> · STAIRS Prawirotaman</div>
-        <div class="stair-sculpture" aria-hidden="true">
-          <span class="step step-1"></span>
-          <span class="step step-2"></span>
-          <span class="step step-3"></span>
-          <span class="step step-4"></span>
-        </div>
-        <div class="hero-card">
-          <span data-i18n="openDaily">OPEN DAILY</span>
-          <strong data-setting="openingHoursShort">11.00 — 01.00</strong>
-          <small data-i18n="weekendHours">Sat–Sun until 02.00</small>
-        </div>
+      <div class="hero-visual slide-content" id="heroVisual">
+        <div class="hero-venue" aria-label="STAIRS venue"></div>
+        <div class="hero-poster"><img src="assets/ig-pour-show-poster.png" alt="STAIRS Instagram event poster"></div>
+        <div class="hero-night"><img src="assets/ig-pour-show-photo.png" alt="Night event atmosphere from STAIRS Instagram feed"></div>
+        <div class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="hero-card"><span>OPEN DAILY</span><strong data-setting="openingHoursShort">11.00 — 01.00</strong><small>Fri–Sat until 02.00</small></div>
       </div>
     </section>
 
     <section class="ticker" aria-label="Highlights">
       <div class="ticker-track">
-        <span>GLOBAL-INSPIRED</span><b>•</b><span>FOOD</span><b>•</b><span>COCKTAILS</span><b>•</b><span>LATE NIGHTS</span><b>•</b><span>LIVE MUSIC</span><b>•</b><span>PRAWIROTAMAN</span><b>•</b>
-        <span>GLOBAL-INSPIRED</span><b>•</b><span>FOOD</span><b>•</b><span>COCKTAILS</span><b>•</b><span>LATE NIGHTS</span><b>•</b><span>LIVE MUSIC</span><b>•</b><span>PRAWIROTAMAN</span><b>•</b>
+        <span>GLOBAL-INSPIRED FOOD</span><b>✦</b><span>COCKTAIL BAR</span><b>✦</b><span>GUEST BARTENDERS</span><b>✦</b><span>LIVE MUSIC</span><b>✦</b><span>DJ SETS</span><b>✦</b><span>LATE NIGHTS</span><b>✦</b>
+        <span>GLOBAL-INSPIRED FOOD</span><b>✦</b><span>COCKTAIL BAR</span><b>✦</b><span>GUEST BARTENDERS</span><b>✦</b><span>LIVE MUSIC</span><b>✦</b><span>DJ SETS</span><b>✦</b><span>LATE NIGHTS</span><b>✦</b>
       </div>
     </section>
 
-    <section class="story section-shell slide-section" id="story" data-slide="story" data-motion="left">
-      <div class="section-label slide-content"><span>01</span> <span data-i18n="storyLabel">THE STORY</span></div>
-      <div class="story-grid slide-content">
-        <h2 data-i18n-html="storyTitle">One of Prawirotaman's<br><em>most recognisable steps.</em></h2>
-        <div class="story-copy">
-          <p data-i18n="storyP1">STAIRS pairs exposed concrete, black surfaces and bold red details with an indoor–outdoor dining experience. After dark, the atmosphere shifts into a late-night restaurant and bar mood.</p>
-          <p class="muted" data-i18n="storyP2">This concept site mirrors that physical identity through layered stairs, directional motion, real venue references, and section-by-section transitions.</p>
+    <section class="night-story section-shell slide-section" id="night" data-motion="left">
+      <div class="section-label slide-content"><span>01</span> AFTER DARK</div>
+      <div class="night-grid slide-content">
+        <div>
+          <h2>Not just dinner.<br><span>It turns up after dark.</span></h2>
+          <p>STAIRS' public profile positions the venue around global-inspired food, cocktails and late nights. Recent social posts lean heavily into guest-bar takeovers, DJ-led nights, live performances and event culture.</p>
+        </div>
+        <div class="night-stat-grid">
+          <article><b>RED</b><small>signal / energy</small></article>
+          <article><b>BLUE</b><small>night / stage</small></article>
+          <article><b>BLACK</b><small>bar / contrast</small></article>
         </div>
       </div>
-      <div class="architecture-strip slide-content" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="color-scan slide-content">
+        <span style="--tone:#161415"><i>24%</i>#161415</span>
+        <span style="--tone:#1e1777"><i>24%</i>#1E1777</span>
+        <span style="--tone:#5b2f30"><i>15%</i>#5B2F30</span>
+        <span style="--tone:#e30b0e"><i>12%</i>#E30B0E</span>
+        <span style="--tone:#bd834d"><i>6%</i>#BD834D</span>
+      </div>
     </section>
 
-    <section class="menu-section section-shell slide-section" id="menu" data-slide="menu" data-motion="right">
+    <section class="feed-section section-shell slide-section" id="feed" data-motion="right">
+      <div class="feed-head slide-content">
+        <div>
+          <div class="section-label"><span>02</span> FROM THE FEED</div>
+          <h2>Posters. People.<br><span>Pour & show.</span></h2>
+          <p>Visual direction sampled from the current Instagram grid you shared: deep ultramarine, signal red, black, warm skin tones and flashes of amber.</p>
+        </div>
+        <a class="text-link" data-setting-link="instagramUrl" href="https://www.instagram.com/stairsprawirotaman/" target="_blank" rel="noreferrer">Instagram ↗</a>
+      </div>
+      <div class="feed-marquee slide-content" aria-label="STAIRS social feed references">
+        <div class="feed-track">
+          <figure><img src="assets/ig-must21.png" alt="STAIRS Instagram event poster"><figcaption>Event culture</figcaption></figure>
+          <figure><img src="assets/ig-pour-show-photo.png" alt="STAIRS nightlife post"><figcaption>Pour & Show</figcaption></figure>
+          <figure><img src="assets/ig-greatest-showman.png" alt="STAIRS Instagram poster"><figcaption>Show nights</figcaption></figure>
+          <figure><img src="assets/ig-crowd.png" alt="Crowd at STAIRS"><figcaption>Night crowd</figcaption></figure>
+          <figure><img src="assets/ig-pour-show-poster.png" alt="STAIRS guest bar event poster"><figcaption>Guest bar</figcaption></figure>
+          <figure><img src="assets/ig-drysol.png" alt="STAIRS tequila event poster"><figcaption>Bar takeover</figcaption></figure>
+          <figure><img src="assets/ig-cocktail.png" alt="Cocktail at STAIRS"><figcaption>Cocktails</figcaption></figure>
+          <figure><img src="assets/ig-madlab.png" alt="STAIRS event poster"><figcaption>Creative nights</figcaption></figure>
+          <figure><img src="assets/ig-night-crowd.png" alt="Night crowd at STAIRS"><figcaption>Late energy</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="bar-section section-shell slide-section" id="bar" data-motion="up">
+      <div class="bar-head slide-content">
+        <div>
+          <div class="section-label"><span>03</span> THE BAR</div>
+          <h2>Signature pours<br><span>for the late set.</span></h2>
+          <p>Highlights from a publicly indexed STAIRS bar menu. Prices can change—use the official bar-menu link for the latest list.</p>
+        </div>
+        <a class="pill outline" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer">Full bar menu ↗</a>
+      </div>
+      <div class="cocktail-grid slide-content">
+        <article><span>01</span><h3>THE POP</h3><p>Bourbon · Amaretto · Espresso · Hazelnut · Banana · Coconut · Lime</p><strong>110K</strong></article>
+        <article><span>02</span><h3>LADIES TIME</h3><p>Gin · Tequila · Hibiscus tea · Bubble gum · Kombucha · Dragon fruit · Tonic</p><strong>115K</strong></article>
+        <article><span>03</span><h3>TIRA-MISS-U</h3><p>Vodka · Bailey's · Kahlua · Crème brûlée · Fresh milk</p><strong>115K</strong></article>
+        <article><span>04</span><h3>TIMOER KOE</h3><p>Gin · Cinnamon · Lime · Albumin · Tonic</p><strong>115K</strong></article>
+        <article><span>05</span><h3>NANA NINA</h3><p>Vodka lemongrass · Rum pandan · Lychee · Orange · Lime · Honey</p><strong>110K</strong></article>
+        <article><span>06</span><h3>RAIN & RUN</h3><p>Vodka · Tequila · Elderflower · Mango · Orange · Lime</p><strong>115K</strong></article>
+      </div>
+    </section>
+
+    <section class="menu-section section-shell slide-section" id="menu" data-motion="left">
       <div class="menu-head slide-content">
         <div>
-          <div class="section-label"><span>02</span> <span data-i18n="menuLabel">MENU</span></div>
+          <div class="section-label"><span>04</span> <span data-i18n="menuLabel">MENU</span></div>
           <h2 data-i18n="menuTitle">From brunch to late night.</h2>
-          <p class="section-intro" data-i18n="menuIntro">Menu references are compiled from STAIRS' public menu listings and Instagram-linked coverage. Prices may change.</p>
+          <p class="section-intro" data-i18n="menuIntro">Menu references are compiled from STAIRS' public menu listings. Prices may change.</p>
         </div>
-        <div class="menu-links">
-          <a class="text-link" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer" data-i18n="officialMenu">Official Menu ↗</a>
-        </div>
+        <a class="text-link" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer" data-i18n="officialMenu">Official Menu ↗</a>
       </div>
       <div class="menu-filter slide-content" id="menuFilter" aria-label="Filter menu"></div>
       <div class="menu-grid slide-content" id="menuGrid" aria-live="polite"></div>
-      <div class="menu-footer-note slide-content"><span>※</span><p data-i18n="menuDisclaimer">This is a pitching/demo website. Confirm the latest official menu and prices with STAIRS before publishing as the official site.</p></div>
     </section>
 
-    <section class="gallery section-shell slide-section" id="gallery" data-slide="gallery" data-motion="up">
+    <section class="gallery section-shell slide-section" id="gallery" data-motion="right">
       <div class="gallery-head slide-content">
-        <div class="section-label"><span>03</span> <span data-i18n="spaceLabel">SPACE & PLATES</span></div>
-        <h2 data-i18n-html="spaceTitle">Concrete by day.<br><span>Electric after dark.</span></h2>
-        <p class="section-intro" data-i18n="spaceIntro">Visual references below use publicly indexed photos associated with STAIRS, including Instagram-attributed coverage and venue listings.</p>
+        <div class="section-label"><span>05</span> SPACE & PLATES</div>
+        <h2>Concrete outside.<br><span>Electric inside.</span></h2>
       </div>
-
       <div class="gallery-slider slide-content" id="gallerySlider">
         <div class="gallery-track" id="galleryTrack"></div>
-        <div class="gallery-controls">
-          <button type="button" class="gallery-arrow" id="galleryPrev" aria-label="Previous photo">←</button>
-          <div class="gallery-dots" id="galleryDots" aria-label="Gallery slide navigation"></div>
-          <button type="button" class="gallery-arrow" id="galleryNext" aria-label="Next photo">→</button>
-        </div>
+        <div class="gallery-controls"><button type="button" class="gallery-arrow" id="galleryPrev" aria-label="Previous photo">←</button><div class="gallery-dots" id="galleryDots"></div><button type="button" class="gallery-arrow" id="galleryNext" aria-label="Next photo">→</button></div>
       </div>
     </section>
 
-    <section class="review-section section-shell slide-section" id="reviews" data-slide="reviews" data-motion="left">
-      <div class="section-label slide-content"><span>04</span> <span data-i18n="reviewLabel">WHAT PEOPLE SAY</span></div>
+    <section class="links-section section-shell slide-section" id="links" data-motion="up">
+      <div class="links-head slide-content">
+        <div class="section-label"><span>06</span> ALL ACCESS</div>
+        <h2>Everything from<br><span>the official Linktree.</span></h2>
+        <p>I’ve surfaced every Linktree destination as a website shortcut. Where the public crawler doesn’t expose the hidden destination, the button safely opens the official Linktree so the visitor lands on the correct live card.</p>
+      </div>
+      <div class="quick-links slide-content">
+        <a data-setting-link="workFromStairsUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer"><span>WORK</span><b>Work From STAIRS</b><i>↗</i></a>
+        <a data-setting-link="allRedPromoUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer"><span>PROMO</span><b>All Red Daily Promo</b><i>↗</i></a>
+        <a data-setting-link="gofoodUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer"><span>ORDER</span><b>GoFood</b><i>↗</i></a>
+        <a data-setting-link="grabfoodUrl" href="https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE" target="_blank" rel="noreferrer"><span>ORDER</span><b>GrabFood / Grab</b><i>↗</i></a>
+        <a data-setting-link="foodMenuUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer"><span>FOOD</span><b>STAIRS Menu Book</b><i>↗</i></a>
+        <a data-setting-link="barMenuUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer"><span>BAR</span><b>STAIRS Bar Menu</b><i>↗</i></a>
+        <a data-setting-link="tableBookingUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer"><span>BOOK</span><b>Table Booking</b><i>↗</i></a>
+        <a data-setting-link="venueReservationUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer"><span>EVENT</span><b>Venue Reservation</b><i>↗</i></a>
+        <a data-setting-link="mapsUrl" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/" target="_blank" rel="noreferrer"><span>MAP</span><b>Location</b><i>↗</i></a>
+        <a data-setting-link="instagramUrl" href="https://www.instagram.com/stairsprawirotaman/" target="_blank" rel="noreferrer"><span>SOCIAL</span><b>Instagram</b><i>↗</i></a>
+        <a data-setting-link="tiktokUrl" href="https://www.tiktok.com/@stairsprawirotaman" target="_blank" rel="noreferrer"><span>SOCIAL</span><b>TikTok</b><i>↗</i></a>
+      </div>
+    </section>
+
+    <section class="review-section section-shell slide-section" id="reviews" data-motion="left">
+      <div class="section-label slide-content"><span>07</span> WHAT PEOPLE SAY</div>
       <div class="review-layout slide-content">
-        <div class="review-score">
-          <span class="score-kicker">GOOGLE</span>
-          <strong>4.7</strong>
-          <span class="stars">★★★★★</span>
-          <p data-i18n="reviewSummary">Known for atmosphere, late-night dining, pizza, coffee and a distinctive space.</p>
-          <a class="text-link" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/" data-i18n="readGoogle">Read on Google Maps ↗</a>
-        </div>
+        <div class="review-score"><span class="score-kicker">GOOGLE</span><strong>4.7</strong><span class="stars">★★★★★</span><p>Atmosphere, food, cocktails and a distinctive space.</p><a class="text-link" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/">Read Google Maps ↗</a></div>
         <div class="review-list" id="reviewList"></div>
       </div>
     </section>
 
-    <section class="visit section-shell slide-section" id="visit" data-slide="visit" data-motion="right">
+    <section class="visit section-shell slide-section" id="visit" data-motion="right">
       <div class="visit-panel slide-content">
-        <div>
-          <div class="section-label"><span>05</span> <span data-i18n="visitLabel">VISIT</span></div>
-          <h2 data-i18n-html="visitTitle">Meet us<br>on the steps.</h2>
-        </div>
-        <div class="visit-info">
-          <p class="label" data-i18n="address">ADDRESS</p>
-          <p data-setting="location">Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153</p>
-          <p class="label" data-i18n="hours">HOURS</p>
-          <p data-setting="openingHours">Sat–Sun 11.00 — 02.00 · Mon–Fri 11.00 — 01.00</p>
-          <p class="label" data-i18n="phone">PHONE</p>
-          <p data-setting="phone">+62 852-1565-5565</p>
-          <div class="visit-actions">
-            <a class="pill" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/" data-i18n="directions">Get Directions</a>
-            <a class="text-link" data-setting-link="instagramUrl" target="_blank" rel="noreferrer" href="https://www.instagram.com/stairsprawirotaman/">Instagram ↗</a>
-          </div>
-        </div>
+        <div><div class="section-label"><span>08</span> VISIT</div><h2>Come for dinner.<br><span>Stay for the night.</span></h2></div>
+        <div class="visit-info"><p class="label">ADDRESS</p><p data-setting="location">Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153</p><p class="label">HOURS</p><p data-setting="openingHours">Mon–Fri 11.00 — 01.00 · Sat–Sun 11.00 — 02.00</p><p class="label">PHONE</p><p data-setting="phone">+62 852-1565-5565</p><div class="visit-actions"><a class="pill" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/">Directions</a><a class="text-link" data-setting-link="instagramUrl" target="_blank" rel="noreferrer" href="https://www.instagram.com/stairsprawirotaman/">Instagram ↗</a></div></div>
       </div>
     </section>
   </main>
 
-  <footer class="footer section-shell">
-    <div class="footer-logo">STAIRS</div>
-    <div class="footer-copy">
-      <p>Prawirotaman · Yogyakarta</p>
-      <small data-i18n="demoCredit">Demo concept. Public venue/menu references are used for pitching only; replace with licensed official assets before production.</small>
-    </div>
-    <a href="admin.html" class="admin-entry" aria-label="Admin dashboard">Admin</a>
-  </footer>
+  <footer class="footer section-shell"><div class="footer-logo">STAIRS</div><div><p>Global-inspired · Food · Cocktails · Late Nights</p><small>Demo concept built from public venue/menu references and the Instagram grid supplied for this pitch.</small></div><a href="admin.html" class="admin-entry">Admin</a></footer>
 
-  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-    <button type="button" class="mobile-close" aria-label="Tutup menu">×</button>
-    <a href="#story" data-i18n="navStory">Story</a>
-    <a href="#menu" data-i18n="navMenu">Menu</a>
-    <a href="#gallery" data-i18n="navSpace">Space</a>
-    <a href="#visit" data-i18n="navVisit">Visit</a>
-    <div class="mobile-controls">
-      <button type="button" data-mobile-lang>Bahasa / English</button>
-      <button type="button" data-mobile-theme>Dark / Light</button>
-    </div>
-  </div>
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true"><button type="button" class="mobile-close" aria-label="Tutup menu">×</button><a href="#night">After Dark</a><a href="#bar">Bar</a><a href="#menu">Menu</a><a href="#feed">Feed</a><a href="#links">Links</a><a href="#visit">Visit</a><div class="mobile-controls"><button type="button" data-mobile-lang>Bahasa / English</button><button type="button" data-mobile-theme>Dark / Light</button></div></div>
 
-  <script src="app.js?v=3.2"></script>
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>
