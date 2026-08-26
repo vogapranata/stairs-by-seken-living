@@ -371,6 +371,7 @@
       </article>`;
     }).join('') || `<p class="empty-state">${language === 'id' ? 'Belum ada menu di kategori ini.' : 'No menu items in this category yet.'}</p>`;
     bindImageFallbacks(grid);
+    requestAnimationFrame(() => { const viewport = $('#menuCarouselViewport'); if (viewport) viewport.scrollTo({left:0,behavior:'auto'}); updateMenuCarouselControls(); });
 
     if (status) {
       const total = activeCategory === 'Featured' ? data.menu.length : data.menu.filter(item => item.category === activeCategory).length;
@@ -748,6 +749,105 @@
   }
 
 
+
+  function updateMenuCarouselControls() {
+    const viewport = $('#menuCarouselViewport');
+    const track = $('#menuGrid');
+    const progress = $('#menuCarouselProgress');
+    const count = $('#menuCarouselCount');
+    const prev = $('#menuCarouselPrev');
+    const next = $('#menuCarouselNext');
+    if (!viewport || !track || !progress || !count || !prev || !next) return;
+
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const ratio = max > 1 ? Math.max(0, Math.min(1, viewport.scrollLeft / max)) : 0;
+    const cards = $$('.menu-card', track);
+    const card = cards[0];
+    const step = card ? card.getBoundingClientRect().width + 16 : Math.max(viewport.clientWidth,1);
+    const current = Math.min(cards.length, Math.floor((viewport.scrollLeft + step * .42) / Math.max(step,1)) + 1);
+
+    const visible = Math.max(1, Math.round(viewport.clientWidth / Math.max(step,1)));
+    const thumbWidth = Math.min(100, Math.max(22, visible / Math.max(cards.length,1) * 100));
+    progress.style.width = `${thumbWidth}%`;
+    progress.style.transform = `translateX(${ratio * ((100 / Math.max(thumbWidth,1)) * (100-thumbWidth))}%)`;
+    count.textContent = `${String(current).padStart(2,'0')} / ${String(Math.max(cards.length,1)).padStart(2,'0')}`;
+    prev.disabled = viewport.scrollLeft <= 3;
+    next.disabled = viewport.scrollLeft >= max - 3;
+  }
+
+  function initMenuCarousel() {
+    const viewport = $('#menuCarouselViewport');
+    const prev = $('#menuCarouselPrev');
+    const next = $('#menuCarouselNext');
+    if (!viewport || !prev || !next) return;
+
+    const move = direction => {
+      const amount = Math.max(240, viewport.clientWidth * .92);
+      viewport.scrollBy({left: direction * amount, behavior: reduceMotion ? 'auto' : 'smooth'});
+    };
+    prev.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    viewport.addEventListener('scroll', updateMenuCarouselControls, {passive:true});
+    window.addEventListener('resize', updateMenuCarouselControls, {passive:true});
+    requestAnimationFrame(updateMenuCarouselControls);
+  }
+
+  function initMyntScrollMotion() {
+    if (reduceMotion) return;
+    const sections = $$('.slide-section');
+    if (!sections.length) return;
+    document.documentElement.classList.remove('motion-ready');
+    document.documentElement.classList.add('mynt-motion');
+
+    const microSelectors = '.feed-track figure,.cocktail-grid article,.quick-links a,.review-card';
+    let raf = 0;
+    const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
+    const smooth = t => t * t * (3 - 2 * t);
+
+    const draw = () => {
+      raf = 0;
+      const vh = Math.max(window.innerHeight,1);
+
+      sections.forEach((section, sectionIndex) => {
+        const rect = section.getBoundingClientRect();
+        const enterRaw = clamp((vh - rect.top) / Math.max(vh * .62,1), 0, 1);
+        const exitRaw = clamp(rect.bottom / Math.max(vh * .44,1), 0, 1);
+        const p = smooth(Math.min(enterRaw, exitRaw));
+        const y = (1-p) * 58;
+        const scale = .968 + p * .032;
+        const opacity = .34 + p * .66;
+
+        section.style.setProperty('--scene-p', p.toFixed(4));
+        section.style.setProperty('--scene-y', `${y.toFixed(2)}px`);
+        section.style.setProperty('--scene-scale', scale.toFixed(4));
+        section.style.setProperty('--scene-opacity', opacity.toFixed(4));
+
+        $$('.slide-content:not([data-kinetic])', section).forEach((item,index) => {
+          const delay = Math.min(.24, index * .055);
+          const local = smooth(clamp((p - delay) / Math.max(1-delay,.001), 0, 1));
+          const itemY = (1-local) * (28 + index*5);
+          const itemScale = .982 + local * .018;
+          item.style.setProperty('--item-y', `${itemY.toFixed(2)}px`);
+          item.style.setProperty('--item-scale', itemScale.toFixed(4));
+          item.style.setProperty('--item-opacity', (.20 + local*.80).toFixed(4));
+        });
+
+        $$(microSelectors, section).forEach((item,index) => {
+          const stagger = (index % 6) * .035;
+          const local = smooth(clamp((p - stagger) / Math.max(1-stagger,.001), 0, 1));
+          item.style.setProperty('--micro-y', `${((1-local) * (20 + (index%3)*8)).toFixed(2)}px`);
+          item.style.setProperty('--micro-s', (.975 + local*.025).toFixed(4));
+          item.style.setProperty('--micro-o', (.24 + local*.76).toFixed(4));
+        });
+      });
+    };
+    const request = () => { if (!raf) raf = requestAnimationFrame(draw); };
+    window.addEventListener('scroll', request, {passive:true});
+    window.addEventListener('resize', request, {passive:true});
+    draw();
+  }
+
+
   function initHeaderMerge() {
     const header = $('.site-header');
     const hero = $('.hero');
@@ -934,11 +1034,12 @@
   safeRun('theme', applyTheme);
   safeRun('language', applyLanguage);
   safeRun('header merge', initHeaderMerge);
-  safeRun('slide motion', initSlideMotion);
+  safeRun('scroll scenes', initMyntScrollMotion);
   safeRun('kinetic scroll', initKineticScroll);
   safeRun('hero orbit', initHeroOrbit);
   safeRun('cursor motion', initCursorMotion);
   safeRun('feed loop', initFeedLoop);
+  safeRun('menu carousel', initMenuCarousel);
   safeRun('photo lightbox', initPhotoLightbox);
   safeRun('mobile navigation', initMobileNav);
   safeRun('gallery autoplay', startGalleryAutoplay);

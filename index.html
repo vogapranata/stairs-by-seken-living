@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.8" />
+  <link rel="stylesheet" href="styles.css?v=4.9" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -180,7 +180,17 @@
       <div class="menu-filter slide-content" id="menuFilter" aria-label="Filter menu"></div>
       <div class="menu-stage slide-content">
         <div class="menu-stage-note"><span>CMS / LIVE</span><p>Foto, harga, copy, dan kategori menu dapat diubah dari dashboard.</p></div>
-        <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+        <div class="menu-carousel">
+          <div class="menu-carousel-viewport" id="menuCarouselViewport">
+            <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+          </div>
+          <div class="menu-carousel-controls" aria-label="Menu carousel controls">
+            <button type="button" class="menu-carousel-arrow" id="menuCarouselPrev" aria-label="Previous menu">←</button>
+            <div class="menu-carousel-progress"><i id="menuCarouselProgress"></i></div>
+            <span class="menu-carousel-count" id="menuCarouselCount">01 / 01</span>
+            <button type="button" class="menu-carousel-arrow" id="menuCarouselNext" aria-label="Next menu">→</button>
+          </div>
+        </div>
       </div>
       <div class="menu-compact-footer slide-content">
         <p id="menuCompactStatus">Menampilkan pilihan menu.</p>
@@ -269,6 +279,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=4.8"></script>
+  <script src="app.js?v=4.9"></script>
 </body>
 </html>

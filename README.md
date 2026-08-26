@@ -1,49 +1,16 @@
-# STAIRS at Prawirotaman — v4.8 Scroll Merge Hero
+# STAIRS v4.9 — Transparent Merge + Scroll Motion + Menu Rail
 
-Static HTML/CSS/JavaScript concept website for pitching STAIRS at Prawirotaman.
+Perubahan utama:
+- Navbar scroll-merge sekarang glass / transparan, bukan pill putih solid.
+- Animasi seluruh section diganti menjadi continuous scroll-progress motion: posisi, scale, dan opacity mengikuti scroll secara halus.
+- Elemen di dalam section mendapatkan micro-stagger saat masuk/keluar viewport.
+- Menu diubah menjadi horizontal collectible-card carousel seperti referensi: foto bertumpuk, 4 kartu desktop, swipe di mobile, tombol prev/next, progress dan counter.
+- Menu tetap tersambung ke CMS: nama, harga, kategori, deskripsi, foto tetap berasal dari data dashboard.
+- Klik foto menu tetap membuka popup/lightbox animasi.
+- Hero orbit, CMS, dark/light mode, bilingual, dan kinetic photo sections tetap dipertahankan.
 
-## v4.5 changes
-
-- Hero orbit now follows mouse position with inertial rotation, center drift, ellipse tilt and stronger front/back depth.
-- Orbit keeps a slow autonomous loop when idle, then mouse movement becomes the dominant control.
-- Center core is visually lighter so the orbit keeps the open negative-space feeling of the reference video.
-- Added one more STAIRS nightlife image to make the ring denser.
-
-## v4.4 changes
-- Kinetic scroll motion inspired by the supplied reference video: menu photos, bar visuals, gallery and location imagery drift/scale subtly with scroll.
-- Menu cards now include photos. Public STAIRS/Instagram assets are used where available; generic food imagery is used as a clearly replaceable demo fallback when an exact official photo is not available.
-- Instagram/feed section is now driven by the same CMS media collection as the gallery.
-- Admin is upgraded into a lightweight browser CMS: edit menu, menu photos, media, reviews, page/site content and links.
-- Menu and gallery editors support image URL or local image upload. Uploads are compressed and stored in browser localStorage for this demo.
-- Appearance panel can change display font, body font, red accent and night-blue accent without editing code.
-- Supported web fonts: Bricolage Grotesque, Manrope, Space Grotesk, Plus Jakarta Sans, DM Sans, Sora, Outfit and Syne.
-- CMS JSON export/import/reset tools added.
-- Dashboard remains intentionally static/no animation.
-
-## Admin
-Open `/admin` or `admin.html`.
-Demo password: `stairs`
-
-## Important CMS limitation
-This is a localStorage CMS demo. Changes are stored only in the browser/device where they were made. For an official multi-user website, migrate the CMS data and media to Supabase or another hosted database/storage solution.
-
-## Deployment
-Static project; Vercel can deploy directly from the GitHub repository. No build command or environment variable is required.
-
-
-## v4.8 — Scroll Merge Header
-- Navbar morphs from a full-width top bar into a rounded floating pill while scrolling into the hero.
-- Hero sits in a rounded visual stage and visually merges behind the docked navigation.
-- Scroll morph is continuous (width, top offset, height, radius and hero lift), not only a sticky class toggle.
-- Responsive mobile merge behavior included.
-
-
-## v4.8 Photo Popup
-Semua foto di menu, feed, bar, gallery, dan lokasi dapat diklik untuk membuka lightbox animasi. Visual hero/orbit sengaja dikecualikan agar interaksi orbit tetap fokus. Popup dapat ditutup lewat tombol ×, klik backdrop/foto, atau Esc.
-
-
-## v4.8
-- Added a title and description to every non-hero photo.
-- Photo popup now shows title, description, and source/credit.
-- Feed captions use Gallery CMS title/caption/source fields.
-- Menu popup descriptions use each Menu CMS description.
+Update:
+1. Extract ZIP update.
+2. Jalankan UPDATE-STAIRS-V4.9.bat.
+3. Tunggu Vercel status READY.
+4. Refresh dengan Ctrl+F5.
