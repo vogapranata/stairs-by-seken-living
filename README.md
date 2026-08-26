@@ -1,36 +1,36 @@
-# STAIRS — Website Concept + Demo CMS Dashboard
+# STAIRS at Prawirotaman — Website Demo v3.1
 
-Static demo website inspired by STAIRS by Seken Living, Prawirotaman.
+Website pitching/demo untuk STAIRS at Prawirotaman. Project ini static HTML/CSS/JavaScript dan siap di-deploy di Vercel.
 
-## Run locally
+## Yang berubah di v3.1
 
-Because the site uses localStorage for the demo CMS, run it through a small local server rather than double-clicking the file.
+- Menu diperluas menjadi 58 item referensi publik: breakfast, bites, pizza, salads, soup & comfort, pasta, mains, coffee, tea, fermented drinks, non-coffee, dan cocktails.
+- Bahasa website Indonesia / English.
+- Dark / Light mode.
+- Setiap section website memakai slide-in motion saat masuk viewport.
+- Gallery memakai slider dengan auto-slide, previous/next, dots, dan active-slide motion.
+- Hero memakai motion/parallax pada perangkat pointer yang mendukung.
+- Dashboard admin dibuat statis tanpa animasi.
+- Dashboard tetap menyediakan bahasa ID/EN dan dark/light mode untuk UI admin.
+- Gallery demo memakai referensi foto publik yang terkait dengan Google Maps listing dan Instagram @stairsprawirotaman.
+- Jam buka default mengikuti public listing terbaru yang diperiksa saat demo disiapkan: Senin–Jumat 11.00–01.00, Sabtu–Minggu 11.00–02.00.
 
-### Python
-```bash
-python -m http.server 8080
-```
-Then open:
-- Website: http://localhost:8080
-- Dashboard: http://localhost:8080/admin.html
+## Dashboard
 
-Demo dashboard password: `stairs`
+Buka `/admin` atau `/admin.html`.
 
-## Deploy to Vercel
+Password demo: `stairs`
 
-This project is static and does not require a build step.
+Dashboard dapat mengatur menu, galeri, review, headline bilingual, jam buka, alamat, nomor telepon, Maps URL, Instagram URL, reservation URL, default bahasa, dan default theme.
 
-1. Upload this folder to a GitHub repository.
-2. Import the repository in Vercel.
-3. Framework Preset: `Other`.
-4. Build Command: leave empty.
-5. Output Directory: leave empty / project root.
-6. Deploy.
+Data demo disimpan melalui `localStorage`, jadi perubahan hanya berlaku pada browser/perangkat yang melakukan edit. Untuk website resmi, migrasikan CMS ke Supabase/database agar perubahan berlaku untuk semua pengunjung.
 
-## Important production note
+## Catatan menu
 
-The current dashboard uses browser `localStorage`, which is ideal for a pitch/demo but not for a real multi-device admin system. For production, replace the storage layer with Supabase (database + storage + authentication). The UI and CRUD flow can remain the same.
+Menu pada demo dirangkum dari menu publik/Instagram-linked coverage dan sumber kuliner yang mengutip daftar menu STAIRS. Karena menu dan harga restoran dapat berubah, item yang belum memiliki harga yang dapat diverifikasi ditampilkan sebagai `—`. Tombol `Official Menu` mengarah ke Linktree resmi STAIRS yang memiliki `STAIRS MENU BOOK` dan `STAIRS BAR MENU`.
 
-## Content source note
+## Catatan foto
 
-Some sample menu names/prices and imagery are based on publicly available references and are meant for a visual prototype. Verify menu, prices, operating hours, images, and reservation/contact details directly with STAIRS before publishing as an official website.
+Foto pada versi pitching menggunakan referensi visual publik dari listing/review Google Maps dan liputan yang mengkreditkan Instagram STAIRS. Ini cocok untuk prototype internal/pitching. Sebelum website dijadikan official production site, unduh/upload aset resmi yang diberikan pemilik STAIRS dan ganti hotlink eksternal agar hak penggunaan dan reliability aset terjamin.
+
+Lihat `SOURCES.md` untuk daftar referensi.

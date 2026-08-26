@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" data-admin-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,20 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="admin.css?v=3.1" />
 </head>
 <body>
-  <div class="admin-noise"></div>
   <div class="login-screen" id="loginScreen">
-    <div class="login-art" aria-hidden="true">
-      <div class="login-step s1"></div><div class="login-step s2"></div><div class="login-step s3"></div><div class="login-step s4"></div>
-    </div>
     <form class="login-card" id="loginForm">
       <div class="login-brand"><span class="mini-stairs"><i></i><i></i><i></i></span><strong>STAIRS</strong><small>CONTROL ROOM</small></div>
-      <h1>Welcome upstairs.</h1>
-      <p>Demo dashboard untuk mengatur konten website.</p>
+      <h1>Content dashboard.</h1>
+      <p>Kelola konten demo website STAIRS tanpa animasi dashboard yang mengganggu.</p>
       <label>Password demo<input id="demoPassword" type="password" placeholder="Ketik: stairs" autocomplete="current-password" required></label>
-      <button type="submit" class="primary-btn">Enter dashboard <span>↗</span></button>
+      <button type="submit" class="primary-btn">Enter dashboard</button>
       <span class="login-hint">Password demo: <b>stairs</b></span>
       <p class="form-message" id="loginMessage" aria-live="polite"></p>
     </form>
@@ -30,15 +26,15 @@
     <aside class="sidebar">
       <a class="side-brand" href="index.html" target="_blank"><span class="mini-stairs"><i></i><i></i><i></i></span><span><b>STAIRS</b><small>CONTROL ROOM</small></span></a>
       <nav class="side-nav" id="sideNav">
-        <button type="button" class="nav-item active" data-view="overview"><span>⌂</span>Overview</button>
-        <button type="button" class="nav-item" data-view="menu"><span>≡</span>Menu</button>
-        <button type="button" class="nav-item" data-view="gallery"><span>◇</span>Gallery</button>
-        <button type="button" class="nav-item" data-view="reviews"><span>☆</span>Reviews</button>
-        <button type="button" class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
+        <button type="button" class="nav-item active" data-view="overview"><span>⌂</span><b data-admin-i18n="overview">Overview</b></button>
+        <button type="button" class="nav-item" data-view="menu"><span>≡</span><b data-admin-i18n="menu">Menu</b></button>
+        <button type="button" class="nav-item" data-view="gallery"><span>◇</span><b data-admin-i18n="gallery">Gallery</b></button>
+        <button type="button" class="nav-item" data-view="reviews"><span>☆</span><b data-admin-i18n="reviews">Reviews</b></button>
+        <button type="button" class="nav-item" data-view="settings"><span>⚙</span><b data-admin-i18n="settings">Settings</b></button>
       </nav>
       <div class="sidebar-bottom">
-        <a href="index.html" target="_blank" class="ghost-btn">View website ↗</a>
-        <button type="button" class="logout-btn" id="logoutBtn">Exit demo</button>
+        <a href="index.html" target="_blank" class="ghost-btn" data-admin-i18n="viewWebsite">View website ↗</a>
+        <button type="button" class="logout-btn" id="logoutBtn" data-admin-i18n="logout">Exit demo</button>
       </div>
     </aside>
 
@@ -46,60 +42,79 @@
       <header class="topbar">
         <button class="mobile-side-toggle" type="button" id="mobileSideToggle" aria-label="Toggle sidebar">☰</button>
         <div><span class="top-kicker">STAIRS / CONTENT SYSTEM</span><h1 id="viewTitle">Overview</h1></div>
-        <div class="top-actions"><span class="live-dot"><i></i> Live preview</span><button class="icon-btn" id="refreshPreview" type="button" title="Refresh preview">↻</button></div>
+        <div class="top-actions">
+          <div class="admin-ui-controls">
+            <button type="button" id="adminLangToggle">ID / EN</button>
+            <button type="button" id="adminThemeToggle">Dark / Light</button>
+          </div>
+          <button class="icon-btn" id="refreshPreview" type="button" title="Refresh content">↻</button>
+        </div>
       </header>
 
       <main class="admin-content">
         <section class="view active" data-view-panel="overview">
-          <div class="welcome-banner stagger">
-            <div><span class="micro">GOOD AFTERNOON</span><h2>Everything is<br><em>one step away.</em></h2><p>Kelola menu, galeri, review dan informasi utama tanpa mengubah kode.</p></div>
-            <div class="stair-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="welcome-banner">
+            <div><span class="micro">STAIRS WEBSITE</span><h2 data-admin-i18n="dashboardTitle">Content at a glance.</h2><p data-admin-i18n="dashboardIntro">Semua perubahan demo tersimpan di browser ini dan langsung dibaca website.</p></div>
+            <a href="index.html" target="_blank" class="primary-btn" data-admin-i18n="openSite">Open website ↗</a>
           </div>
 
           <div class="stat-grid">
-            <article class="stat-card stagger"><span>MENU ITEMS</span><strong id="menuCount">0</strong><small>editable content</small></article>
-            <article class="stat-card stagger"><span>GALLERY</span><strong id="galleryCount">0</strong><small>image / video cards</small></article>
-            <article class="stat-card stagger"><span>REVIEWS</span><strong id="reviewCount">0</strong><small>curated guest notes</small></article>
-            <article class="stat-card accent-card stagger"><span>SITE STATUS</span><strong>LIVE</strong><small>local demo mode</small></article>
+            <article class="stat-card"><span>MENU ITEMS</span><strong id="menuCount">0</strong><small data-admin-i18n="editableContent">editable content</small></article>
+            <article class="stat-card"><span>GALLERY</span><strong id="galleryCount">0</strong><small data-admin-i18n="visualRefs">visual references</small></article>
+            <article class="stat-card"><span>REVIEWS</span><strong id="reviewCount">0</strong><small data-admin-i18n="curatedNotes">curated notes</small></article>
+            <article class="stat-card accent-card"><span>SITE MODE</span><strong>DEMO</strong><small>localStorage CMS</small></article>
           </div>
 
           <div class="overview-grid">
-            <article class="panel stagger">
-              <div class="panel-head"><div><span class="micro">CONTENT HEALTH</span><h3>Website readiness</h3></div><span class="score-badge">92%</span></div>
-              <div class="health-list"><div><span>Menu content</span><i style="--w:96%"></i></div><div><span>Visual gallery</span><i style="--w:86%"></i></div><div><span>Location & hours</span><i style="--w:100%"></i></div><div><span>Reservation flow</span><i style="--w:84%"></i></div></div>
+            <article class="panel">
+              <div class="panel-head"><div><span class="micro">SITE FEATURES</span><h3 data-admin-i18n="featureStatus">Feature status</h3></div></div>
+              <ul class="feature-list">
+                <li><b>✓</b><span data-admin-i18n="featureLanguage">Bahasa Indonesia / English</span></li>
+                <li><b>✓</b><span data-admin-i18n="featureTheme">Dark / Light mode</span></li>
+                <li><b>✓</b><span data-admin-i18n="featureSlides">Animated website sections & gallery slides</span></li>
+                <li><b>✓</b><span data-admin-i18n="featureResponsive">Responsive mobile layout</span></li>
+                <li><b>✓</b><span data-admin-i18n="featureAdminStatic">Dashboard tanpa animasi</span></li>
+              </ul>
             </article>
-            <article class="panel preview-panel stagger">
-              <div class="panel-head"><div><span class="micro">LIVE PREVIEW</span><h3>Homepage snapshot</h3></div><a href="index.html" target="_blank">Open ↗</a></div>
-              <div class="mini-preview"><div class="preview-glow"></div><div class="preview-copy"><small>PRAWIROTAMAN</small><strong>STEP OUT<br>OF ORDINARY.</strong></div><div class="preview-steps"><i></i><i></i><i></i><i></i></div></div>
+            <article class="panel">
+              <div class="panel-head"><div><span class="micro">CONTENT NOTE</span><h3 data-admin-i18n="sourcePolicy">Photo & menu references</h3></div></div>
+              <p class="panel-text" data-admin-i18n="sourceText">Untuk demo, visual memakai foto publik yang terindeks dan terkait dengan STAIRS/Instagram. Sebelum produksi resmi, ganti dengan aset milik STAIRS atau aset yang sudah diizinkan.</p>
             </article>
           </div>
         </section>
 
         <section class="view" data-view-panel="menu">
-          <div class="section-toolbar stagger"><div><span class="micro">FOOD & BEVERAGE</span><h2>Menu management</h2><p>Tambah, edit, atau hapus item yang tampil di website.</p></div><button type="button" class="primary-btn" id="addMenuBtn">+ Add menu</button></div>
-          <div class="table-panel stagger"><div class="table-scroll"><table><thead><tr><th>Item</th><th>Category</th><th>Price</th><th>Description</th><th></th></tr></thead><tbody id="menuTable"></tbody></table></div></div>
+          <div class="section-toolbar"><div><span class="micro">FOOD & BEVERAGE</span><h2 data-admin-i18n="menuManagement">Menu management</h2><p data-admin-i18n="menuDesc">Tambah, edit, atau hapus menu bilingual.</p></div><button type="button" class="primary-btn" id="addMenuBtn" data-admin-i18n="addMenu">+ Add menu</button></div>
+          <div class="table-panel"><div class="table-scroll"><table><thead><tr><th>Item</th><th>Category</th><th>Price</th><th>Description ID</th><th>Description EN</th><th></th></tr></thead><tbody id="menuTable"></tbody></table></div></div>
         </section>
 
         <section class="view" data-view-panel="gallery">
-          <div class="section-toolbar stagger"><div><span class="micro">VISUAL SYSTEM</span><h2>Gallery</h2><p>Gunakan URL foto/video agar ringan dan aman untuk demo.</p></div><button type="button" class="primary-btn" id="addGalleryBtn">+ Add media</button></div>
+          <div class="section-toolbar"><div><span class="micro">VISUAL SYSTEM</span><h2 data-admin-i18n="galleryManagement">Gallery</h2><p data-admin-i18n="galleryDesc">Kelola foto/video, judul bilingual, caption, dan sumber aset.</p></div><button type="button" class="primary-btn" id="addGalleryBtn" data-admin-i18n="addMedia">+ Add media</button></div>
           <div class="admin-gallery" id="adminGallery"></div>
         </section>
 
         <section class="view" data-view-panel="reviews">
-          <div class="section-toolbar stagger"><div><span class="micro">SOCIAL PROOF</span><h2>Review notes</h2><p>Review demo disimpan manual. Untuk Google Reviews realtime perlu integrasi API.</p></div><button type="button" class="primary-btn" id="addReviewBtn">+ Add review</button></div>
+          <div class="section-toolbar"><div><span class="micro">SOCIAL PROOF</span><h2 data-admin-i18n="reviewManagement">Review notes</h2><p data-admin-i18n="reviewDesc">Review demo disimpan manual. Google Reviews realtime memerlukan API.</p></div><button type="button" class="primary-btn" id="addReviewBtn" data-admin-i18n="addReview">+ Add review</button></div>
           <div class="review-admin-list" id="adminReviewList"></div>
         </section>
 
         <section class="view" data-view-panel="settings">
-          <div class="section-toolbar stagger"><div><span class="micro">GLOBAL</span><h2>Site settings</h2><p>Kontrol headline, jam buka, lokasi, Maps, Instagram, dan reservasi.</p></div><button type="button" class="primary-btn" id="saveSettingsBtn">Save changes</button></div>
+          <div class="section-toolbar"><div><span class="micro">GLOBAL</span><h2 data-admin-i18n="siteSettings">Site settings</h2><p data-admin-i18n="settingsDesc">Kontrol informasi utama dan default bahasa/theme website.</p></div><button type="button" class="primary-btn" id="saveSettingsBtn" data-admin-i18n="saveChanges">Save changes</button></div>
           <form class="settings-grid" id="settingsForm">
-            <label class="field-card stagger"><span>Hero title <small>HTML allowed for red span</small></span><textarea name="heroTitle" rows="3"></textarea></label>
-            <label class="field-card stagger"><span>Hero subtitle</span><textarea name="heroSubtitle" rows="3"></textarea></label>
-            <label class="field-card stagger"><span>Opening hours</span><input name="openingHours"></label>
-            <label class="field-card stagger"><span>Location</span><textarea name="location" rows="2"></textarea></label>
-            <label class="field-card stagger"><span>Google Maps URL</span><input name="mapsUrl" type="url"></label>
-            <label class="field-card stagger"><span>Instagram URL</span><input name="instagramUrl" type="url"></label>
-            <label class="field-card stagger"><span>Reservation URL</span><input name="reservationUrl" type="url"></label>
+            <label class="field-card"><span>Hero title — Indonesia <small>HTML allowed</small></span><textarea name="heroTitleId" rows="3"></textarea></label>
+            <label class="field-card"><span>Hero title — English <small>HTML allowed</small></span><textarea name="heroTitleEn" rows="3"></textarea></label>
+            <label class="field-card"><span>Hero subtitle — Indonesia</span><textarea name="heroSubtitleId" rows="3"></textarea></label>
+            <label class="field-card"><span>Hero subtitle — English</span><textarea name="heroSubtitleEn" rows="3"></textarea></label>
+            <label class="field-card"><span>Opening hours short</span><input name="openingHoursShort"></label>
+            <label class="field-card"><span>Opening hours — Indonesia</span><input name="openingHoursId"></label>
+            <label class="field-card"><span>Opening hours — English</span><input name="openingHoursEn"></label>
+            <label class="field-card"><span>Location</span><textarea name="location" rows="2"></textarea></label>
+            <label class="field-card"><span>Phone</span><input name="phone"></label>
+            <label class="field-card"><span>Google Maps URL</span><input name="mapsUrl" type="url"></label>
+            <label class="field-card"><span>Instagram URL</span><input name="instagramUrl" type="url"></label>
+            <label class="field-card"><span>Reservation / Linktree URL</span><input name="reservationUrl" type="url"></label>
+            <label class="field-card"><span>Default website language</span><select name="defaultLanguage"><option value="id">Indonesia</option><option value="en">English</option></select></label>
+            <label class="field-card"><span>Default website theme</span><select name="defaultTheme"><option value="dark">Dark</option><option value="light">Light</option></select></label>
           </form>
         </section>
       </main>
@@ -114,8 +129,7 @@
     </form>
   </dialog>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-icon">✓</span><div><b>Saved</b><small>Website content updated.</small></div></div>
-
-  <script src="admin.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><div><b>Saved</b><small>Website content updated.</small></div></div>
+  <script src="admin.js?v=3.1"></script>
 </body>
 </html>
