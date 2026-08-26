@@ -52,3 +52,69 @@ h2{font-weight:650;letter-spacing:-.035em}
 @media(max-width:620px){.menu-stage-note{align-items:flex-start;flex-direction:column}.menu-card-body{grid-template-columns:30px 1fr}.menu-card-body>strong{grid-column:2}.bar-kinetic{height:260px}.kinetic-card-a{width:116px;left:4%}.kinetic-card-b{width:126px;right:4%}.kinetic-card-c{width:145px;left:32%}.visit-kinetic{min-height:390px}.location-main{width:64%;left:17%}.location-event{width:34%}.location-crowd{width:42%}.location-pin{right:4%;bottom:4%;min-width:150px}}
 @media(prefers-reduced-motion:reduce){[data-kinetic]{transform:none!important}}
 .feed-track figure.media-broken{display:grid;place-items:end start;background:linear-gradient(145deg,var(--blue),#111 48%,var(--red2));min-height:320px}.feed-track figure.media-broken:before{content:'STAIRS / INSTAGRAM';align-self:center;justify-self:center;font:700 15px var(--font-display);letter-spacing:.14em;color:#fff;opacity:.7}.feed-track figure.media-broken figcaption{width:100%}
+
+/* v4.5 — reference-matched interactive orbit */
+.orbit-stage{
+  --orbit-cx:0px;
+  --orbit-cy:0px;
+  --orbit-tilt:0deg;
+  --orbit-lean:0deg;
+  cursor:crosshair;
+  perspective:1100px;
+}
+.orbit-stage:after{
+  left:calc(50% + var(--orbit-cx));
+  top:calc(50% + var(--orbit-cy));
+  width:230px;
+  height:230px;
+  opacity:.72;
+  transition:opacity .25s ease;
+}
+.orbit-stage.is-orbiting:after{opacity:1}
+.orbit-halo{
+  left:calc(50% + var(--orbit-cx));
+  top:calc(50% + var(--orbit-cy));
+  opacity:.32;
+  will-change:left,top,transform;
+}
+.orbit-halo-a{transform:translate(-50%,-50%) rotate(calc(-8deg + var(--orbit-tilt)))}
+.orbit-halo-b{transform:translate(-50%,-50%) rotate(calc(18deg + var(--orbit-lean)));opacity:.22}
+.orbit-core{
+  left:calc(50% + var(--orbit-cx));
+  top:calc(50% + var(--orbit-cy));
+  width:132px;
+  height:102px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  text-align:center;
+  align-items:center;
+  justify-content:center;
+  transform:translate(-50%,-50%) scale(var(--core-scale,1));
+  opacity:.86;
+  pointer-events:none;
+  mix-blend-mode:normal;
+  will-change:left,top,transform;
+}
+.orbit-core:before{display:none}
+.orbit-core span{font-size:8px;letter-spacing:.25em;color:var(--muted)}
+.orbit-core strong{font-size:24px;line-height:.88;margin:6px 0;color:var(--text);text-shadow:0 0 28px color-mix(in srgb,var(--red) 18%,transparent)}
+.orbit-core small{font-size:6px;color:var(--muted)}
+.orbit-card{
+  border:1px solid color-mix(in srgb,var(--text) 17%,transparent);
+  border-radius:15px;
+  box-shadow:0 14px 34px rgba(0,0,0,.30);
+  transition:box-shadow .22s ease;
+}
+.orbit-card.orbit-portrait,.orbit-card.orbit-square,.orbit-card.orbit-mini{border-color:color-mix(in srgb,var(--text) 17%,transparent)}
+.orbit-stage.is-orbiting .orbit-card{box-shadow:0 19px 44px rgba(0,0,0,.39)}
+.orbit-secondary{width:112px!important}
+.orbit-label-top b{letter-spacing:.08em}
+@media (max-width:720px){
+  .orbit-stage{cursor:default}
+  .orbit-core{width:108px;height:82px}
+  .orbit-core strong{font-size:20px}
+  .orbit-secondary{width:86px!important}
+}

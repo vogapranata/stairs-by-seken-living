@@ -1,6 +1,13 @@
-# STAIRS at Prawirotaman — v4.4 Kinetic CMS Demo
+# STAIRS at Prawirotaman — v4.5 Mouse Orbit Fix
 
 Static HTML/CSS/JavaScript concept website for pitching STAIRS at Prawirotaman.
+
+## v4.5 changes
+
+- Hero orbit now follows mouse position with inertial rotation, center drift, ellipse tilt and stronger front/back depth.
+- Orbit keeps a slow autonomous loop when idle, then mouse movement becomes the dominant control.
+- Center core is visually lighter so the orbit keeps the open negative-space feeling of the reference video.
+- Added one more STAIRS nightlife image to make the ring denser.
 
 ## v4.4 changes
 - Kinetic scroll motion inspired by the supplied reference video: menu photos, bar visuals, gallery and location imagery drift/scale subtly with scroll.

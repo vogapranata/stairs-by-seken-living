@@ -510,64 +510,190 @@
   }
 
 
+
   function initHeroOrbit() {
     const stage = $('#heroOrbit');
     if (!stage) return;
     const cards = $$('[data-orbit-card]', stage);
     if (!cards.length) return;
 
-    let frame = 0;
-    let active = true;
+    const visual = $('#heroVisual');
     const deg = Math.PI / 180;
+    let raf = 0;
+    let active = true;
+    let hovering = false;
+    let lastTime = performance.now();
 
-    const render = (time = 0) => {
+    // Orbit state: slow autonomous loop + mouse-driven camera/orbit control.
+    let orbitAngle = 0;
+    let orbitVelocity = 0;
+    let pointerAngle = 0;
+    let pointerAngleTarget = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+    let pointerXTarget = 0;
+    let pointerYTarget = 0;
+    let centerX = 0;
+    let centerY = 0;
+    let centerXTarget = 0;
+    let centerYTarget = 0;
+    let lastPointerX = null;
+    let lastPointerY = null;
+    let lastPointerAt = performance.now();
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    const setPointerTarget = (event) => {
       const rect = stage.getBoundingClientRect();
-      const rx = Math.max(118, Math.min(rect.width * .355, 238));
-      const ry = Math.max(100, Math.min(rect.height * .325, 190));
-      const motion = reduceMotion ? 0 : time * .00018;
+      if (!rect.width || !rect.height) return;
+
+      const localX = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      const localY = clamp((event.clientY - rect.top) / rect.height, 0, 1);
+      const nx = localX * 2 - 1;
+      const ny = localY * 2 - 1;
+
+      pointerXTarget = nx;
+      pointerYTarget = ny;
+
+      // Moving horizontally actually turns the ring; vertical movement changes its camera tilt.
+      pointerAngleTarget = nx * 1.18 + ny * 0.18;
+      centerXTarget = nx * Math.min(46, rect.width * .065);
+      centerYTarget = ny * Math.min(30, rect.height * .05);
+
+      const now = performance.now();
+      const elapsed = Math.max(8, now - lastPointerAt);
+      if (lastPointerX !== null && lastPointerY !== null) {
+        const dx = event.clientX - lastPointerX;
+        const dy = event.clientY - lastPointerY;
+        // Mouse velocity gives the ring a small inertial "throw", like the reference motion.
+        orbitVelocity += clamp((dx + dy * .22) / elapsed * .0048, -.010, .010);
+        orbitVelocity = clamp(orbitVelocity, -.015, .015);
+      }
+      lastPointerX = event.clientX;
+      lastPointerY = event.clientY;
+      lastPointerAt = now;
+    };
+
+    const enter = (event) => {
+      hovering = true;
+      lastPointerX = event.clientX;
+      lastPointerY = event.clientY;
+      lastPointerAt = performance.now();
+      setPointerTarget(event);
+      stage.classList.add('is-orbiting');
+    };
+
+    const leave = () => {
+      hovering = false;
+      pointerAngleTarget = 0;
+      pointerXTarget = 0;
+      pointerYTarget = 0;
+      centerXTarget = 0;
+      centerYTarget = 0;
+      lastPointerX = null;
+      lastPointerY = null;
+      stage.classList.remove('is-orbiting');
+    };
+
+    if (!reduceMotion && window.matchMedia?.('(pointer:fine)').matches) {
+      stage.addEventListener('pointerenter', enter, { passive: true });
+      stage.addEventListener('pointermove', setPointerTarget, { passive: true });
+      stage.addEventListener('pointerleave', leave, { passive: true });
+    }
+
+    const render = (time = performance.now()) => {
+      const dt = clamp(time - lastTime, 0, 34);
+      lastTime = time;
+
+      // Reference-like behavior: always gently circulating, but mouse position becomes the dominant control.
+      const autoSpeed = hovering ? .000105 : .00034;
+      orbitAngle += autoSpeed * dt + orbitVelocity * dt;
+      orbitVelocity *= Math.pow(.86, dt / 16.67);
+
+      const follow = 1 - Math.pow(.82, dt / 16.67);
+      const centerFollow = 1 - Math.pow(.86, dt / 16.67);
+      pointerAngle += (pointerAngleTarget - pointerAngle) * follow;
+      pointerX += (pointerXTarget - pointerX) * follow;
+      pointerY += (pointerYTarget - pointerY) * follow;
+      centerX += (centerXTarget - centerX) * centerFollow;
+      centerY += (centerYTarget - centerY) * centerFollow;
+
+      const rect = stage.getBoundingClientRect();
+      const rx = Math.max(124, Math.min(rect.width * .35, 242));
+      const ryBase = Math.max(100, Math.min(rect.height * .31, 186));
+      // Mouse Y squashes / opens the ellipse slightly, giving a camera-tilt feel.
+      const ry = ryBase * (1 - Math.abs(pointerY) * .09);
+      const tilt = pointerY * .44;
+      const sideLean = pointerX * .13;
+
+      stage.style.setProperty('--orbit-cx', `${centerX.toFixed(2)}px`);
+      stage.style.setProperty('--orbit-cy', `${centerY.toFixed(2)}px`);
+      stage.style.setProperty('--orbit-tilt', `${(pointerY * 6).toFixed(2)}deg`);
+      stage.style.setProperty('--orbit-lean', `${(pointerX * 4).toFixed(2)}deg`);
 
       cards.forEach((card, index) => {
         const base = (Number(card.dataset.angle) || index * (360 / cards.length)) * deg;
-        const radius = Math.max(.46, Math.min(1.08, Number(card.dataset.radius) || 1));
-        const angle = base + motion;
-        const x = Math.cos(angle) * rx * radius;
-        const y = Math.sin(angle) * ry * radius;
-        const depth = (Math.sin(angle) + 1) / 2;
-        const scale = .66 + depth * .48;
-        const rotation = Math.cos(angle) * 5 + (index % 2 ? 1.5 : -1.5);
-        const opacity = .60 + depth * .40;
-        const blur = (1 - depth) * .65;
+        const radius = clamp(Number(card.dataset.radius) || 1, .46, 1.10);
+        const angle = base + orbitAngle + pointerAngle;
+
+        // Elliptical ring, with a subtle mouse-controlled plane tilt.
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        const x = cos * rx * radius + centerX + sin * sideLean * 22;
+        const y = (sin * ry + cos * tilt * 52) * radius + centerY;
+
+        // Bottom/front cards are intentionally much larger, matching the showreel reference.
+        const depthPhase = Math.sin(angle + tilt * .35);
+        const depth = (depthPhase + 1) / 2;
+        const depthEase = depth * depth * (3 - 2 * depth);
+        const scale = .55 + depthEase * .72;
+        const rotation = cos * 2.2 + pointerX * 1.4 + (index % 2 ? .45 : -.45);
+        const opacity = .42 + depthEase * .58;
+        const blur = (1 - depthEase) * 1.15;
+        const brightness = .72 + depthEase * .34;
 
         card.style.setProperty('--ox', `${x.toFixed(2)}px`);
         card.style.setProperty('--oy', `${y.toFixed(2)}px`);
         card.style.setProperty('--os', scale.toFixed(3));
         card.style.setProperty('--or', `${rotation.toFixed(2)}deg`);
         card.style.opacity = opacity.toFixed(3);
-        card.style.filter = `saturate(${(.82 + depth * .34).toFixed(2)}) blur(${blur.toFixed(2)}px)`;
-        card.style.zIndex = String(8 + Math.round(depth * 34));
+        card.style.filter = `saturate(${(.78 + depthEase * .38).toFixed(2)}) brightness(${brightness.toFixed(2)}) blur(${blur.toFixed(2)}px)`;
+        card.style.zIndex = String(6 + Math.round(depthEase * 48));
       });
+
+      // Make the center label breathe with the camera instead of blocking the negative space.
+      const core = $('.orbit-core', stage);
+      if (core) {
+        core.style.setProperty('--core-scale', (1 + Math.abs(pointerX) * .025).toFixed(3));
+      }
     };
 
     if (reduceMotion) {
-      render(0);
+      render(performance.now());
+      cards.forEach(card => {
+        card.style.filter = 'none';
+        card.style.opacity = '1';
+      });
       return;
     }
 
     const loop = time => {
       if (active) render(time);
-      frame = requestAnimationFrame(loop);
+      else lastTime = time;
+      raf = requestAnimationFrame(loop);
     };
 
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(entries => {
         active = Boolean(entries[0]?.isIntersecting);
+        if (active) lastTime = performance.now();
       }, { threshold: 0 });
       observer.observe(stage);
       window.addEventListener('pagehide', () => observer.disconnect(), { once:true });
     }
 
-    frame = requestAnimationFrame(loop);
-    window.addEventListener('pagehide', () => cancelAnimationFrame(frame), { once:true });
+    raf = requestAnimationFrame(loop);
+    window.addEventListener('pagehide', () => cancelAnimationFrame(raf), { once:true });
   }
 
 
