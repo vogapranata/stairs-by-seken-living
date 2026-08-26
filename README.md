@@ -26,3 +26,7 @@ Replace pitch/reference images with original STAIRS-owned media before using thi
 
 ## v4.2 Typography
 Updated to Bricolage Grotesque (display) + Manrope (body/UI) for a modern, friendly nightlife feel.
+
+
+## v4.3 Orbit Hero
+Hero visual menggunakan kinetic orbit collage berdasarkan referensi video user: cards mengorbit kontinu dengan depth/scale/opacity dinamis.

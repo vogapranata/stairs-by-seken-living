@@ -434,6 +434,67 @@
   }
 
 
+  function initHeroOrbit() {
+    const stage = $('#heroOrbit');
+    if (!stage) return;
+    const cards = $$('[data-orbit-card]', stage);
+    if (!cards.length) return;
+
+    let frame = 0;
+    let active = true;
+    const deg = Math.PI / 180;
+
+    const render = (time = 0) => {
+      const rect = stage.getBoundingClientRect();
+      const rx = Math.max(118, Math.min(rect.width * .355, 238));
+      const ry = Math.max(100, Math.min(rect.height * .325, 190));
+      const motion = reduceMotion ? 0 : time * .00018;
+
+      cards.forEach((card, index) => {
+        const base = (Number(card.dataset.angle) || index * (360 / cards.length)) * deg;
+        const radius = Math.max(.46, Math.min(1.08, Number(card.dataset.radius) || 1));
+        const angle = base + motion;
+        const x = Math.cos(angle) * rx * radius;
+        const y = Math.sin(angle) * ry * radius;
+        const depth = (Math.sin(angle) + 1) / 2;
+        const scale = .66 + depth * .48;
+        const rotation = Math.cos(angle) * 5 + (index % 2 ? 1.5 : -1.5);
+        const opacity = .60 + depth * .40;
+        const blur = (1 - depth) * .65;
+
+        card.style.setProperty('--ox', `${x.toFixed(2)}px`);
+        card.style.setProperty('--oy', `${y.toFixed(2)}px`);
+        card.style.setProperty('--os', scale.toFixed(3));
+        card.style.setProperty('--or', `${rotation.toFixed(2)}deg`);
+        card.style.opacity = opacity.toFixed(3);
+        card.style.filter = `saturate(${(.82 + depth * .34).toFixed(2)}) blur(${blur.toFixed(2)}px)`;
+        card.style.zIndex = String(8 + Math.round(depth * 34));
+      });
+    };
+
+    if (reduceMotion) {
+      render(0);
+      return;
+    }
+
+    const loop = time => {
+      if (active) render(time);
+      frame = requestAnimationFrame(loop);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => {
+        active = Boolean(entries[0]?.isIntersecting);
+      }, { threshold: 0 });
+      observer.observe(stage);
+      window.addEventListener('pagehide', () => observer.disconnect(), { once:true });
+    }
+
+    frame = requestAnimationFrame(loop);
+    window.addEventListener('pagehide', () => cancelAnimationFrame(frame), { once:true });
+  }
+
+
   function initFeedLoop() {
     const track = $('.feed-track');
     if (!track || track.dataset.loopReady === '1') return;
@@ -476,6 +537,7 @@
   safeRun('theme', applyTheme);
   safeRun('language', applyLanguage);
   safeRun('slide motion', initSlideMotion);
+  safeRun('hero orbit', initHeroOrbit);
   safeRun('cursor motion', initCursorMotion);
   safeRun('feed loop', initFeedLoop);
   safeRun('mobile navigation', initMobileNav);
