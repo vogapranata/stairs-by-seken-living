@@ -118,3 +118,104 @@ h2{font-weight:650;letter-spacing:-.035em}
   .orbit-core strong{font-size:20px}
   .orbit-secondary{width:86px!important}
 }
+
+
+/* v4.6 — Teman Tumbuh inspired scroll-merge header / hero */
+:root{
+  --merge-progress:0;
+  --hero-lift:0px;
+  --dock-top:0px;
+  --dock-width:100vw;
+  --dock-height:var(--header-h);
+  --dock-radius:0px;
+  --dock-pad:3.2vw;
+}
+
+/* The header starts as a normal full-width bar, then visually docks inside the hero. */
+.site-header{
+  position:fixed;
+  left:50%;
+  top:var(--dock-top);
+  width:var(--dock-width);
+  height:var(--dock-height);
+  transform:translateX(-50%);
+  padding-inline:var(--dock-pad);
+  border:1px solid transparent;
+  border-bottom-color:var(--line);
+  border-radius:var(--dock-radius);
+  overflow:hidden;
+  transition:
+    background-color .24s ease,
+    color .24s ease,
+    border-color .24s ease,
+    box-shadow .24s ease,
+    backdrop-filter .24s ease;
+  will-change:top,width,height,border-radius;
+}
+
+main{padding-top:var(--header-h)}
+
+.hero.section-shell{
+  width:min(1480px,calc(100% - 40px));
+  margin-top:22px;
+  padding-inline:clamp(28px,4.4vw,76px);
+  border:1px solid color-mix(in srgb,var(--red) 18%,var(--line));
+  border-radius:36px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 78% 28%,color-mix(in srgb,var(--red) 13%,transparent),transparent 30%),
+    radial-gradient(circle at 72% 70%,color-mix(in srgb,var(--blue) 26%,transparent),transparent 36%),
+    linear-gradient(135deg,color-mix(in srgb,var(--panel) 96%,var(--blue) 4%),color-mix(in srgb,var(--bg) 93%,var(--wine) 7%));
+  box-shadow:0 24px 80px rgba(0,0,0,.18);
+  transform:translateY(var(--hero-lift));
+  transform-origin:top center;
+  transition:border-radius .22s ease,box-shadow .22s ease;
+}
+
+html[data-theme="light"] .hero.section-shell{
+  background:
+    radial-gradient(circle at 78% 28%,rgba(242,11,15,.09),transparent 30%),
+    radial-gradient(circle at 72% 70%,rgba(23,19,111,.10),transparent 36%),
+    linear-gradient(135deg,#f5f1e9,#e9e2d8);
+}
+
+/* Once the scroll merge has started, use a light floating pill like the reference site. */
+body.header-merging .site-header{
+  background:rgba(248,245,239,.94);
+  color:#17151a;
+  border-color:rgba(25,21,25,.12);
+  box-shadow:0 16px 50px rgba(0,0,0,.18);
+  backdrop-filter:blur(22px) saturate(1.25);
+}
+body.header-merging .site-header .nav{color:#5e5755}
+body.header-merging .site-header .nav a:hover{color:#111}
+body.header-merging .site-header .lang-toggle,
+body.header-merging .site-header .theme-toggle{
+  color:#17151a;
+  border-color:rgba(23,21,26,.16);
+  background:rgba(255,255,255,.48);
+}
+body.header-merging .site-header .menu-toggle{color:#17151a}
+body.header-merging .site-header .brand{color:#17151a}
+body.header-merging .site-header .brand-mark i{background:var(--red)}
+
+/* The merged state is deliberately rounded and compact, matching the behavior in the supplied reference. */
+body.header-docked .site-header{
+  border-color:rgba(25,21,25,.14);
+  box-shadow:0 20px 60px rgba(0,0,0,.22);
+}
+body.header-docked .hero.section-shell{box-shadow:0 34px 100px rgba(0,0,0,.24)}
+
+@media (max-width:1050px){
+  .hero.section-shell{width:min(100% - 28px,1240px);padding-inline:clamp(22px,4vw,46px)}
+}
+@media (max-width:720px){
+  :root{--header-h:66px}
+  main{padding-top:66px}
+  .site-header{padding-inline:var(--dock-pad)}
+  .hero.section-shell{width:calc(100% - 18px);margin-top:10px;padding-inline:18px;border-radius:28px}
+  body.header-merging .site-header{background:rgba(248,245,239,.97)}
+}
+@media (prefers-reduced-motion:reduce){
+  .site-header,.hero.section-shell{transition:none!important}
+}

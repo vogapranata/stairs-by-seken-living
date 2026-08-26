@@ -1,4 +1,4 @@
-# STAIRS at Prawirotaman — v4.5 Mouse Orbit Fix
+# STAIRS at Prawirotaman — v4.6 Scroll Merge Hero
 
 Static HTML/CSS/JavaScript concept website for pitching STAIRS at Prawirotaman.
 
@@ -29,3 +29,10 @@ This is a localStorage CMS demo. Changes are stored only in the browser/device w
 
 ## Deployment
 Static project; Vercel can deploy directly from the GitHub repository. No build command or environment variable is required.
+
+
+## v4.6 — Scroll Merge Header
+- Navbar morphs from a full-width top bar into a rounded floating pill while scrolling into the hero.
+- Hero sits in a rounded visual stage and visually merges behind the docked navigation.
+- Scroll morph is continuous (width, top offset, height, radius and hero lift), not only a sticky class toggle.
+- Responsive mobile merge behavior included.

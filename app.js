@@ -732,6 +732,62 @@
     update();
   }
 
+
+  function initHeaderMerge() {
+    const header = $('.site-header');
+    const hero = $('.hero');
+    if (!header || !hero) return;
+
+    let raf = 0;
+    let lastP = -1;
+
+    const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
+    const mix = (a,b,t) => a + (b-a)*t;
+    const ease = t => 1 - Math.pow(1-t,3);
+
+    const draw = () => {
+      raf = 0;
+      const vw = Math.max(window.innerWidth,320);
+      const mobile = vw <= 720;
+      const tablet = vw <= 1050;
+      const baseH = mobile ? 66 : 76;
+
+      /* Merge over the first ~190 px, similar to the supplied Teman Tumbuh reference. */
+      const raw = clamp(window.scrollY / (mobile ? 78 : 112), 0, 1);
+      const p = ease(raw);
+      if (Math.abs(p-lastP) < .001 && lastP >= 0) return;
+      lastP = p;
+
+      const targetW = mobile ? vw - 20 : tablet ? vw - 34 : Math.min(980, vw - 64);
+      const width = mix(vw,targetW,p);
+      const top = mix(0,mobile ? 9 : 18,p);
+      const height = mix(baseH,mobile ? 58 : 64,p);
+      const radius = mix(0,mobile ? 24 : 999,p);
+      const pad = mix(mobile ? 15 : vw*.032,mobile ? 13 : 23,p);
+      const heroLift = mix(0,mobile ? -4 : -14,p);
+
+      header.style.setProperty('--dock-width',`${width.toFixed(2)}px`);
+      header.style.setProperty('--dock-top',`${top.toFixed(2)}px`);
+      header.style.setProperty('--dock-height',`${height.toFixed(2)}px`);
+      header.style.setProperty('--dock-radius',`${radius.toFixed(2)}px`);
+      header.style.setProperty('--dock-pad',`${pad.toFixed(2)}px`);
+      document.documentElement.style.setProperty('--merge-progress',p.toFixed(4));
+      document.documentElement.style.setProperty('--hero-lift',`${heroLift.toFixed(2)}px`);
+
+      document.body.classList.toggle('header-merging', raw > .035);
+      document.body.classList.toggle('header-docked', raw > .72);
+    };
+
+    const request = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(draw);
+    };
+
+    window.addEventListener('scroll',request,{passive:true});
+    window.addEventListener('resize',() => { lastP=-1; request(); },{passive:true});
+    draw();
+  }
+
   function initMobileNav() {
     const toggle = $('.menu-toggle');
     const nav = $('#mobileNav');
@@ -766,6 +822,7 @@
   safeRun('appearance', applyAppearance);
   safeRun('theme', applyTheme);
   safeRun('language', applyLanguage);
+  safeRun('header merge', initHeaderMerge);
   safeRun('slide motion', initSlideMotion);
   safeRun('kinetic scroll', initKineticScroll);
   safeRun('hero orbit', initHeroOrbit);
