@@ -276,6 +276,19 @@
     });
   }
 
+  function applyPhotoCopy() {
+    $$('[data-photo-description-id]').forEach(card => {
+      const title = language === 'id' ? (card.dataset.photoTitleId || card.dataset.photoTitleEn || 'STAIRS') : (card.dataset.photoTitleEn || card.dataset.photoTitleId || 'STAIRS');
+      const description = language === 'id' ? (card.dataset.photoDescriptionId || card.dataset.photoDescriptionEn || '') : (card.dataset.photoDescriptionEn || card.dataset.photoDescriptionId || '');
+      const caption = $('[data-photo-caption]', card);
+      if (!caption) return;
+      const titleNode = $('strong, b', caption);
+      const descNode = $('small', caption);
+      if (titleNode) titleNode.textContent = title;
+      if (descNode) descNode.textContent = description;
+    });
+  }
+
   function applyLanguage() {
     document.documentElement.lang = language;
     $$('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
@@ -290,6 +303,7 @@
     renderMenu();
     renderGallery();
     renderReviews();
+    applyPhotoCopy();
   }
 
   function applyTheme() {
@@ -347,7 +361,7 @@
       const image = getMenuImage(item);
       const driftX = index % 2 === 0 ? -22 : 22;
       const driftY = 18 + (index % 3) * 7;
-      return `<article class="menu-card menu-card-photo" data-kinetic data-depth="${(.35 + (index%4)*.08).toFixed(2)}" data-drift-x="${driftX}" data-drift-y="${driftY}">
+      return `<article class="menu-card menu-card-photo" data-kinetic data-depth="${(.35 + (index%4)*.08).toFixed(2)}" data-drift-x="${driftX}" data-drift-y="${driftY}" data-photo-title="${esc(item.name)}" data-photo-description="${esc(description)}" data-photo-source="${esc(tr(item.category))} · ${esc(item.price || '—')}">
         <div class="menu-photo"><img src="${esc(image)}" alt="${esc(item.name)}" loading="lazy" referrerpolicy="no-referrer"><span>${esc(tr(item.category))}</span></div>
         <div class="menu-card-body">
           <div class="menu-index">${String(index+1).padStart(2,'0')}</div>
@@ -389,10 +403,11 @@
     const items = data.gallery.length ? data.gallery : defaults.gallery;
     track.innerHTML = items.map((item,index) => {
       const title = language === 'id' ? (item.titleId || item.title || `STAIRS ${index+1}`) : (item.titleEn || item.title || `STAIRS ${index+1}`);
+      const caption = language === 'id' ? (item.captionId || item.caption || '') : (item.captionEn || item.caption || '');
       const media = item.type === 'video'
         ? `<video src="${esc(item.url)}" muted loop autoplay playsinline preload="metadata"></video>`
         : `<img src="${esc(item.url)}" alt="${esc(title)}" loading="lazy" referrerpolicy="no-referrer">`;
-      return `<figure>${media}<figcaption>${esc(title)}</figcaption></figure>`;
+      return `<figure data-photo-title="${esc(title)}" data-photo-description="${esc(caption)}" data-photo-source="${esc(item.source || 'Instagram @stairsprawirotaman')}">${media}<figcaption><strong>${esc(title)}</strong><small>${esc(caption)}</small></figcaption></figure>`;
     }).join('');
     track.dataset.loopReady = '';
     bindImageFallbacks(track);
@@ -411,7 +426,7 @@
       const media = item.type === 'video'
         ? `<video src="${esc(item.url)}" muted loop playsinline preload="metadata"></video>`
         : `<img src="${esc(item.url)}" alt="${esc(title)}" loading="${index === 0 ? 'eager' : 'lazy'}" referrerpolicy="no-referrer">`;
-      return `<article class="gallery-slide ${index === galleryIndex ? 'active' : ''}" aria-hidden="${index === galleryIndex ? 'false' : 'true'}">
+      return `<article class="gallery-slide ${index === galleryIndex ? 'active' : ''}" aria-hidden="${index === galleryIndex ? 'false' : 'true'}" data-photo-title="${esc(title)}" data-photo-description="${esc(caption)}" data-photo-source="${esc(item.source || '')}">
         <div class="gallery-media">${media}</div>
         <div class="gallery-slide-copy"><span class="gallery-no">${String(index+1).padStart(2,'0')} / ${String(data.gallery.length).padStart(2,'0')}</span><h3>${esc(title)}</h3><p>${esc(caption)}</p><span class="gallery-source">${esc(item.source || '')}</span></div>
       </article>`;
@@ -791,9 +806,11 @@
   function initPhotoLightbox() {
     const lightbox = $('#photoLightbox');
     const image = $('#photoLightboxImage');
-    const caption = $('#photoLightboxCaption');
+    const titleNode = $('#photoLightboxTitle');
+    const descriptionNode = $('#photoLightboxDescription');
+    const sourceNode = $('#photoLightboxSource');
     const closeButton = $('#photoLightboxClose');
-    if (!lightbox || !image || !caption || !closeButton) return;
+    if (!lightbox || !image || !titleNode || !descriptionNode || !sourceNode || !closeButton) return;
 
     let sourceImage = null;
     let closeTimer = 0;
@@ -825,11 +842,22 @@
       setOriginFrom(img);
       image.src = img.currentSrc || img.src;
       image.alt = img.alt || 'STAIRS visual';
-      const figureCaption = img.closest('figure')?.querySelector('figcaption')?.textContent?.trim();
+      const host = img.closest('[data-photo-title], [data-photo-description], [data-photo-description-id], .menu-card, .gallery-slide, figure, .location-card');
+      const bilingualTitle = host ? (language === 'id' ? (host.dataset.photoTitleId || host.dataset.photoTitleEn) : (host.dataset.photoTitleEn || host.dataset.photoTitleId)) : '';
+      const bilingualDescription = host ? (language === 'id' ? (host.dataset.photoDescriptionId || host.dataset.photoDescriptionEn) : (host.dataset.photoDescriptionEn || host.dataset.photoDescriptionId)) : '';
       const cardTitle = img.closest('.menu-card')?.querySelector('h3')?.textContent?.trim();
+      const cardDescription = img.closest('.menu-card')?.querySelector('.menu-copy p')?.textContent?.trim();
       const slideTitle = img.closest('.gallery-slide')?.querySelector('h3')?.textContent?.trim();
-      const locationLabel = img.closest('.location-card')?.querySelector('span')?.textContent?.trim();
-      caption.textContent = figureCaption || cardTitle || slideTitle || locationLabel || img.alt || 'STAIRS visual';
+      const slideDescription = img.closest('.gallery-slide')?.querySelector('.gallery-slide-copy p')?.textContent?.trim();
+      const figureTitle = img.closest('figure')?.querySelector('figcaption strong')?.textContent?.trim();
+      const figureDescription = img.closest('figure')?.querySelector('figcaption small')?.textContent?.trim();
+      const title = host?.dataset.photoTitle || bilingualTitle || cardTitle || slideTitle || figureTitle || img.alt || 'STAIRS visual';
+      const description = host?.dataset.photoDescription || bilingualDescription || cardDescription || slideDescription || figureDescription || (language === 'id' ? 'Visual STAIRS yang digunakan sebagai bagian dari pengalaman website.' : 'A STAIRS visual used as part of the website experience.');
+      const source = host?.dataset.photoSource || img.closest('.gallery-slide')?.querySelector('.gallery-source')?.textContent?.trim() || '';
+      titleNode.textContent = title;
+      descriptionNode.textContent = description;
+      sourceNode.textContent = source;
+      sourceNode.hidden = !source;
       lightbox.classList.remove('is-closing');
       lightbox.setAttribute('aria-hidden','false');
       document.body.classList.add('lightbox-open');

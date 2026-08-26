@@ -1,4 +1,4 @@
-# STAIRS at Prawirotaman — v4.7 Scroll Merge Hero
+# STAIRS at Prawirotaman — v4.8 Scroll Merge Hero
 
 Static HTML/CSS/JavaScript concept website for pitching STAIRS at Prawirotaman.
 
@@ -31,12 +31,19 @@ This is a localStorage CMS demo. Changes are stored only in the browser/device w
 Static project; Vercel can deploy directly from the GitHub repository. No build command or environment variable is required.
 
 
-## v4.7 — Scroll Merge Header
+## v4.8 — Scroll Merge Header
 - Navbar morphs from a full-width top bar into a rounded floating pill while scrolling into the hero.
 - Hero sits in a rounded visual stage and visually merges behind the docked navigation.
 - Scroll morph is continuous (width, top offset, height, radius and hero lift), not only a sticky class toggle.
 - Responsive mobile merge behavior included.
 
 
-## v4.7 Photo Popup
+## v4.8 Photo Popup
 Semua foto di menu, feed, bar, gallery, dan lokasi dapat diklik untuk membuka lightbox animasi. Visual hero/orbit sengaja dikecualikan agar interaksi orbit tetap fokus. Popup dapat ditutup lewat tombol ×, klik backdrop/foto, atau Esc.
+
+
+## v4.8
+- Added a title and description to every non-hero photo.
+- Photo popup now shows title, description, and source/credit.
+- Feed captions use Gallery CMS title/caption/source fields.
+- Menu popup descriptions use each Menu CMS description.
