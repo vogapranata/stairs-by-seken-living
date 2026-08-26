@@ -22,3 +22,7 @@ Content uses localStorage key `stairsDemoContentV4`, so older demo content canno
 
 ## Production note
 Replace pitch/reference images with original STAIRS-owned media before using this as the official site.
+
+
+## v4.2 Typography
+Updated to Bricolage Grotesque (display) + Manrope (body/UI) for a modern, friendly nightlife feel.
