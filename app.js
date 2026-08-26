@@ -788,6 +788,89 @@
     draw();
   }
 
+  function initPhotoLightbox() {
+    const lightbox = $('#photoLightbox');
+    const image = $('#photoLightboxImage');
+    const caption = $('#photoLightboxCaption');
+    const closeButton = $('#photoLightboxClose');
+    if (!lightbox || !image || !caption || !closeButton) return;
+
+    let sourceImage = null;
+    let closeTimer = 0;
+
+    const isEligiblePhoto = img => {
+      if (!(img instanceof HTMLImageElement)) return false;
+      if (img.closest('#heroOrbit')) return false; // hero/orbit remains interactive, not popup-enabled
+      if (img.hidden || !img.currentSrc && !img.src) return false;
+      return Boolean(img.closest('.menu-photo, .feed-track, .bar-kinetic, .gallery-media, .visit-kinetic'));
+    };
+
+    const setOriginFrom = img => {
+      const rect = img.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = cx - window.innerWidth / 2;
+      const dy = cy - window.innerHeight / 2;
+      const scale = Math.max(.24, Math.min(.76, rect.width / Math.max(window.innerWidth * .7, 1)));
+      const rotate = img.closest('[data-kinetic]') ? (dx / Math.max(window.innerWidth,1)) * 3.2 : 0;
+      lightbox.style.setProperty('--lb-x', `${dx.toFixed(1)}px`);
+      lightbox.style.setProperty('--lb-y', `${dy.toFixed(1)}px`);
+      lightbox.style.setProperty('--lb-scale', scale.toFixed(3));
+      lightbox.style.setProperty('--lb-rotate', `${rotate.toFixed(2)}deg`);
+    };
+
+    const open = img => {
+      clearTimeout(closeTimer);
+      sourceImage = img;
+      setOriginFrom(img);
+      image.src = img.currentSrc || img.src;
+      image.alt = img.alt || 'STAIRS visual';
+      const figureCaption = img.closest('figure')?.querySelector('figcaption')?.textContent?.trim();
+      const cardTitle = img.closest('.menu-card')?.querySelector('h3')?.textContent?.trim();
+      const slideTitle = img.closest('.gallery-slide')?.querySelector('h3')?.textContent?.trim();
+      const locationLabel = img.closest('.location-card')?.querySelector('span')?.textContent?.trim();
+      caption.textContent = figureCaption || cardTitle || slideTitle || locationLabel || img.alt || 'STAIRS visual';
+      lightbox.classList.remove('is-closing');
+      lightbox.setAttribute('aria-hidden','false');
+      document.body.classList.add('lightbox-open');
+      requestAnimationFrame(() => requestAnimationFrame(() => lightbox.classList.add('is-open')));
+      closeButton.focus({ preventScroll:true });
+    };
+
+    const close = () => {
+      if (!lightbox.classList.contains('is-open')) return;
+      if (sourceImage?.isConnected) setOriginFrom(sourceImage);
+      lightbox.classList.add('is-closing');
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden','true');
+      document.body.classList.remove('lightbox-open');
+      closeTimer = window.setTimeout(() => {
+        lightbox.classList.remove('is-closing');
+        image.removeAttribute('src');
+        sourceImage?.focus?.({ preventScroll:true });
+        sourceImage = null;
+      }, reduceMotion ? 20 : 430);
+    };
+
+    document.addEventListener('click', event => {
+      const img = event.target.closest?.('img');
+      if (!isEligiblePhoto(img)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      open(img);
+    });
+
+    $('[data-lightbox-close]', lightbox)?.addEventListener('click', close);
+    closeButton.addEventListener('click', close);
+    image.addEventListener('click', close);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && lightbox.classList.contains('is-open')) close();
+    });
+    window.addEventListener('resize', () => {
+      if (lightbox.classList.contains('is-open') && sourceImage?.isConnected) setOriginFrom(sourceImage);
+    }, { passive:true });
+  }
+
   function initMobileNav() {
     const toggle = $('.menu-toggle');
     const nav = $('#mobileNav');
@@ -828,6 +911,7 @@
   safeRun('hero orbit', initHeroOrbit);
   safeRun('cursor motion', initCursorMotion);
   safeRun('feed loop', initFeedLoop);
+  safeRun('photo lightbox', initPhotoLightbox);
   safeRun('mobile navigation', initMobileNav);
   safeRun('gallery autoplay', startGalleryAutoplay);
 })();
