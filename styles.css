@@ -550,3 +550,101 @@ html[data-theme="dark"] .menu-photo:after{background:color-mix(in srgb,var(--blu
   html.mynt-motion .quick-links a,
   html.mynt-motion .review-card{transform:none!important;opacity:1!important}
 }
+
+
+/* v5.0 — compact ticker + reference-style scroll choreography */
+.ticker{
+  width:min(980px,calc(100% - 64px));
+  margin:18px auto 0;
+  border:1px solid color-mix(in srgb,#fff 18%,transparent);
+  border-radius:999px;
+  box-shadow:0 12px 34px color-mix(in srgb,var(--red) 16%,transparent);
+}
+.ticker-track{padding-block:12px}
+
+/* Motion is applied only after JS is alive. Static content remains fully visible as a fail-safe. */
+html.reference-motion .slide-section > .slide-content:not([data-kinetic]){
+  --ref-x:0px;
+  --ref-y:0px;
+  --ref-scale:1;
+  --ref-opacity:1;
+  --ref-blur:0px;
+  opacity:var(--ref-opacity);
+  filter:blur(var(--ref-blur));
+  transform:translate3d(var(--ref-x),var(--ref-y),0) scale(var(--ref-scale));
+  transform-origin:50% 44%;
+  will-change:transform,opacity,filter;
+}
+html.reference-motion .hero-copy{
+  opacity:var(--hero-copy-opacity,1);
+  filter:blur(var(--hero-copy-blur,0px));
+  transform:translate3d(0,var(--hero-copy-y,0px),0) scale(var(--hero-copy-scale,1));
+  transform-origin:left center;
+  will-change:transform,opacity,filter;
+}
+html.reference-motion .hero-visual{
+  opacity:var(--hero-visual-opacity,1);
+  filter:blur(var(--hero-visual-blur,0px));
+  transform:translate3d(0,var(--hero-visual-y,0px),0) scale(var(--hero-visual-scale,1)) perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transform-origin:center;
+  will-change:transform,opacity,filter;
+}
+html.reference-motion .feed-track figure,
+html.reference-motion .cocktail-grid article,
+html.reference-motion .quick-links a,
+html.reference-motion .review-card{
+  --micro-x:0px;
+  --micro-y:0px;
+  --micro-r:0deg;
+  --micro-s:1;
+  --micro-o:1;
+  opacity:var(--micro-o);
+  transform:translate3d(var(--micro-x),var(--micro-y),0) rotate(var(--micro-r)) scale(var(--micro-s));
+  transform-origin:center;
+  will-change:transform,opacity;
+}
+
+/* The menu behaves like the collectible cards in the reference: cards rise, fan out and settle as the section enters. */
+html.reference-motion .menu-card.menu-card-photo{
+  --card-x:0px;
+  --card-y:0px;
+  --card-r:0deg;
+  --card-s:1;
+  --card-o:1;
+  opacity:var(--card-o)!important;
+  transform:translate3d(var(--card-x),var(--card-y),0) rotate(var(--card-r)) scale(var(--card-s))!important;
+  transform-origin:50% 72%;
+  will-change:transform,opacity;
+}
+html.reference-motion .menu-card.menu-card-photo:hover{
+  transform:translate3d(var(--card-x),calc(var(--card-y) - 7px),0) rotate(var(--card-r)) scale(calc(var(--card-s) * 1.012))!important;
+}
+
+/* Give each image-led block a stronger scroll-linked spatial response. */
+html.reference-motion .bar-kinetic,
+html.reference-motion .gallery-slider,
+html.reference-motion .visit-panel,
+html.reference-motion .feed-marquee,
+html.reference-motion .menu-carousel{
+  transform-origin:50% 48%;
+}
+
+@media(max-width:1050px){
+  .ticker{width:calc(100% - 34px)}
+}
+@media(max-width:720px){
+  .ticker{width:calc(100% - 20px);margin-top:10px;border-radius:18px}
+  .ticker-track{padding-block:10px;font-size:11px;gap:18px}
+}
+@media(prefers-reduced-motion:reduce){
+  html.reference-motion .slide-section > .slide-content:not([data-kinetic]),
+  html.reference-motion .hero-copy,
+  html.reference-motion .hero-visual,
+  html.reference-motion .feed-track figure,
+  html.reference-motion .cocktail-grid article,
+  html.reference-motion .quick-links a,
+  html.reference-motion .review-card,
+  html.reference-motion .menu-card.menu-card-photo{
+    transform:none!important;filter:none!important;opacity:1!important
+  }
+}

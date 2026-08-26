@@ -794,56 +794,110 @@
 
   function initMyntScrollMotion() {
     if (reduceMotion) return;
+
     const sections = $$('.slide-section');
     if (!sections.length) return;
-    document.documentElement.classList.remove('motion-ready');
-    document.documentElement.classList.add('mynt-motion');
 
+    document.documentElement.classList.remove('motion-ready','mynt-motion');
+    document.documentElement.classList.add('reference-motion');
+
+    const hero = $('.hero');
     const microSelectors = '.feed-track figure,.cocktail-grid article,.quick-links a,.review-card';
     let raf = 0;
+
     const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
     const smooth = t => t * t * (3 - 2 * t);
+    const expo = t => t === 1 ? 1 : 1 - Math.pow(2,-8*t);
+
+    const setVar = (node,name,value) => node?.style.setProperty(name,value);
 
     const draw = () => {
       raf = 0;
       const vh = Math.max(window.innerHeight,1);
+      const vw = Math.max(window.innerWidth,320);
+      const mobile = vw <= 720;
 
-      sections.forEach((section, sectionIndex) => {
+      /* Hero exits like the supplied reference: copy drifts upward and the visual floats back. */
+      if (hero) {
+        const rect = hero.getBoundingClientRect();
+        const exit = smooth(clamp((-rect.top + vh * .03) / Math.max(vh * .74,1),0,1));
+        const copy = $('.hero-copy',hero);
+        const visual = $('.hero-visual',hero);
+        setVar(copy,'--hero-copy-y',`${(-exit * (mobile ? 54 : 118)).toFixed(2)}px`);
+        setVar(copy,'--hero-copy-scale',(.995 - exit * .055).toFixed(4));
+        setVar(copy,'--hero-copy-opacity',(1 - exit * .74).toFixed(4));
+        setVar(copy,'--hero-copy-blur',`${(exit * 7).toFixed(2)}px`);
+        setVar(visual,'--hero-visual-y',`${(exit * (mobile ? 28 : 72)).toFixed(2)}px`);
+        setVar(visual,'--hero-visual-scale',(1 - exit * .065).toFixed(4));
+        setVar(visual,'--hero-visual-opacity',(1 - exit * .58).toFixed(4));
+        setVar(visual,'--hero-visual-blur',`${(exit * 5).toFixed(2)}px`);
+      }
+
+      sections.forEach((section,sectionIndex) => {
+        if (section === hero) return;
         const rect = section.getBoundingClientRect();
-        const enterRaw = clamp((vh - rect.top) / Math.max(vh * .62,1), 0, 1);
-        const exitRaw = clamp(rect.bottom / Math.max(vh * .44,1), 0, 1);
-        const p = smooth(Math.min(enterRaw, exitRaw));
-        const y = (1-p) * 58;
-        const scale = .968 + p * .032;
-        const opacity = .34 + p * .66;
 
-        section.style.setProperty('--scene-p', p.toFixed(4));
-        section.style.setProperty('--scene-y', `${y.toFixed(2)}px`);
-        section.style.setProperty('--scene-scale', scale.toFixed(4));
-        section.style.setProperty('--scene-opacity', opacity.toFixed(4));
+        /* Entry runs for a large portion of the viewport, so the movement is obvious while scrolling. */
+        const enter = expo(clamp((vh * .96 - rect.top) / Math.max(vh * .68,1),0,1));
+        const leave = smooth(clamp((vh * .22 - rect.bottom) / Math.max(vh * .48,1),0,1));
+        const direction = section.dataset.motion || (sectionIndex % 2 ? 'left' : 'right');
 
-        $$('.slide-content:not([data-kinetic])', section).forEach((item,index) => {
-          const delay = Math.min(.24, index * .055);
-          const local = smooth(clamp((p - delay) / Math.max(1-delay,.001), 0, 1));
-          const itemY = (1-local) * (28 + index*5);
-          const itemScale = .982 + local * .018;
-          item.style.setProperty('--item-y', `${itemY.toFixed(2)}px`);
-          item.style.setProperty('--item-scale', itemScale.toFixed(4));
-          item.style.setProperty('--item-opacity', (.20 + local*.80).toFixed(4));
+        $$('.slide-content:not([data-kinetic])',section).forEach((item,index) => {
+          const lag = Math.min(.32,index * .075);
+          const local = expo(clamp((enter-lag) / Math.max(1-lag,.001),0,1));
+          const side = direction === 'left' ? -1 : direction === 'right' ? 1 : (index % 2 ? 1 : -1);
+          const startX = direction === 'up' ? side * (mobile ? 22 : 42) : side * (mobile ? 52 : 118);
+          const startY = direction === 'up' ? (mobile ? 68 : 132) : (mobile ? 42 : 72);
+          const x = (1-local)*startX + leave*(-side * (mobile ? 18 : 50));
+          const y = (1-local)*startY - leave*(mobile ? 52 : 96);
+          const scale = .90 + local*.10 - leave*.04;
+          const opacity = clamp((.03 + local*.97) * (1-leave*.76),0,1);
+          const blur = (1-local)*(mobile ? 5 : 12) + leave*(mobile ? 4 : 8);
+
+          setVar(item,'--ref-x',`${x.toFixed(2)}px`);
+          setVar(item,'--ref-y',`${y.toFixed(2)}px`);
+          setVar(item,'--ref-scale',scale.toFixed(4));
+          setVar(item,'--ref-opacity',opacity.toFixed(4));
+          setVar(item,'--ref-blur',`${blur.toFixed(2)}px`);
         });
 
-        $$(microSelectors, section).forEach((item,index) => {
-          const stagger = (index % 6) * .035;
-          const local = smooth(clamp((p - stagger) / Math.max(1-stagger,.001), 0, 1));
-          item.style.setProperty('--micro-y', `${((1-local) * (20 + (index%3)*8)).toFixed(2)}px`);
-          item.style.setProperty('--micro-s', (.975 + local*.025).toFixed(4));
-          item.style.setProperty('--micro-o', (.24 + local*.76).toFixed(4));
+        /* Smaller elements fan in independently, closer to the cards in the reference recording. */
+        $$(microSelectors,section).forEach((item,index) => {
+          const lag = Math.min(.52,.10 + (index % 8)*.055);
+          const local = expo(clamp((enter-lag)/Math.max(1-lag,.001),0,1));
+          const side = index % 2 ? 1 : -1;
+          const x = (1-local)*side*(mobile ? 26 : 68) + leave*(-side*22);
+          const y = (1-local)*(mobile ? 56 : 104) - leave*52;
+          const rot = (1-local)*side*(mobile ? 2.2 : 5.2);
+          setVar(item,'--micro-x',`${x.toFixed(2)}px`);
+          setVar(item,'--micro-y',`${y.toFixed(2)}px`);
+          setVar(item,'--micro-r',`${rot.toFixed(2)}deg`);
+          setVar(item,'--micro-s',(.88 + local*.12 - leave*.025).toFixed(4));
+          setVar(item,'--micro-o',clamp((.05+local*.95)*(1-leave*.7),0,1).toFixed(4));
         });
+
+        if (section.id === 'menu') {
+          $$('.menu-card.menu-card-photo',section).forEach((card,index) => {
+            const lag = Math.min(.66,.12 + index*.06);
+            const local = expo(clamp((enter-lag)/Math.max(1-lag,.001),0,1));
+            const side = index % 2 ? 1 : -1;
+            const x = (1-local)*side*(mobile ? 34 : 82);
+            const y = (1-local)*(mobile ? 88 : 152);
+            const rot = (1-local)*side*(mobile ? 4 : 8.5);
+            setVar(card,'--card-x',`${x.toFixed(2)}px`);
+            setVar(card,'--card-y',`${(y-leave*42).toFixed(2)}px`);
+            setVar(card,'--card-r',`${rot.toFixed(2)}deg`);
+            setVar(card,'--card-s',(.82+local*.18-leave*.025).toFixed(4));
+            setVar(card,'--card-o',clamp(.03+local*.97,0,1).toFixed(4));
+          });
+        }
       });
     };
+
     const request = () => { if (!raf) raf = requestAnimationFrame(draw); };
-    window.addEventListener('scroll', request, {passive:true});
-    window.addEventListener('resize', request, {passive:true});
+    window.addEventListener('scroll',request,{passive:true});
+    window.addEventListener('resize',request,{passive:true});
+    window.addEventListener('load',request,{once:true});
     draw();
   }
 
