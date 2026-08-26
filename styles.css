@@ -72,11 +72,12 @@ html[data-theme="light"] .cursor-light { opacity: .58; }
 
 .section-shell { width:min(var(--max), calc(100% - clamp(40px,8vw,128px))); margin-inline:auto; position:relative; z-index:2; }
 .slide-section { min-height: min(860px, calc(100vh - 78px)); display:flex; flex-direction:column; justify-content:center; padding-block: clamp(78px,9vw,140px); scroll-margin-top:78px; }
-.slide-content { opacity:0; transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1), clip-path 1s cubic-bezier(.2,.7,.2,1); transition-delay: var(--slide-delay, 0ms); }
-.slide-section[data-motion="left"] .slide-content { transform:translateX(-54px); clip-path:inset(0 8% 0 0); }
-.slide-section[data-motion="right"] .slide-content { transform:translateX(54px); clip-path:inset(0 0 0 8%); }
-.slide-section[data-motion="up"] .slide-content { transform:translateY(48px); clip-path:inset(6% 0 0 0); }
-.slide-section.is-active .slide-content { opacity:1; transform:translate(0,0); clip-path:inset(0 0 0 0); }
+.slide-content { opacity:1; transform:none; clip-path:none; }
+.motion-ready .slide-content { opacity:0; transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1), clip-path 1s cubic-bezier(.2,.7,.2,1); transition-delay: var(--slide-delay, 0ms); }
+.motion-ready .slide-section[data-motion="left"] .slide-content { transform:translateX(-54px); clip-path:inset(0 8% 0 0); }
+.motion-ready .slide-section[data-motion="right"] .slide-content { transform:translateX(54px); clip-path:inset(0 0 0 8%); }
+.motion-ready .slide-section[data-motion="up"] .slide-content { transform:translateY(48px); clip-path:inset(6% 0 0 0); }
+.motion-ready .slide-section.is-active .slide-content { opacity:1; transform:translate(0,0); clip-path:inset(0 0 0 0); }
 .slide-section .slide-content:nth-child(2) { --slide-delay:100ms; }
 .slide-section .slide-content:nth-child(3) { --slide-delay:190ms; }
 .slide-section .slide-content:nth-child(4) { --slide-delay:260ms; }
@@ -95,7 +96,7 @@ html[data-theme="light"] .cursor-light { opacity: .58; }
 .hero-meta small { color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.1em; }
 
 .hero-visual { position:relative; min-height:590px; perspective:1200px; transform:translate3d(var(--mx,0),var(--my,0),0) rotateX(var(--rx,0)) rotateY(var(--ry,0)); transition:transform .12s linear; }
-.hero-photo { position:absolute; inset:0 0 52px 40px; background-image:linear-gradient(180deg,transparent 42%,rgba(0,0,0,.38)), url("https://images.openai.com/static-rsc-1/piIb15jPn6sxW8-xwRyY5Vgk8txhAlO85H6vnZmSvVb-TQpEbg-QkHJ_tpcd9EeAXX4YDYo14FQHkjYK2W2cpLtEPPhU3CAh6C7yAsVnVI5oumAXF7Fro8CUxDcfgwSmxKDvWXdcYhQYbLJIuScsniIen62N3N2V_VNhnQoGv7o"); background-size:cover; background-position:center; border:1px solid var(--line); filter:saturate(.9) contrast(1.04); }
+.hero-photo { position:absolute; inset:0 0 52px 40px; background-image:linear-gradient(180deg,transparent 42%,rgba(0,0,0,.38)), url("https://image.idntimes.com/post/20240305/2023-10-25-11zon-a9b86914ba33fca85ab078094226c771-befb7adf121bb364245db37c100f80c3.jpg"); background-size:cover; background-position:center; border:1px solid var(--line); filter:saturate(.9) contrast(1.04); }
 .photo-source { position:absolute; right:10px; top:18px; max-width:210px; padding:8px 10px; background:rgba(0,0,0,.64); color:#e8e4dd; font-size:9px; letter-spacing:.08em; text-transform:uppercase; backdrop-filter:blur(8px); }
 .stair-sculpture { position:absolute; left:-28px; bottom:4px; width:78%; height:46%; filter:drop-shadow(0 25px 32px rgba(239,45,39,.14)); }
 .stair-sculpture .step { position:absolute; left:0; bottom:0; background:linear-gradient(180deg,#f33b34,#d51e19); border-top:1px solid rgba(255,255,255,.18); }
@@ -249,3 +250,8 @@ html[data-theme="light"] .cursor-light { opacity: .58; }
   .slide-content { opacity:1!important; transform:none!important; clip-path:none!important; }
   .cursor-light { display:none; }
 }
+
+/* v3.2: fallback visual jika host foto eksternal gagal dimuat */
+.gallery-media.media-broken{display:grid;place-items:center;background:linear-gradient(145deg,#171717,#090909 55%,#2b0907)}
+.gallery-media.media-broken::before{content:"STAIRS";color:#f1eee7;font:700 clamp(34px,6vw,78px)/1 "Space Grotesk",sans-serif;letter-spacing:.12em;opacity:.9}
+.gallery-media.media-broken::after{content:"PRAWIROTAMAN · VISUAL REFERENCE";position:absolute;left:22px;bottom:18px;color:#ef312d;font:600 10px/1 "Space Grotesk",sans-serif;letter-spacing:.14em}

@@ -1,3 +1,10 @@
+## STAIRS v3.2 reliability fix
+
+- Section content is never hidden if animation JS fails.
+- Public image URLs no longer use expiring OpenAI proxy links.
+- Gallery/admin media have visual fallbacks if an external host blocks an image.
+- Cache-busting bumped to v3.2.
+
 # STAIRS at Prawirotaman — Website Demo v3.1
 
 Website pitching/demo untuk STAIRS at Prawirotaman. Project ini static HTML/CSS/JavaScript dan siap di-deploy di Vercel.

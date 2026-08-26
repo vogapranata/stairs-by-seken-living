@@ -85,11 +85,11 @@
     gallery: [
       {
         id:'g1', type:'image',
-        url:'https://images.openai.com/static-rsc-1/piIb15jPn6sxW8-xwRyY5Vgk8txhAlO85H6vnZmSvVb-TQpEbg-QkHJ_tpcd9EeAXX4YDYo14FQHkjYK2W2cpLtEPPhU3CAh6C7yAsVnVI5oumAXF7Fro8CUxDcfgwSmxKDvWXdcYhQYbLJIuScsniIen62N3N2V_VNhnQoGv7o',
+        url:'https://image.idntimes.com/post/20240305/2023-10-25-11zon-a9b86914ba33fca85ab078094226c771-befb7adf121bb364245db37c100f80c3.jpg',
         titleId:'Suasana STAIRS', titleEn:'STAIRS Atmosphere',
         captionId:'Foto pengunjung dari listing Google Maps STAIRS, dipakai sebagai referensi visual untuk demo website.',
         captionEn:'A visitor photo from the STAIRS Google Maps listing, used as a visual reference for this website demo.',
-        source:'Google Maps visitor photo · public listing'
+        source:'Google Maps / im maya · via IDN Times'
       },
       {
         id:'g2', type:'image',
@@ -101,19 +101,19 @@
       },
       {
         id:'g3', type:'image',
-        url:'https://images.openai.com/static-rsc-1/pf528FKMFyJCk9Cl7g0x-yiug-ekxjYYQ6D8-FOMgOGofUZErhROmUQgOpSSSl14sAOXAAEzkSxmKFPej7nqulzXSmYGGkc_FiB9wPvbAlvH3UhUpT-ZX6qCDdf1WLEKyxpSQFUGmHMLvNbPq6LIduP1_1JjnxuZSdv6dpUDwhc',
+        url:'https://ak-d.tripcdn.com/images/1mi5s224x8ym7uj762755.jpg?proc=source%2Ftrip',
         titleId:'Night Mood', titleEn:'Night Mood',
-        captionId:'Referensi suasana dan hospitality dari foto pengunjung pada listing Google Maps STAIRS.',
-        captionEn:'Atmosphere and hospitality reference from a visitor photo on the STAIRS Google Maps listing.',
-        source:'Google Maps visitor photo · public listing'
+        captionId:'Referensi suasana dan hospitality STAIRS dari foto traveler publik.',
+        captionEn:'A STAIRS atmosphere and hospitality reference from a public traveler photo.',
+        source:'STAIRS public venue photo · traveler reference'
       },
       {
         id:'g4', type:'image',
-        url:'https://images.openai.com/static-rsc-1/Zi3vB8EmI9hA9KdQXqCWLdXxMkPkFSlRBDZI2vgOrirzjyGiJ9mTFqOz2we4yPhsqpjSSKkf4AevElkQZFzsGzSZGSCvqdrq8Jm0VRNoNbzwdT4JsiMA65u26mC3GNMbYTu4kQY-LYA5hSBOXqdkcxH6U689naRLn7dQjyjf4vE',
+        url:'https://ak-d.tripcdn.com/images/1mi68224x8ym87kz7D46C.jpg?proc=source%2Ftrip',
         titleId:'Food & Drinks', titleEn:'Food & Drinks',
-        captionId:'Referensi sajian dari foto pengunjung yang tampil pada listing Google Maps STAIRS.',
-        captionEn:'A food-and-drink reference from a visitor photo shown on the STAIRS Google Maps listing.',
-        source:'Google Maps visitor photo · public listing'
+        captionId:'Referensi venue STAIRS dari foto traveler publik untuk melengkapi slider demo.',
+        captionEn:'A public traveler reference of the STAIRS venue used to complete the demo slider.',
+        source:'STAIRS public venue photo · traveler reference'
       }
     ],
     reviews: [
@@ -277,6 +277,18 @@
     }));
   }
 
+  function bindImageFallbacks(context = document) {
+    $$('img', context).forEach(img => {
+      if (img.dataset.fallbackBound === '1') return;
+      img.dataset.fallbackBound = '1';
+      img.addEventListener('error', () => {
+        const media = img.closest('.gallery-media');
+        if (media) media.classList.add('media-broken');
+        img.hidden = true;
+      });
+    });
+  }
+
   function renderGallery() {
     const track = $('#galleryTrack');
     const dots = $('#galleryDots');
@@ -296,6 +308,7 @@
     }).join('');
 
     dots.innerHTML = data.gallery.map((_,index) => `<button type="button" class="${index === galleryIndex ? 'active' : ''}" data-gallery-dot="${index}" aria-label="Slide ${index+1}"></button>`).join('');
+    bindImageFallbacks(track);
     updateGallery(false);
     $$('[data-gallery-dot]', dots).forEach(button => button.addEventListener('click', () => goGallery(Number(button.dataset.galleryDot), true)));
   }
@@ -342,16 +355,20 @@
 
   function initSlideMotion() {
     const slides = $$('.slide-section');
+    if (!slides.length) return;
     if (reduceMotion || !('IntersectionObserver' in window)) {
       slides.forEach(slide => slide.classList.add('is-active'));
       return;
     }
+    // Progressive enhancement: konten tetap terlihat jika JS/observer gagal.
+    document.documentElement.classList.add('motion-ready');
+    slides[0]?.classList.add('is-active');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('is-active');
-        else if (entry.boundingClientRect.top > 0) entry.target.classList.remove('is-active');
+        else if (entry.boundingClientRect.top > 0 && entry.target !== slides[0]) entry.target.classList.remove('is-active');
       });
-    }, { threshold: .18, rootMargin:'-4% 0px -8% 0px' });
+    }, { threshold: .08, rootMargin:'8% 0px -5% 0px' });
     slides.forEach(slide => observer.observe(slide));
   }
 
@@ -406,11 +423,16 @@
     if (event.key === THEME_KEY && event.newValue) { theme = event.newValue; applyTheme(); }
   });
 
-  applySettings();
-  applyTheme();
-  applyLanguage();
-  initSlideMotion();
-  initCursorMotion();
-  initMobileNav();
-  startGalleryAutoplay();
+  const safeRun = (name, task) => {
+    try { return task(); }
+    catch (error) { console.error(`[STAIRS] ${name} failed`, error); return null; }
+  };
+
+  safeRun('settings', applySettings);
+  safeRun('theme', applyTheme);
+  safeRun('language', applyLanguage);
+  safeRun('slide motion', initSlideMotion);
+  safeRun('cursor motion', initCursorMotion);
+  safeRun('mobile navigation', initMobileNav);
+  safeRun('gallery autoplay', startGalleryAutoplay);
 })();
