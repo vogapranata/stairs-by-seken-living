@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="STAIRS by Seken Living — chill dining in Prawirotaman, Yogyakarta." />
+  <title>STAIRS — Prawirotaman</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="STAIRS home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>STAIRS</span>
+    </a>
+    <nav class="nav" aria-label="Navigasi utama">
+      <a href="#story">Story</a>
+      <a href="#menu">Menu</a>
+      <a href="#gallery">Space</a>
+      <a href="#visit">Visit</a>
+    </nav>
+    <a class="pill pill-small" data-setting-link="reservationUrl" href="https://www.instagram.com/stairsprawirotaman/" target="_blank" rel="noreferrer">Reserve</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Buka menu">☰</button>
+  </header>
+
+  <main>
+    <section class="hero section-shell">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">PRAWIROTAMAN · YOGYAKARTA</p>
+        <h1 data-setting="heroTitle">A place to<br><span>step out</span> of ordinary.</h1>
+        <p class="hero-sub" data-setting="heroSubtitle">Chill dining, warm light, modern architecture, and long conversations in the heart of Prawirotaman.</p>
+        <div class="hero-actions">
+          <a class="pill" href="#menu">Explore Menu</a>
+          <a class="text-link" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/@-7.8191966,110.3696288,21z/data=!4m6!3m5!1s0x2e7a57835710d665:0x88af7340ff73c90b!8m2!3d-7.8191034!4d110.3695626!16s%2Fg%2F11v3h5kb1l?entry=ttu">Open Maps ↗</a>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal" id="heroVisual" aria-label="Visual concept inspired by STAIRS architecture">
+        <div class="hero-photo" role="img" aria-label="STAIRS exterior and staircase"></div>
+        <div class="stair-sculpture" aria-hidden="true">
+          <span class="step step-1"></span>
+          <span class="step step-2"></span>
+          <span class="step step-3"></span>
+          <span class="step step-4"></span>
+        </div>
+        <div class="hero-card">
+          <span>OPEN DAILY</span>
+          <strong data-setting="openingHours">11.00 — 24.00</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Highlights">
+      <div class="ticker-track">
+        <span>CHILL DINING</span><b>•</b><span>COFFEE BAR</span><b>•</b><span>PASTRY</span><b>•</b><span>OUTDOOR NIGHT VIBES</span><b>•</b><span>PRAWIROTAMAN</span><b>•</b>
+        <span>CHILL DINING</span><b>•</b><span>COFFEE BAR</span><b>•</b><span>PASTRY</span><b>•</b><span>OUTDOOR NIGHT VIBES</span><b>•</b><span>PRAWIROTAMAN</span><b>•</b>
+      </div>
+    </section>
+
+    <section class="story section-shell" id="story">
+      <div class="section-label reveal"><span>01</span> THE STORY</div>
+      <div class="story-grid">
+        <h2 class="reveal">Built around a simple idea:<br><em>going up feels different.</em></h2>
+        <div class="story-copy reveal">
+          <p>STAIRS brings together bold architecture, warm low-light atmosphere, indoor–outdoor dining and a playful sense of discovery. The design language is clean, industrial, and unmistakably Prawirotaman.</p>
+          <p class="muted">This website concept translates that physical experience into motion: layered steps, red wayfinding accents, subtle parallax, and light that moves as you scroll.</p>
+        </div>
+      </div>
+      <div class="architecture-strip reveal" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </section>
+
+    <section class="menu-section section-shell" id="menu">
+      <div class="menu-head reveal">
+        <div>
+          <div class="section-label"><span>02</span> MENU</div>
+          <h2>Pick your mood.</h2>
+        </div>
+        <div class="menu-filter" id="menuFilter" aria-label="Filter menu"></div>
+      </div>
+      <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+      <p class="menu-note">Menu pada demo dapat diubah dari dashboard admin.</p>
+    </section>
+
+    <section class="gallery section-shell" id="gallery">
+      <div class="gallery-head reveal">
+        <div class="section-label"><span>03</span> SPACE</div>
+        <h2>Concrete by day.<br><span>Electric after dark.</span></h2>
+      </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+    <section class="review-section section-shell" id="reviews">
+      <div class="section-label reveal"><span>04</span> WORDS FROM THE TABLE</div>
+      <div class="review-layout">
+        <div class="review-score reveal">
+          <span class="score-kicker">Guest notes</span>
+          <strong>4.7</strong>
+          <span class="stars">★★★★★</span>
+          <p>Atmosphere, food & late-night conversations.</p>
+        </div>
+        <div class="review-list" id="reviewList"></div>
+      </div>
+    </section>
+
+    <section class="visit section-shell" id="visit">
+      <div class="visit-panel reveal">
+        <div>
+          <div class="section-label"><span>05</span> VISIT</div>
+          <h2>Meet us<br>on the steps.</h2>
+        </div>
+        <div class="visit-info">
+          <p class="label">ADDRESS</p>
+          <p data-setting="location">Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153</p>
+          <p class="label">HOURS</p>
+          <p data-setting="openingHours">11.00 — 24.00 · Every day</p>
+          <div class="visit-actions">
+            <a class="pill" data-setting-link="mapsUrl" target="_blank" rel="noreferrer" href="https://www.google.com/maps/place/STAIRS+by+Seken+Living/@-7.8191966,110.3696288,21z/data=!4m6!3m5!1s0x2e7a57835710d665:0x88af7340ff73c90b!8m2!3d-7.8191034!4d110.3695626!16s%2Fg%2F11v3h5kb1l?entry=ttu">Get Directions</a>
+            <a class="text-link" data-setting-link="instagramUrl" target="_blank" rel="noreferrer" href="https://www.instagram.com/stairsprawirotaman/">Instagram ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="footer-logo">STAIRS</div>
+    <p>Prawirotaman · Yogyakarta</p>
+    <a href="admin.html" class="admin-entry" aria-label="Admin dashboard">Admin</a>
+  </footer>
+
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <button type="button" class="mobile-close" aria-label="Tutup menu">×</button>
+    <a href="#story">Story</a>
+    <a href="#menu">Menu</a>
+    <a href="#gallery">Space</a>
+    <a href="#visit">Visit</a>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
