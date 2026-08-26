@@ -399,6 +399,140 @@
     });
   }
 
+  function getInstagramInfo(value = '') {
+    if (!value) return null;
+    try {
+      const url = new URL(String(value).trim(), window.location.href);
+      const host = url.hostname.toLowerCase().replace(/^www\./, '').replace(/^m\./, '');
+      if (!['instagram.com','instagr.am'].includes(host)) return null;
+
+      const segments = url.pathname.split('/').filter(Boolean);
+      // Canonical Instagram media URLs supported by Meta embeds.
+      // We also accept /reels/{code}/ and normalize it to /reel/{code}/.
+      const mediaIndex = ['p','reel','reels','tv'].includes((segments[0] || '').toLowerCase()) ? 0 : -1;
+      if (mediaIndex === 0 && segments[1]) {
+        const kindRaw = segments[mediaIndex].toLowerCase();
+        const kind = kindRaw === 'reels' ? 'reel' : kindRaw;
+        const shortcode = segments[mediaIndex + 1].replace(/[^A-Za-z0-9_-]/g, '');
+        if (shortcode) {
+          return {
+            isInstagram: true,
+            isCanonical: true,
+            kind,
+            shortcode,
+            original: url.href,
+            canonical: `https://www.instagram.com/${kind}/${shortcode}/`
+          };
+        }
+      }
+
+      // Instagram can return /share/reel/... links from the Share sheet.
+      // Those need a server-side redirect/oEmbed resolution before they can be rendered.
+      if (segments[0]?.toLowerCase() === 'share') {
+        return { isInstagram:true, isCanonical:false, original:url.href, canonical:'' };
+      }
+      return { isInstagram:true, isCanonical:false, original:url.href, canonical:'' };
+    } catch {
+      return null;
+    }
+  }
+
+  function isInstagramMediaUrl(value = '') {
+    return Boolean(getInstagramInfo(value)?.isInstagram);
+  }
+
+  function instagramFallbackMarkup(url, title, message = '') {
+    const copy = message || (language === 'id'
+      ? 'Jika player Instagram tidak tampil, buka Reel/Post langsung di Instagram.'
+      : 'If the Instagram player does not appear, open the Reel/Post directly on Instagram.');
+    return `<div class="instagram-fallback"><span>${esc(copy)}</span><a href="${esc(url)}" target="_blank" rel="noreferrer">Instagram ↗</a></div>`;
+  }
+
+  async function resolveInstagramCanonical(rawUrl) {
+    const info = getInstagramInfo(rawUrl);
+    if (!info) return '';
+    if (info.canonical) return info.canonical;
+
+    // Instagram /share/... links do not contain the real shortcode.
+    // On Vercel the lightweight endpoint below follows the redirect and
+    // returns the canonical /reel/... or /p/... permalink without using
+    // Meta Graph/oEmbed tokens.
+    try {
+      const response = await fetch(`/api/instagram?url=${encodeURIComponent(rawUrl)}`, {
+        headers: { 'Accept':'application/json' },
+        cache: 'no-store'
+      });
+      if (response.ok) {
+        const payload = await response.json();
+        if (payload?.canonical) return String(payload.canonical);
+      }
+    } catch {}
+    return '';
+  }
+
+  function instagramIframeMarkup(canonical, title) {
+    const clean = String(canonical || '').replace(/[?#].*$/, '').replace(/\/+$/, '');
+    const src = `${clean}/embed/captioned/`;
+    return `<iframe
+      class="instagram-embed-frame"
+      src="${esc(src)}"
+      title="${esc(title || 'Instagram Reel / Post')}"
+      loading="lazy"
+      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+      allowfullscreen
+      frameborder="0"
+      scrolling="no"
+      referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  }
+
+  async function hydrateInstagramShell(shell) {
+    if (!shell || shell.dataset.instagramHydrated === '1') return;
+    shell.dataset.instagramHydrated = '1';
+
+    const rawUrl = shell.dataset.instagramUrl || '';
+    const title = shell.dataset.instagramTitle || 'Instagram';
+    const canonical = await resolveInstagramCanonical(rawUrl);
+
+    if (!canonical) {
+      shell.innerHTML = instagramFallbackMarkup(
+        rawUrl,
+        title,
+        language === 'id'
+          ? 'Gunakan URL Reel/Post publik dengan format instagram.com/reel/... atau instagram.com/p/....'
+          : 'Use a public Reel/Post URL in the instagram.com/reel/... or instagram.com/p/... format.'
+      );
+      shell.classList.add('instagram-embed-failed');
+      return;
+    }
+
+    shell.innerHTML = `
+      <div class="instagram-frame-wrap">
+        ${instagramIframeMarkup(canonical, title)}
+      </div>
+      ${instagramFallbackMarkup(canonical, title)}
+    `;
+    shell.classList.add('instagram-embed-ready');
+  }
+
+  function hydrateInstagramEmbeds(context = document) {
+    $$('[data-instagram-embed]', context).forEach(shell => hydrateInstagramShell(shell));
+  }
+
+  function renderGalleryMedia(item, title, index = 0, context = 'gallery') {
+    const url = item?.url || '';
+    const instagramInfo = getInstagramInfo(url);
+    if (instagramInfo) {
+      if (context === 'feed') {
+        return `<a class="instagram-feed-card" href="${esc(url)}" target="_blank" rel="noreferrer" aria-label="Open ${esc(title)} on Instagram"><span>INSTAGRAM</span><strong>${esc(title)}</strong><small>${language === 'id' ? 'Buka Reel / post' : 'Open Reel / post'} ↗</small></a>`;
+      }
+      return `<div class="instagram-embed-shell" data-instagram-embed data-instagram-url="${esc(url)}" data-instagram-title="${esc(title)}"><div class="instagram-embed-loading"><i></i><span>${language === 'id' ? 'Memuat Reel / Post Instagram…' : 'Loading Instagram Reel / Post…'}</span></div></div>`;
+    }
+    if (item?.type === 'video') {
+      return `<video src="${esc(url)}" controls playsinline preload="metadata"></video>`;
+    }
+    return `<img src="${esc(url)}" alt="${esc(title)}" loading="${index === 0 ? 'eager' : 'lazy'}" referrerpolicy="no-referrer">`;
+  }
+
   function renderFeed() {
     const track = $('#feedTrack');
     if (!track) return;
@@ -406,9 +540,7 @@
     track.innerHTML = items.map((item,index) => {
       const title = language === 'id' ? (item.titleId || item.title || `STAIRS ${index+1}`) : (item.titleEn || item.title || `STAIRS ${index+1}`);
       const caption = language === 'id' ? (item.captionId || item.caption || '') : (item.captionEn || item.caption || '');
-      const media = item.type === 'video'
-        ? `<video src="${esc(item.url)}" muted loop autoplay playsinline preload="metadata"></video>`
-        : `<img src="${esc(item.url)}" alt="${esc(title)}" loading="lazy" referrerpolicy="no-referrer">`;
+      const media = renderGalleryMedia(item, title, index, 'feed');
       return `<figure data-photo-title="${esc(title)}" data-photo-description="${esc(caption)}" data-photo-source="${esc(item.source || 'Instagram @stairsprawirotaman')}">${media}<figcaption><strong>${esc(title)}</strong><small>${esc(caption)}</small></figcaption></figure>`;
     }).join('');
     track.dataset.loopReady = '';
@@ -425,9 +557,7 @@
     track.innerHTML = data.gallery.map((item,index) => {
       const title = language === 'id' ? (item.titleId || item.title || 'STAIRS') : (item.titleEn || item.title || 'STAIRS');
       const caption = language === 'id' ? (item.captionId || item.caption || '') : (item.captionEn || item.caption || '');
-      const media = item.type === 'video'
-        ? `<video src="${esc(item.url)}" muted loop playsinline preload="metadata"></video>`
-        : `<img src="${esc(item.url)}" alt="${esc(title)}" loading="${index === 0 ? 'eager' : 'lazy'}" referrerpolicy="no-referrer">`;
+      const media = renderGalleryMedia(item, title, index, 'gallery');
       return `<article class="gallery-slide ${index === galleryIndex ? 'active' : ''}" aria-hidden="${index === galleryIndex ? 'false' : 'true'}" data-photo-title="${esc(title)}" data-photo-description="${esc(caption)}" data-photo-source="${esc(item.source || '')}">
         <div class="gallery-media">${media}</div>
         <div class="gallery-slide-copy"><span class="gallery-no">${String(index+1).padStart(2,'0')} / ${String(data.gallery.length).padStart(2,'0')}</span><h3>${esc(title)}</h3><p>${esc(caption)}</p><span class="gallery-source">${esc(item.source || '')}</span></div>
@@ -437,6 +567,7 @@
     dots.innerHTML = data.gallery.map((_,index) => `<button type="button" class="${index === galleryIndex ? 'active' : ''}" data-gallery-dot="${index}" aria-label="Slide ${index+1}"></button>`).join('');
     bindImageFallbacks(track);
     updateGallery(false);
+    hydrateInstagramEmbeds(track);
     $$('[data-gallery-dot]', dots).forEach(button => button.addEventListener('click', () => goGallery(Number(button.dataset.galleryDot), true)));
     renderFeed();
   }
@@ -463,12 +594,18 @@
     if (!data.gallery.length) return;
     galleryIndex = (index + data.gallery.length) % data.gallery.length;
     updateGallery(true);
+    if (isInstagramMediaUrl(data.gallery[galleryIndex]?.url)) {
+      if (galleryTimer) clearInterval(galleryTimer);
+      galleryTimer = null;
+      return;
+    }
     if (restart) startGalleryAutoplay();
   }
 
   function startGalleryAutoplay() {
     if (galleryTimer) clearInterval(galleryTimer);
-    if (reduceMotion || data.gallery.length < 2) return;
+    galleryTimer = null;
+    if (reduceMotion || data.gallery.length < 2 || isInstagramMediaUrl(data.gallery[galleryIndex]?.url)) return;
     galleryTimer = setInterval(() => goGallery(galleryIndex + 1, false), 5500);
   }
 
@@ -1062,6 +1199,31 @@
     }, { passive:true });
   }
 
+  function initHomeLogo() {
+    const logo = $('#homeLogo') || $('.brand');
+    if (!logo) return;
+
+    logo.addEventListener('click', event => {
+      event.preventDefault();
+
+      // Close the mobile navigation as well, if it happens to be open.
+      const mobileNav = $('#mobileNav');
+      const menuToggle = $('.menu-toggle');
+      mobileNav?.classList.remove('open');
+      mobileNav?.setAttribute('aria-hidden', 'true');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+
+      // Scroll the actual document to 0 rather than relying on #top.
+      // This stays reliable while the header is morphing/floating.
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
+      // Keep the URL clean after using the logo as Home.
+      if (location.hash) {
+        try { history.replaceState(null, '', location.pathname + location.search); } catch {}
+      }
+    });
+  }
+
   function initMobileNav() {
     const toggle = $('.menu-toggle');
     const nav = $('#mobileNav');
@@ -1150,6 +1312,7 @@
   safeRun('menu carousel', initMenuCarousel);
   safeRun('access carousel', initAccessCarousel);
   safeRun('photo lightbox', initPhotoLightbox);
+  safeRun('home logo', initHomeLogo);
   safeRun('mobile navigation', initMobileNav);
   safeRun('gallery autoplay', startGalleryAutoplay);
 })();

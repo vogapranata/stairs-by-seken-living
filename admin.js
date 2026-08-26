@@ -127,6 +127,29 @@
   const $$ = (selector, context=document) => [...context.querySelectorAll(selector)];
   const esc = (value='') => String(value).replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
+  function getInstagramInfo(value='') {
+    if(!value) return null;
+    try {
+      const url=new URL(String(value).trim(),window.location.href);
+      const host=url.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');
+      if(!['instagram.com','instagr.am'].includes(host)) return null;
+      const segments=url.pathname.split('/').filter(Boolean);
+      const mediaIndex=['p','reel','reels','tv'].includes((segments[0]||'').toLowerCase())?0:-1;
+      if(mediaIndex===0 && segments[1]) {
+        const rawKind=segments[mediaIndex].toLowerCase();
+        const kind=rawKind==='reels'?'reel':rawKind;
+        const shortcode=segments[mediaIndex+1].replace(/[^A-Za-z0-9_-]/g,'');
+        if(shortcode) return {isInstagram:true,isCanonical:true,canonical:`https://www.instagram.com/${kind}/${shortcode}/`,original:url.href};
+      }
+      if(segments[0]?.toLowerCase()==='share') return {isInstagram:true,isCanonical:false,canonical:'',original:url.href};
+      return {isInstagram:true,isCanonical:false,canonical:'',original:url.href};
+    } catch { return null; }
+  }
+
+  function isInstagramMediaUrl(value='') {
+    return Boolean(getInstagramInfo(value)?.isInstagram);
+  }
+
   function load() {
     try {
       const raw = localStorage.getItem(KEY);
@@ -240,7 +263,15 @@
 
   function renderGallery() {
     const wrap=$('#adminGallery'); if(!wrap)return;
-    wrap.innerHTML=data.gallery.map(item=>`<article class="media-admin-card"><div class="media-thumb">${item.type==='video'?`<video src="${esc(item.url)}" muted playsinline preload="metadata"></video><span>VIDEO</span>`:`<img src="${esc(item.url)}" alt="${esc(item.titleId||'STAIRS')}" referrerpolicy="no-referrer">`}</div><div class="media-admin-copy"><b>${esc(item.titleId||item.titleEn||'Untitled')}</b><small>${esc(item.source||'No source label')}</small><small>${esc(item.captionId||'')}</small><div class="row-actions"><button type="button" data-edit-gallery="${esc(item.id)}">Edit</button><button type="button" class="danger" data-del-gallery="${esc(item.id)}">Delete</button></div></div></article>`).join('')||'<p class="empty-row">No media yet.</p>';
+    wrap.innerHTML=data.gallery.map(item=>{
+      const instagram=isInstagramMediaUrl(item.url);
+      const preview=instagram
+        ? `<a class="instagram-admin-preview" href="${esc(item.url)}" target="_blank" rel="noreferrer"><span>INSTAGRAM</span><b>REEL / POST</b><small>Open ↗</small></a>`
+        : item.type==='video'
+          ? `<video src="${esc(item.url)}" muted controls playsinline preload="metadata"></video><span>VIDEO</span>`
+          : `<img src="${esc(item.url)}" alt="${esc(item.titleId||'STAIRS')}" referrerpolicy="no-referrer">`;
+      return `<article class="media-admin-card"><div class="media-thumb">${preview}</div><div class="media-admin-copy"><b>${esc(item.titleId||item.titleEn||'Untitled')}</b><small>${esc(item.source||'No source label')}</small><small>${esc(item.captionId||'')}</small><div class="row-actions"><button type="button" data-edit-gallery="${esc(item.id)}">Edit</button><button type="button" class="danger" data-del-gallery="${esc(item.id)}">Delete</button></div></div></article>`;
+    }).join('')||'<p class="empty-row">No media yet.</p>';
     $$('img',wrap).forEach(img=>img.addEventListener('error',()=>{img.hidden=true;img.closest('.media-thumb')?.classList.add('media-broken');}));
     $$('[data-edit-gallery]',wrap).forEach(button=>button.addEventListener('click',()=>openEditor('gallery',button.dataset.editGallery)));
     $$('[data-del-gallery]',wrap).forEach(button=>button.addEventListener('click',()=>removeItem('gallery',button.dataset.delGallery)));
@@ -326,7 +357,7 @@
 
   function fieldsFor(type,item={}) {
     if(type==='menu') return [optionalField('image','Menu image URL',item.image,'url',true),fileField('imageUpload','Atau upload foto menu',true),field('name','Item name',item.name),selectField('category','Category',item.category||'Breakfast',['Breakfast','Bites','Pizza','Salads','Comfort','Pasta','Mains','Coffee','Tea','Fermented','Non Coffee','Cocktails']),field('price','Price',item.price),field('descriptionId','Description ID',item.descriptionId,'textarea',true),field('descriptionEn','Description EN',item.descriptionEn,'textarea',true)];
-    if(type==='gallery') return [selectField('type','Media type',item.type||'image',['image','video']),optionalField('url','Media URL',item.url,'url',true),fileField('mediaUpload','Atau upload foto',true),field('titleId','Title ID',item.titleId),field('titleEn','Title EN',item.titleEn),field('captionId','Caption ID',item.captionId,'textarea',true),field('captionEn','Caption EN',item.captionEn,'textarea',true),field('source','Source / credit',item.source,'text',true)];
+    if(type==='gallery') return [selectField('type','Media type',isInstagramMediaUrl(item.url)?'instagram':(item.type||'image'),['image','video','instagram']),optionalField('url','Media URL — gambar, direct video, atau URL Instagram Reel/Post',item.url,'url',true),fileField('mediaUpload','Atau upload foto',true),field('titleId','Title ID',item.titleId),field('titleEn','Title EN',item.titleEn),field('captionId','Caption ID',item.captionId,'textarea',true),field('captionEn','Caption EN',item.captionEn,'textarea',true),field('source','Source / credit',item.source,'text',true)];
     return [field('name','Display name',item.name),field('rating','Rating 1–5',item.rating||5,'number',false,'1','5'),field('textId','Review ID',item.textId,'textarea',true),field('textEn','Review EN',item.textEn,'textarea',true)];
   }
 
@@ -345,7 +376,24 @@
     const imageUpload=fd.get('imageUpload'); const mediaUpload=fd.get('mediaUpload');
     try {
       if(editing.type==='menu') { const uploaded=await imageFileToDataUrl(imageUpload); if(uploaded)object.image=uploaded; else if(!object.image&&existing.image)object.image=existing.image; }
-      if(editing.type==='gallery') { const uploaded=await imageFileToDataUrl(mediaUpload); if(uploaded){object.url=uploaded;object.type='image';} else if(!object.url&&existing.url)object.url=existing.url; }
+      if(editing.type==='gallery') {
+        const uploaded=await imageFileToDataUrl(mediaUpload);
+        if(uploaded){ object.url=uploaded; object.type='image'; }
+        else {
+          if(!object.url&&existing.url)object.url=existing.url;
+          const instagramInfo=getInstagramInfo(object.url);
+          if(object.type==='instagram' || instagramInfo) {
+            if(!instagramInfo) {
+              showToast('Instagram URL','Gunakan URL Instagram publik seperti /reel/... atau /p/...');
+              return;
+            }
+            object.type='instagram';
+            // Remove tracking parameters from canonical Reel/Post URLs. Share URLs
+            // remain intact and are resolved by the Vercel /api/instagram endpoint.
+            if(instagramInfo.canonical) object.url=instagramInfo.canonical;
+          }
+        }
+      }
     } catch { showToast('Image error','Foto gagal diproses. Gunakan URL gambar atau file lain.'); return; }
     if(editing.type==='reviews')object.rating=Math.max(1,Math.min(5,Number(object.rating)||5));
     if(editing.id){object.id=editing.id;data[editing.type]=data[editing.type].map(item=>item.id===editing.id?{...existing,...object}:item);} else {object.id=`${editing.type[0]}${Date.now()}`;data[editing.type].push(object);}
