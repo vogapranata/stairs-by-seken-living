@@ -6,8 +6,8 @@
   <title>STAIRS — Admin Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.1" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=6.3" />
 </head>
 <body>
   <div class="login-screen" id="loginScreen">
@@ -108,8 +108,8 @@
           <div class="section-toolbar"><div><span class="micro">DESIGN SYSTEM</span><h2>Appearance</h2><p>Ubah model font dan warna utama website tanpa menyentuh kode.</p></div><button type="button" class="primary-btn" id="saveAppearanceBtn">Save appearance</button></div>
           <div class="appearance-layout">
             <form class="appearance-form" id="appearanceForm">
-              <label class="field-card"><span>Headline / display font</span><select name="displayFont"><option>Bricolage Grotesque</option><option>Space Grotesk</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Sora</option><option>Outfit</option><option>Syne</option><option>Manrope</option></select></label>
-              <label class="field-card"><span>Body / UI font</span><select name="bodyFont"><option>Manrope</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Space Grotesk</option><option>Sora</option><option>Outfit</option><option>Bricolage Grotesque</option></select></label>
+              <label class="field-card"><span>Headline / display font</span><select name="displayFont"><option>Inter Tight</option><option>Instrument Sans</option><option>Bricolage Grotesque</option><option>Space Grotesk</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Sora</option><option>Outfit</option><option>Syne</option><option>Manrope</option></select></label>
+              <label class="field-card"><span>Body / UI font</span><select name="bodyFont"><option>Instrument Sans</option><option>Inter Tight</option><option>Manrope</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Space Grotesk</option><option>Sora</option><option>Outfit</option><option>Bricolage Grotesque</option></select></label>
               <label class="field-card"><span>Primary accent</span><input name="accentColor" type="color" value="#ef2d27"></label>
               <label class="field-card"><span>Secondary / night blue</span><input name="secondaryColor" type="color" value="#2118a8"></label>
             </form>
@@ -163,6 +163,6 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><div><b>Saved</b><small>Website content updated.</small></div></div>
-  <script src="admin.js?v=6.1"></script>
+  <script src="admin.js?v=6.3"></script>
 </body>
 </html>

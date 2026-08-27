@@ -1,3 +1,7 @@
+# STAIRS × Pear — v6.3 Reel Fit Fix
+
+Fix utama: Instagram Reel/Post di Gallery sekarang di-fit penuh ke area media, tanpa crop dan tanpa nested scrollbar. Direct video memakai `object-fit: contain`.
+
 # STAIRS by Seken Living — FINAL CLEAN
 
 Paket ini adalah versi lengkap dan bersih untuk menggantikan isi repository `stairs-by-seken-living`.
@@ -57,3 +61,10 @@ Layout dan ukuran STAIRS dipertahankan. Motion diganti dengan sistem scroll-scru
 
 ## v6.1 — Pear-inspired typography
 Typography now mirrors Pear's editorial treatment: oversized sentence-case display lines, tight leading and tracking, medium rather than heavy headline weights, short readable body lines, and small functional labels. The exact Pear family is served through Adobe Typekit; this build uses DM Sans as an available neutral-grotesk substitute while preserving the CMS font controls.
+
+
+## v6.2 Pear typography correction
+- Display typography: Inter Tight (400) with tighter leading and kerning.
+- Body/UI: Instrument Sans.
+- Key headlines are split into word-safe character spans so glyph motion behaves closer to Pear's DOM typography.
+- Existing v6.1 DM Sans defaults migrate once to the new pair; deliberate custom CMS font choices are preserved where possible.

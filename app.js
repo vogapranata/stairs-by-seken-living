@@ -29,9 +29,9 @@
       tableBookingUrl: 'https://linktr.ee/stairsprawirotaman',
       venueReservationUrl: 'https://linktr.ee/stairsprawirotaman',
       tiktokUrl: 'https://www.tiktok.com/@stairsprawirotaman',
-      displayFont: 'DM Sans',
-      bodyFont: 'DM Sans',
-      typographyProfile: 'pear-v1',
+      displayFont: 'Inter Tight',
+      bodyFont: 'Instrument Sans',
+      typographyProfile: 'pear-v2',
       accentColor: '#ef2d27',
       secondaryColor: '#2118a8',
       defaultLanguage: 'id',
@@ -183,6 +183,8 @@
   document.documentElement.classList.add('force-motion');
 
   const FONT_STACKS = {
+    'Inter Tight': "'Inter Tight','Helvetica Neue',Arial,sans-serif",
+    'Instrument Sans': "'Instrument Sans','Helvetica Neue',Arial,sans-serif",
     'Bricolage Grotesque': "'Bricolage Grotesque',system-ui,sans-serif",
     'Manrope': "'Manrope',system-ui,sans-serif",
     'Space Grotesk': "'Space Grotesk',system-ui,sans-serif",
@@ -222,8 +224,8 @@
 
   function applyAppearance() {
     const root = document.documentElement;
-    const display = FONT_STACKS[data.settings.displayFont] || FONT_STACKS['Bricolage Grotesque'];
-    const body = FONT_STACKS[data.settings.bodyFont] || FONT_STACKS['Manrope'];
+    const display = FONT_STACKS[data.settings.displayFont] || FONT_STACKS['Inter Tight'];
+    const body = FONT_STACKS[data.settings.bodyFont] || FONT_STACKS['Instrument Sans'];
     root.style.setProperty('--font-display', display);
     root.style.setProperty('--font-body', body);
     if (/^#[0-9a-f]{6}$/i.test(data.settings.accentColor || '')) root.style.setProperty('--red', data.settings.accentColor);
@@ -236,12 +238,12 @@
       const saved = raw ? JSON.parse(raw) : null;
       if (!saved) return clone(defaults);
       const savedSettings = { ...(saved.settings || {}) };
-      // v6.1 typography migration: preserve explicit later choices, but move old default
-      // Bricolage/Manrope builds to the Pear-inspired editorial treatment once.
-      if (!savedSettings.typographyProfile) {
-        if (!savedSettings.displayFont || savedSettings.displayFont === 'Bricolage Grotesque') savedSettings.displayFont = 'DM Sans';
-        if (!savedSettings.bodyFont || savedSettings.bodyFont === 'Manrope') savedSettings.bodyFont = 'DM Sans';
-        savedSettings.typographyProfile = 'pear-v1';
+      // v6.2 typography migration: old default stacks move to the closer Pear-like pair.
+      // If the user deliberately picked another font in CMS, keep that choice.
+      if (savedSettings.typographyProfile !== 'pear-v2') {
+        if (!savedSettings.displayFont || ['Bricolage Grotesque','DM Sans'].includes(savedSettings.displayFont)) savedSettings.displayFont = 'Inter Tight';
+        if (!savedSettings.bodyFont || ['Manrope','DM Sans'].includes(savedSettings.bodyFont)) savedSettings.bodyFont = 'Instrument Sans';
+        savedSettings.typographyProfile = 'pear-v2';
       }
       return {
         settings: { ...defaults.settings, ...savedSettings },
@@ -481,7 +483,7 @@
 
   function instagramIframeMarkup(canonical, title) {
     const clean = String(canonical || '').replace(/[?#].*$/, '').replace(/\/+$/, '');
-    const src = `${clean}/embed/captioned/`;
+    const src = `${clean}/embed/`;
     return `<iframe
       class="instagram-embed-frame"
       src="${esc(src)}"
@@ -492,6 +494,33 @@
       frameborder="0"
       scrolling="no"
       referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  }
+
+  function fitInstagramShell(shell) {
+    if (!shell || !shell.classList.contains('instagram-embed-ready')) return;
+    const media = shell.closest('.gallery-media') || shell;
+    const rect = media.getBoundingClientRect();
+    const baseWidth = 540;
+    const baseHeight = 700;
+    const pad = 12;
+    const availableWidth = Math.max(220, rect.width - pad * 2);
+    const availableHeight = Math.max(260, rect.height - pad * 2);
+    const scale = Math.min(1, availableWidth / baseWidth, availableHeight / baseHeight);
+    shell.style.setProperty('--ig-fit', String(Math.max(.34, scale)));
+  }
+
+  function bindInstagramFit(shell) {
+    if (!shell || shell.dataset.instagramFitBound === '1') return;
+    shell.dataset.instagramFitBound = '1';
+    const update = () => fitInstagramShell(shell);
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(update);
+      ro.observe(shell.closest('.gallery-media') || shell);
+      shell._stairsInstagramResizeObserver = ro;
+    } else {
+      window.addEventListener('resize', update, { passive:true });
+    }
+    requestAnimationFrame(update);
   }
 
   async function hydrateInstagramShell(shell) {
@@ -518,9 +547,10 @@
       <div class="instagram-frame-wrap">
         ${instagramIframeMarkup(canonical, title)}
       </div>
-      ${instagramFallbackMarkup(canonical, title)}
+      <a class="instagram-open-pill" href="${esc(canonical)}" target="_blank" rel="noreferrer">Instagram ↗</a>
     `;
     shell.classList.add('instagram-embed-ready');
+    bindInstagramFit(shell);
   }
 
   function hydrateInstagramEmbeds(context = document) {
@@ -567,7 +597,8 @@
       const title = language === 'id' ? (item.titleId || item.title || 'STAIRS') : (item.titleEn || item.title || 'STAIRS');
       const caption = language === 'id' ? (item.captionId || item.caption || '') : (item.captionEn || item.caption || '');
       const media = renderGalleryMedia(item, title, index, 'gallery');
-      return `<article class="gallery-slide ${index === galleryIndex ? 'active' : ''}" aria-hidden="${index === galleryIndex ? 'false' : 'true'}" data-photo-title="${esc(title)}" data-photo-description="${esc(caption)}" data-photo-source="${esc(item.source || '')}">
+      const mediaClass = getInstagramInfo(item?.url || '') ? ' is-instagram-slide' : (item?.type === 'video' ? ' is-video-slide' : '');
+      return `<article class="gallery-slide${mediaClass} ${index === galleryIndex ? 'active' : ''}" aria-hidden="${index === galleryIndex ? 'false' : 'true'}" data-photo-title="${esc(title)}" data-photo-description="${esc(caption)}" data-photo-source="${esc(item.source || '')}">
         <div class="gallery-media">${media}</div>
         <div class="gallery-slide-copy"><span class="gallery-no">${String(index+1).padStart(2,'0')} / ${String(data.gallery.length).padStart(2,'0')}</span><h3>${esc(title)}</h3><p>${esc(caption)}</p><span class="gallery-source">${esc(item.source || '')}</span></div>
       </article>`;
@@ -1446,6 +1477,47 @@
     }, { passive:true });
   }
 
+  function initPearTypesetting() {
+    const roots = $$('.hero h1, .night-grid h2, .feed-head h2, .bar-head h2, .menu-head h2, .gallery-head h2, .links-head h2, .visit h2');
+    let globalIndex = 0;
+
+    const splitTextNode = node => {
+      const text = node.nodeValue || '';
+      if (!text.trim()) return;
+      const frag = document.createDocumentFragment();
+      const tokens = text.split(/(\s+)/);
+      tokens.forEach(token => {
+        if (!token) return;
+        if (/^\s+$/.test(token)) {
+          frag.appendChild(document.createTextNode(token));
+          return;
+        }
+        const word = document.createElement('span');
+        word.className = 'pear-word';
+        [...token].forEach(char => {
+          const span = document.createElement('span');
+          span.className = 'pear-char';
+          span.textContent = char;
+          span.style.setProperty('--pear-char-index', globalIndex++);
+          word.appendChild(span);
+        });
+        frag.appendChild(word);
+      });
+      node.replaceWith(frag);
+    };
+
+    roots.forEach(root => {
+      // When i18n/CMS replaces innerHTML the previous .pear-char nodes disappear,
+      // so the heading is automatically split again on the next pass.
+      if (root.querySelector('.pear-char')) return;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+      textNodes.forEach(splitTextNode);
+      root.classList.add('pear-typeset');
+    });
+  }
+
   function initHomeLogo() {
     const logo = $('#homeLogo') || $('.brand');
     if (!logo) return;
@@ -1551,6 +1623,7 @@
   safeRun('theme', applyTheme);
   safeRun('language', applyLanguage);
   safeRun('header merge', initHeaderMerge);
+  safeRun('pear typesetting', initPearTypesetting);
   safeRun('pear motion engine', initPearMotionEngine);
   safeRun('hero orbit', initHeroOrbit);
   safeRun('cursor motion', initCursorMotion);

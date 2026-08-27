@@ -16,7 +16,7 @@
     linktreeUrl:'https://linktr.ee/stairsprawirotaman', workFromStairsUrl:'https://linktr.ee/stairsprawirotaman', allRedPromoUrl:'https://linktr.ee/stairsprawirotaman',
     gofoodUrl:'https://linktr.ee/stairsprawirotaman', grabfoodUrl:'https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE',
     foodMenuUrl:'https://linktr.ee/stairsprawirotaman', barMenuUrl:'https://linktr.ee/stairsprawirotaman', tableBookingUrl:'https://linktr.ee/stairsprawirotaman',
-    venueReservationUrl:'https://linktr.ee/stairsprawirotaman', tiktokUrl:'https://www.tiktok.com/@stairsprawirotaman', displayFont:'DM Sans', bodyFont:'DM Sans', typographyProfile:'pear-v1', accentColor:'#ef2d27', secondaryColor:'#2118a8', defaultLanguage:'id', defaultTheme:'dark'
+    venueReservationUrl:'https://linktr.ee/stairsprawirotaman', tiktokUrl:'https://www.tiktok.com/@stairsprawirotaman', displayFont:'Inter Tight', bodyFont:'Instrument Sans', typographyProfile:'pear-v2', accentColor:'#ef2d27', secondaryColor:'#2118a8', defaultLanguage:'id', defaultTheme:'dark'
   };
 
   const menuDefault = [
@@ -105,6 +105,7 @@
   };
   const getMenuImage = item => item.image || MENU_IMAGE_FALLBACKS[item.id] || CATEGORY_IMAGE_FALLBACKS[item.category] || 'assets/ig-cocktail.png';
   const FONT_STACKS = {
+    'Inter Tight':"'Inter Tight','Helvetica Neue',Arial,sans-serif",'Instrument Sans':"'Instrument Sans','Helvetica Neue',Arial,sans-serif",
     'Bricolage Grotesque':"'Bricolage Grotesque',system-ui,sans-serif",'Manrope':"'Manrope',system-ui,sans-serif",'Space Grotesk':"'Space Grotesk',system-ui,sans-serif",'Plus Jakarta Sans':"'Plus Jakarta Sans',system-ui,sans-serif",'DM Sans':"'DM Sans',system-ui,sans-serif",'Sora':"'Sora',system-ui,sans-serif",'Outfit':"'Outfit',system-ui,sans-serif",'Syne':"'Syne',system-ui,sans-serif"
   };
 
@@ -297,8 +298,8 @@
   }
   function updateAppearancePreview() {
     const form=$('#appearanceForm'); const preview=$('#appearancePreview'); if(!form||!preview)return;
-    const display=form.elements.displayFont?.value||data.settings.displayFont||'Bricolage Grotesque';
-    const body=form.elements.bodyFont?.value||data.settings.bodyFont||'Manrope';
+    const display=form.elements.displayFont?.value||data.settings.displayFont||'Inter Tight';
+    const body=form.elements.bodyFont?.value||data.settings.bodyFont||'Instrument Sans';
     const accent=form.elements.accentColor?.value||data.settings.accentColor||'#ef2d27';
     const secondary=form.elements.secondaryColor?.value||data.settings.secondaryColor||'#2118a8';
     preview.style.setProperty('--preview-display',FONT_STACKS[display]||FONT_STACKS['DM Sans']);

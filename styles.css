@@ -1079,3 +1079,97 @@ html.pear-motion .hero-visual{height:590px}
   html.pear-motion .pear-media{clip-path:inset(var(--pear-media-clip,0%) 0 var(--pear-media-clip,0%) 0 round 16px)}
 }
 \n\n/* v6.1 — Pear-inspired typography system\n   The exact Pear typeface is served through Adobe Typekit; this project mirrors\n   Pear's typographic treatment with an available neutral grotesk (DM Sans):\n   very large sentence-case headlines, restrained weights, tight leading,\n   short editorial line lengths, and small functional labels. */\n:root{\n  --font-display:'DM Sans',Arial,sans-serif;\n  --font-body:'DM Sans',Arial,sans-serif;\n  --pear-type-display-weight:500;\n  --pear-type-body-weight:400;\n  --pear-type-tight:-.058em;\n  --pear-type-copy:54ch;\n}\nbody{font-family:var(--font-body);font-weight:var(--pear-type-body-weight);font-size:15px;line-height:1.45;letter-spacing:-.012em}\n.brand{font-family:var(--font-display);font-weight:600;letter-spacing:.025em}\n.nav{font-size:12px;letter-spacing:-.005em}\n.nav a,.lang-toggle,.theme-toggle,.pill,.text-link{font-weight:500}\n.pill{letter-spacing:-.012em}\n\n/* Pear-style display writing: sentence case, soft grotesk, very tight rhythm. */\n.hero h1{\n  font-family:var(--font-display)!important;\n  font-size:clamp(68px,7.15vw,112px);\n  line-height:.865;\n  font-weight:var(--pear-type-display-weight);\n  letter-spacing:-.068em!important;\n  text-transform:none;\n  max-width:8.7ch;\n  text-wrap:balance;\n  margin:22px 0 28px;\n}\n.hero h1 span{font-weight:inherit}\n.hero-sub{font-size:clamp(15px,1.22vw,18px);line-height:1.48;letter-spacing:-.022em;max-width:47ch;color:color-mix(in srgb,var(--text) 67%,transparent)}\n.hero-meta b{font-family:var(--font-display);font-weight:500;letter-spacing:-.04em}\n.hero-meta small{font-size:9px;letter-spacing:.075em;font-weight:500}\n\n.eyebrow,.section-label{\n  font-family:var(--font-body)!important;\n  font-size:9px;\n  line-height:1;\n  font-weight:600;\n  letter-spacing:.105em;\n  text-transform:uppercase;\n}\nh2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{\n  font-family:var(--font-display)!important;\n  font-size:clamp(50px,5.7vw,84px);\n  line-height:.91;\n  font-weight:var(--pear-type-display-weight);\n  letter-spacing:-.06em!important;\n  text-transform:none;\n  text-wrap:balance;\n}\n.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2{max-width:11.6ch}\n.night-grid p,.feed-head p,.bar-head p,.links-head p,.section-intro,.gallery-slide-copy p,.review-score p{\n  max-width:var(--pear-type-copy);\n  font-size:14px;\n  line-height:1.48;\n  letter-spacing:-.014em;\n}\n\n/* Cards: less visual shouting, more editorial hierarchy. */\n.menu-copy h3,.cocktail-grid h3,.gallery-slide-copy h3,.quick-links b,.footer-logo,.orbit-core strong,.orbit-label b{\n  font-family:var(--font-display)!important;\n  font-weight:500!important;\n  letter-spacing:-.035em!important;\n}\n.menu-copy h3{font-size:20px;line-height:1.04}\n.menu-copy span,.gallery-source,.feed-track figcaption,.admin-entry{letter-spacing:.085em;text-transform:uppercase;font-weight:500}\n.menu-copy p{font-size:12px;line-height:1.42;letter-spacing:-.01em}\n.menu-card>strong{font-family:var(--font-display);font-weight:500;letter-spacing:-.03em}\n.cocktail-grid h3{font-size:30px;line-height:.98}\n.gallery-slide-copy h3{font-size:clamp(30px,3vw,42px);line-height:.96}\n.quick-links b{font-size:19px}\n.review-score>strong{font-family:var(--font-display)!important;font-weight:500!important;letter-spacing:-.075em!important}\n.review-card p{font-size:clamp(17px,1.65vw,21px);line-height:1.42;letter-spacing:-.025em;max-width:46ch}\n.footer-logo{font-size:40px}\n\n/* Pear uses fine rules and compact information type around oversized display text. */\n.ticker-track{font-family:var(--font-body)!important;font-weight:600;letter-spacing:.08em;font-size:10px}\n.color-scan span,.menu-index,.gallery-no,.score-kicker,.visit-info .label{font-family:var(--font-body)!important;letter-spacing:.085em;font-weight:500}\n.orbit-core span,.orbit-core small{font-family:var(--font-body)!important;font-weight:500}\n\n@media(max-width:900px){\n  .hero h1{font-size:clamp(58px,11vw,90px);max-width:9ch}\n  h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{font-size:clamp(44px,8.8vw,68px)}\n}\n@media(max-width:720px){\n  body{font-size:14px}\n  .hero h1{font-size:clamp(54px,15vw,76px);line-height:.87;letter-spacing:-.064em!important;margin-top:18px}\n  .hero-sub{font-size:15px;line-height:1.45;max-width:34ch}\n  h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{font-size:clamp(40px,12.5vw,58px);line-height:.92;letter-spacing:-.057em!important}\n  .section-label,.eyebrow{font-size:8px;letter-spacing:.09em}\n}\n
+
+/* v6.2 — closer Pear typography treatment.
+   Pear currently serves typography via Adobe Typekit. We do not copy/share
+   that licensed font file; Inter Tight + Instrument Sans are used as a close
+   web-safe neo-grotesk substitute, while the writing structure mirrors Pear:
+   light display weight, compact leading, individually split characters,
+   restrained labels and editorial text measure. */
+:root{
+  --font-display:'Inter Tight','Helvetica Neue',Arial,sans-serif;
+  --font-body:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+  --pear-type-display-weight:400;
+  --pear-type-body-weight:400;
+}
+body{
+  font-family:var(--font-body)!important;
+  font-weight:400;
+  letter-spacing:-.018em;
+  font-kerning:normal;
+  font-optical-sizing:auto;
+}
+.brand{font-family:var(--font-display)!important;font-weight:500;letter-spacing:.018em}
+.nav,.lang-toggle,.theme-toggle,.pill,.text-link{font-family:var(--font-body)!important;font-weight:500}
+.nav{font-size:12px;letter-spacing:-.014em}
+
+.hero h1{
+  font-family:var(--font-display)!important;
+  font-weight:400!important;
+  font-size:clamp(72px,7.45vw,118px)!important;
+  line-height:.855!important;
+  letter-spacing:-.058em!important;
+  max-width:9.1ch!important;
+}
+h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{
+  font-family:var(--font-display)!important;
+  font-weight:400!important;
+  font-size:clamp(52px,5.85vw,88px)!important;
+  line-height:.89!important;
+  letter-spacing:-.054em!important;
+}
+.hero-sub,.night-grid p,.feed-head p,.bar-head p,.links-head p,.section-intro,.gallery-slide-copy p,.review-score p{
+  font-family:var(--font-body)!important;
+  font-weight:400!important;
+  letter-spacing:-.022em!important;
+  line-height:1.42!important;
+}
+.hero-sub{font-size:clamp(15px,1.12vw,17px)!important;max-width:44ch!important}
+.eyebrow,.section-label,.hero-meta small,.menu-copy span,.gallery-source,.score-kicker,.visit-info .label{
+  font-family:var(--font-body)!important;
+  font-weight:500!important;
+  font-size:9px!important;
+  letter-spacing:.075em!important;
+  text-transform:uppercase;
+}
+.menu-copy h3,.cocktail-grid h3,.gallery-slide-copy h3,.quick-links b,.review-card p,.footer-logo,.orbit-core strong,.orbit-label b{
+  font-family:var(--font-display)!important;
+  font-weight:400!important;
+}
+.menu-copy h3{letter-spacing:-.042em!important}
+.cocktail-grid h3{letter-spacing:-.048em!important}
+.review-card p{letter-spacing:-.036em!important;line-height:1.32!important}
+
+/* Pear's current DOM uses split typography for motion. Keeping words intact
+   prevents ugly mid-word wraps while each glyph can still animate separately. */
+.pear-word{display:inline-block;white-space:nowrap}
+.pear-char{
+  display:inline-block;
+  transform:translate3d(0,0,0);
+  transform-origin:50% 80%;
+  will-change:transform,opacity;
+  animation:pearGlyphIn .78s cubic-bezier(.16,1,.3,1) both;
+  animation-delay:calc(min(var(--pear-char-index),40) * 7ms);
+}
+.slide-section:not(.hero) .pear-char{animation-duration:.66s}
+@keyframes pearGlyphIn{
+  from{opacity:.001;transform:translate3d(0,.42em,0) rotate(.7deg)}
+  to{opacity:1;transform:translate3d(0,0,0) rotate(0)}
+}
+
+/* Compact secondary writing is deliberately much smaller than the display
+   layer, which is one of the strongest visual differences from the old build. */
+.hero-meta b{font-family:var(--font-display)!important;font-size:18px!important;font-weight:400!important;letter-spacing:-.045em!important}
+.menu-copy p,.feed-track figcaption small{font-family:var(--font-body)!important;font-size:11px!important;line-height:1.42!important}
+.ticker-track{font-family:var(--font-body)!important;font-weight:500!important;font-size:10px!important;letter-spacing:.065em!important}
+
+@media(max-width:900px){
+  .hero h1{font-size:clamp(60px,11.5vw,92px)!important}
+  h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{font-size:clamp(46px,9vw,70px)!important}
+}
+@media(max-width:720px){
+  .hero h1{font-size:clamp(54px,15vw,78px)!important;line-height:.86!important;letter-spacing:-.055em!important}
+  h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{font-size:clamp(41px,12.8vw,60px)!important;line-height:.9!important}
+  .hero-sub{font-size:14px!important;line-height:1.42!important}
+}
+\n\n/* v6.3 — Instagram/Reel fit fix\n   Keep the compact STAIRS gallery, but fit the full portrait player inside it.\n   No crop, no nested scrolling; direct videos also use contain. */\n.gallery-media video{object-fit:contain!important;background:#050505}\n.gallery-slide.is-video-slide .gallery-media{display:grid;place-items:center;background:#050505}\n.gallery-slide.is-instagram-slide .gallery-media{\n  position:relative;display:grid!important;place-items:center!important;\n  overflow:hidden!important;background:#070707!important;\n}\n.gallery-slide.is-instagram-slide .instagram-embed-shell{\n  position:relative!important;width:100%!important;height:100%!important;min-height:0!important;\n  padding:0!important;overflow:hidden!important;background:#070707!important;\n  display:block!important;overscroll-behavior:none!important;scrollbar-width:none!important;\n}\n.gallery-slide.is-instagram-slide .instagram-embed-shell::-webkit-scrollbar{display:none!important}\n.gallery-slide.is-instagram-slide .instagram-frame-wrap{\n  position:absolute!important;left:50%!important;top:50%!important;\n  width:540px!important;height:700px!important;min-height:0!important;max-width:none!important;\n  margin:0!important;border-radius:16px!important;overflow:hidden!important;background:#fff!important;\n  transform:translate(-50%,-50%) scale(var(--ig-fit,.56))!important;\n  transform-origin:center center!important;box-shadow:0 20px 60px rgba(0,0,0,.25);\n}\n.gallery-slide.is-instagram-slide .instagram-embed-frame{\n  width:540px!important;height:700px!important;min-height:0!important;max-height:none!important;\n  border:0!important;display:block!important;overflow:hidden!important;background:#fff!important;\n}\n.instagram-open-pill{\n  position:absolute;right:12px;bottom:12px;z-index:5;display:inline-flex;align-items:center;justify-content:center;\n  min-height:32px;padding:0 11px;border-radius:999px;background:rgba(255,255,255,.9);color:#111;\n  border:1px solid rgba(0,0,0,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);\n  font:600 10px/1 var(--font-body);letter-spacing:-.01em;box-shadow:0 6px 22px rgba(0,0,0,.12);\n}\n.gallery-slide.is-instagram-slide .instagram-fallback{display:none!important}\n\n@media(max-width:720px){\n  .gallery-slide.is-instagram-slide .gallery-media{height:430px!important;min-height:430px!important}\n  .instagram-open-pill{right:9px;bottom:9px}\n}\n
