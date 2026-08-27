@@ -9,13 +9,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5.6" />
+  <link rel="stylesheet" href="styles.css?v=6.1" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
   <div class="cursor-light" aria-hidden="true"></div>
   <div class="beam beam-a" aria-hidden="true"></div>
   <div class="beam beam-b" aria-hidden="true"></div>
+  <canvas class="pear-motion-canvas" id="pearMotionCanvas" aria-hidden="true"></canvas>
+  <div class="pear-motion-progress" aria-hidden="true"><i id="pearMotionProgress"></i></div>
 
   <header class="site-header" id="top">
     <a class="brand" id="homeLogo" href="#top" aria-label="Kembali ke bagian paling atas">
@@ -41,7 +43,7 @@
     <section class="hero section-shell slide-section" data-motion="up">
       <div class="hero-copy slide-content">
         <p class="eyebrow"><span class="live-pulse"></span>PRAWIROTAMAN · YOGYAKARTA · AFTER DARK</p>
-        <h1 data-setting="heroTitle">FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.</h1>
+        <h1 data-setting="heroTitle">Food.<br><span>Cocktails.</span><br>Late nights.</h1>
         <p class="hero-sub" data-setting="heroSubtitle">Global-inspired dining by day. A red-and-blue playground of cocktails, guest bars, music and late-night energy after dark.</p>
         <div class="hero-actions">
           <a class="pill" data-setting-link="reservationUrl" href="https://linktr.ee/stairsprawirotaman" target="_blank" rel="noreferrer">Book a table</a>
@@ -287,6 +289,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=5.6"></script>
+  <script src="app.js?v=6.1"></script>
 </body>
 </html>

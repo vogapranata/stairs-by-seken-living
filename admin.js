@@ -7,7 +7,7 @@
   const ADMIN_THEME_KEY = 'stairsAdminTheme';
 
   const settingsDefault = {
-    heroTitleId:'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.', heroTitleEn:'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.',
+    heroTitleId:'Food.<br><span>Cocktails.</span><br>Late nights.', heroTitleEn:'Food.<br><span>Cocktails.</span><br>Late nights.',
     heroSubtitleId:'Global-inspired food, cocktails, guest bars, musik, dan energi malam Prawirotaman dalam satu tempat.', heroSubtitleEn:'Global-inspired food, cocktails, guest bars, music and Prawirotaman late-night energy in one place.',
     openingHoursShort:'11.00 — 01.00', openingHoursId:'Buka setiap hari 11.00 — 01.00 · akhir pekan sampai 02.00', openingHoursEn:'Open daily 11.00 — 01.00 · weekends until 02.00',
     location:'Jl. Prawirotaman, Brontokusuman, Mergangsan, Yogyakarta 55153', phone:'+62 852-1565-5565',
@@ -16,7 +16,7 @@
     linktreeUrl:'https://linktr.ee/stairsprawirotaman', workFromStairsUrl:'https://linktr.ee/stairsprawirotaman', allRedPromoUrl:'https://linktr.ee/stairsprawirotaman',
     gofoodUrl:'https://linktr.ee/stairsprawirotaman', grabfoodUrl:'https://dineout.grab.com/id/en/restaurants/stairs-prawirotaman--6-C6E3ABMDR8ATJE',
     foodMenuUrl:'https://linktr.ee/stairsprawirotaman', barMenuUrl:'https://linktr.ee/stairsprawirotaman', tableBookingUrl:'https://linktr.ee/stairsprawirotaman',
-    venueReservationUrl:'https://linktr.ee/stairsprawirotaman', tiktokUrl:'https://www.tiktok.com/@stairsprawirotaman', displayFont:'Bricolage Grotesque', bodyFont:'Manrope', accentColor:'#ef2d27', secondaryColor:'#2118a8', defaultLanguage:'id', defaultTheme:'dark'
+    venueReservationUrl:'https://linktr.ee/stairsprawirotaman', tiktokUrl:'https://www.tiktok.com/@stairsprawirotaman', displayFont:'DM Sans', bodyFont:'DM Sans', typographyProfile:'pear-v1', accentColor:'#ef2d27', secondaryColor:'#2118a8', defaultLanguage:'id', defaultTheme:'dark'
   };
 
   const menuDefault = [
@@ -301,8 +301,8 @@
     const body=form.elements.bodyFont?.value||data.settings.bodyFont||'Manrope';
     const accent=form.elements.accentColor?.value||data.settings.accentColor||'#ef2d27';
     const secondary=form.elements.secondaryColor?.value||data.settings.secondaryColor||'#2118a8';
-    preview.style.setProperty('--preview-display',FONT_STACKS[display]||FONT_STACKS['Bricolage Grotesque']);
-    preview.style.setProperty('--preview-body',FONT_STACKS[body]||FONT_STACKS['Manrope']);
+    preview.style.setProperty('--preview-display',FONT_STACKS[display]||FONT_STACKS['DM Sans']);
+    preview.style.setProperty('--preview-body',FONT_STACKS[body]||FONT_STACKS['DM Sans']);
     preview.style.setProperty('--preview-accent',accent); preview.style.setProperty('--preview-secondary',secondary);
   }
   $('#appearanceForm')?.addEventListener('input',updateAppearancePreview);

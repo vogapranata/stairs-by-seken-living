@@ -7,8 +7,8 @@
 
   const defaults = {
     settings: {
-      heroTitleId: 'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.',
-      heroTitleEn: 'FOOD.<br><span>COCKTAILS.</span><br>LATE NIGHTS.',
+      heroTitleId: 'Food.<br><span>Cocktails.</span><br>Late nights.',
+      heroTitleEn: 'Food.<br><span>Cocktails.</span><br>Late nights.',
       heroSubtitleId: 'Global-inspired food, cocktails, guest bars, musik, dan energi malam Prawirotaman dalam satu tempat.',
       heroSubtitleEn: 'Global-inspired food, cocktails, guest bars, music and Prawirotaman late-night energy in one place.',
       openingHoursShort: '11.00 — 01.00',
@@ -29,8 +29,9 @@
       tableBookingUrl: 'https://linktr.ee/stairsprawirotaman',
       venueReservationUrl: 'https://linktr.ee/stairsprawirotaman',
       tiktokUrl: 'https://www.tiktok.com/@stairsprawirotaman',
-      displayFont: 'Bricolage Grotesque',
-      bodyFont: 'Manrope',
+      displayFont: 'DM Sans',
+      bodyFont: 'DM Sans',
+      typographyProfile: 'pear-v1',
       accentColor: '#ef2d27',
       secondaryColor: '#2118a8',
       defaultLanguage: 'id',
@@ -234,8 +235,16 @@
       const raw = localStorage.getItem(CONTENT_KEY);
       const saved = raw ? JSON.parse(raw) : null;
       if (!saved) return clone(defaults);
+      const savedSettings = { ...(saved.settings || {}) };
+      // v6.1 typography migration: preserve explicit later choices, but move old default
+      // Bricolage/Manrope builds to the Pear-inspired editorial treatment once.
+      if (!savedSettings.typographyProfile) {
+        if (!savedSettings.displayFont || savedSettings.displayFont === 'Bricolage Grotesque') savedSettings.displayFont = 'DM Sans';
+        if (!savedSettings.bodyFont || savedSettings.bodyFont === 'Manrope') savedSettings.bodyFont = 'DM Sans';
+        savedSettings.typographyProfile = 'pear-v1';
+      }
       return {
-        settings: { ...defaults.settings, ...(saved.settings || {}) },
+        settings: { ...defaults.settings, ...savedSettings },
         menu: Array.isArray(saved.menu) ? saved.menu : clone(defaults.menu),
         gallery: Array.isArray(saved.gallery) ? saved.gallery : clone(defaults.gallery),
         reviews: Array.isArray(saved.reviews) ? saved.reviews : clone(defaults.reviews)
@@ -1048,6 +1057,244 @@
   }
 
 
+
+  function initPearMotionEngine() {
+    const sections = $$('.slide-section');
+    if (!sections.length) return;
+
+    const root = document.documentElement;
+    const canvas = $('#pearMotionCanvas');
+    const progressBar = $('#pearMotionProgress');
+    const ctx = canvas?.getContext?.('2d', { alpha: true });
+    const mediaBlocks = $$('.hero-visual,.feed-marquee,.bar-kinetic,.menu-carousel,.gallery-slider,.visit-kinetic');
+    const microSelector = '.feed-track figure,.cocktail-grid article,.menu-card.menu-card-photo,.quick-links a,.review-card,.location-card,.kinetic-card';
+
+    root.classList.remove('motion-ready','mynt-motion','reference-motion');
+    root.classList.add('pear-motion');
+    mediaBlocks.forEach(node => node.classList.add('pear-media'));
+
+    let targetScroll = window.scrollY || 0;
+    let easedScroll = targetScroll;
+    let previousScroll = easedScroll;
+    let velocity = 0;
+    let raf = 0;
+    let dirtyLayout = true;
+    let metrics = [];
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const clamp = (v,min,max) => Math.max(min,Math.min(max,v));
+    const lerp = (a,b,t) => a + (b-a)*t;
+    const smooth = t => { t = clamp(t,0,1); return t*t*(3-2*t); };
+    const smoother = t => { t = clamp(t,0,1); return t*t*t*(t*(t*6-15)+10); };
+    const set = (el,name,value) => el?.style.setProperty(name,value);
+
+    function documentTop(el) {
+      let top = 0;
+      for (let node = el; node; node = node.offsetParent) top += node.offsetTop || 0;
+      return top;
+    }
+
+    function rebuildMetrics() {
+      width = Math.max(window.innerWidth,320);
+      height = Math.max(window.innerHeight,1);
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      metrics = sections.map((section,index) => {
+        const top = documentTop(section);
+        const h = Math.max(section.offsetHeight, height * .65);
+        return { section,index,top,height:h,end:top+h };
+      });
+      if (canvas && ctx) {
+        canvas.width = Math.round(width*dpr);
+        canvas.height = Math.round(height*dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+      }
+      dirtyLayout = false;
+    }
+
+    function chapterProgress(metric, scroll) {
+      const start = metric.top - height * .82;
+      const end = metric.end - height * .14;
+      return clamp((scroll-start) / Math.max(end-start,1), 0, 1);
+    }
+
+    function drawCanvas(globalProgress, activeIndex, local) {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0,0,width,height);
+      const styles = getComputedStyle(root);
+      const red = styles.getPropertyValue('--red').trim() || '#f20b0f';
+      const blue = styles.getPropertyValue('--blue').trim() || '#17136f';
+      const isLight = root.dataset.theme === 'light';
+
+      // A restrained pinned-film layer: it never scrolls, only the chapter state changes.
+      const alpha = isLight ? .045 : .085;
+      const gx = width * (.18 + .64 * ((Math.sin((activeIndex+local)*1.13)+1)/2));
+      const gy = height * (.22 + .52 * ((Math.cos((activeIndex+local)*.87)+1)/2));
+      const radius = Math.max(width,height) * .72;
+      const g = ctx.createRadialGradient(gx,gy,0,gx,gy,radius);
+      g.addColorStop(0, hexToRgba(activeIndex % 2 ? blue : red, alpha));
+      g.addColorStop(.46, hexToRgba(activeIndex % 2 ? red : blue, alpha*.42));
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,width,height);
+
+      // Pear-like divider/progress rule, sampled from the current chapter colours.
+      const lineY = Math.round(height * .78);
+      ctx.strokeStyle = hexToRgba(activeIndex % 2 ? blue : red, isLight ? .12 : .18);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(width*.04,lineY);
+      ctx.lineTo(width*.96,lineY);
+      ctx.stroke();
+      ctx.fillStyle = hexToRgba(red,isLight ? .42 : .56);
+      ctx.fillRect(width*.04,lineY-1,(width*.92)*globalProgress,2);
+    }
+
+    function hexToRgba(hex,alpha) {
+      let h = String(hex).replace('#','').trim();
+      if (h.length === 3) h = h.split('').map(c=>c+c).join('');
+      const n = Number.parseInt(h,16);
+      if (!Number.isFinite(n)) return `rgba(242,11,15,${alpha})`;
+      return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${alpha})`;
+    }
+
+    function renderSection(metric, scroll) {
+      const {section,index} = metric;
+      const p = chapterProgress(metric,scroll);
+      const enter = smoother(clamp(p/.34,0,1));
+      const exit = smoother(clamp((p-.70)/.30,0,1));
+      const hold = clamp(enter-exit,0,1);
+      const dirName = section.dataset.motion || (index%2 ? 'left' : 'right');
+      const side = dirName === 'left' ? -1 : dirName === 'right' ? 1 : (index%2 ? -1 : 1);
+      const mobile = width <= 720;
+
+      const y = (1-enter)*(mobile?70:126) - exit*(mobile?48:88);
+      const x = dirName === 'up' ? (1-enter)*side*(mobile?18:36) : (1-enter)*side*(mobile?52:112) + exit*(-side)*(mobile?18:42);
+      const scale = .94 + enter*.06 - exit*.018;
+      const opacity = clamp(.14 + enter*.86 - exit*.52,.03,1);
+      const blur = (1-enter)*(mobile?5:11) + exit*(mobile?2:5);
+      set(section,'--pear-section-x',`${x.toFixed(2)}px`);
+      set(section,'--pear-section-y',`${y.toFixed(2)}px`);
+      set(section,'--pear-section-scale',scale.toFixed(4));
+      set(section,'--pear-section-opacity',opacity.toFixed(4));
+      set(section,'--pear-section-blur',`${blur.toFixed(2)}px`);
+      set(section,'--pear-local',p.toFixed(4));
+
+      $$('.slide-content:not([data-kinetic])',section).forEach((item,itemIndex) => {
+        const delay = Math.min(.24,itemIndex*.055);
+        const localEnter = smoother(clamp((p-delay)/Math.max(.34-delay,.08),0,1));
+        const localExit = smoother(clamp((p-(.73+itemIndex*.018))/.25,0,1));
+        const ix = (1-localEnter)*side*(mobile?28:72) + localExit*(-side)*(mobile?12:30);
+        const iy = (1-localEnter)*(mobile?54:104) - localExit*(mobile?28:58);
+        const iscale = .965 + localEnter*.035 - localExit*.012;
+        set(item,'--pear-x',`${ix.toFixed(2)}px`);
+        set(item,'--pear-y',`${iy.toFixed(2)}px`);
+        set(item,'--pear-scale',iscale.toFixed(4));
+        set(item,'--pear-opacity',clamp(.04+localEnter*.96-localExit*.62,0,1).toFixed(4));
+        set(item,'--pear-blur',`${((1-localEnter)*(mobile?4:9)+localExit*3).toFixed(2)}px`);
+      });
+
+      $$(microSelector,section).forEach((item,itemIndex) => {
+        const delay = Math.min(.38,.09+(itemIndex%9)*.035);
+        const localEnter = smoother(clamp((p-delay)/Math.max(.40-delay,.08),0,1));
+        const localExit = smoother(clamp((p-.78)/.22,0,1));
+        const itemSide = itemIndex%2 ? 1 : -1;
+        const throwY = clamp(velocity*.26,-34,34);
+        const mx = (1-localEnter)*itemSide*(mobile?22:54);
+        const my = (1-localEnter)*(mobile?44:86) + throwY - localExit*35;
+        const rot = (1-localEnter)*itemSide*(mobile?1.8:4.4) + clamp(velocity*.012,-2.2,2.2);
+        set(item,'--pear-micro-x',`${mx.toFixed(2)}px`);
+        set(item,'--pear-micro-y',`${my.toFixed(2)}px`);
+        set(item,'--pear-micro-r',`${rot.toFixed(2)}deg`);
+        set(item,'--pear-micro-s',(.92+localEnter*.08-localExit*.018).toFixed(4));
+        set(item,'--pear-micro-o',clamp(.08+localEnter*.92-localExit*.48,0,1).toFixed(4));
+      });
+
+      const media = $('.pear-media',section);
+      if (media) {
+        const clip = (1-enter)*(mobile?8:12) + exit*2;
+        const mediaScale = 1.075-enter*.075 + Math.min(Math.abs(velocity)*.00014,.018);
+        const mediaY = clamp(velocity*.16,-28,28) + (1-enter)*(mobile?22:44);
+        set(media,'--pear-media-clip',`${clip.toFixed(2)}%`);
+        set(media,'--pear-media-scale',mediaScale.toFixed(4));
+        set(media,'--pear-media-y',`${mediaY.toFixed(2)}px`);
+        set(media,'--pear-media-radius',`${lerp(28,12,enter).toFixed(2)}px`);
+      }
+
+      const headings = $$('h1,h2',section);
+      headings.forEach((h,hi) => {
+        const headingEnter = smoother(clamp((p-hi*.02)/.31,0,1));
+        set(h,'--pear-heading-track',`${lerp(.02,-.055,headingEnter).toFixed(4)}em`);
+        set(h,'--pear-heading-y',`${((1-headingEnter)*(mobile?26:48)).toFixed(2)}px`);
+      });
+
+      return {p,hold};
+    }
+
+    function renderHero(scroll) {
+      const hero = $('.hero');
+      if (!hero) return;
+      const metric = metrics.find(m=>m.section===hero) || metrics[0];
+      if (!metric) return;
+      const p = chapterProgress(metric,scroll);
+      const exit = smoother(clamp((p-.48)/.52,0,1));
+      const copy = $('.hero-copy',hero);
+      const visual = $('.hero-visual',hero);
+      set(copy,'--pear-hero-y',`${(-exit*(width<=720?48:105)).toFixed(2)}px`);
+      set(copy,'--pear-hero-scale',(1-exit*.04).toFixed(4));
+      set(copy,'--pear-hero-opacity',(1-exit*.72).toFixed(4));
+      set(visual,'--pear-hero-y',`${(exit*(width<=720?34:76)).toFixed(2)}px`);
+      set(visual,'--pear-hero-scale',(1-exit*.055).toFixed(4));
+      set(visual,'--pear-hero-opacity',(1-exit*.52).toFixed(4));
+    }
+
+    function frame() {
+      raf = requestAnimationFrame(frame);
+      if (dirtyLayout) rebuildMetrics();
+
+      targetScroll = window.scrollY || 0;
+      // Pear-style chase: visual state follows the real scroll target every frame.
+      const delta = targetScroll-easedScroll;
+      easedScroll += delta * .085;
+      if (Math.abs(delta)<.02) easedScroll = targetScroll;
+      velocity = velocity*.82 + (easedScroll-previousScroll)*.18;
+      previousScroll = easedScroll;
+
+      const docMax = Math.max(document.documentElement.scrollHeight-height,1);
+      const globalProgress = clamp(easedScroll/docMax,0,1);
+      root.style.setProperty('--pear-global-progress',globalProgress.toFixed(5));
+      root.style.setProperty('--pear-velocity',velocity.toFixed(3));
+      root.style.setProperty('--pear-media-lag',`${clamp(-velocity*.045,-18,18).toFixed(2)}px`);
+      if (progressBar) progressBar.style.transform = `scaleX(${globalProgress.toFixed(5)})`;
+
+      let activeIndex = 0;
+      let activeDistance = Infinity;
+      let activeLocal = 0;
+      metrics.forEach(metric => {
+        const state = renderSection(metric,easedScroll);
+        const center = metric.top + metric.height*.5;
+        const dist = Math.abs(center-(easedScroll+height*.5));
+        if (dist<activeDistance) { activeDistance=dist; activeIndex=metric.index; activeLocal=state.p; }
+      });
+      renderHero(easedScroll);
+      drawCanvas(globalProgress,activeIndex,activeLocal);
+    }
+
+    const invalidate = () => { dirtyLayout = true; };
+    window.addEventListener('resize',invalidate,{passive:true});
+    window.addEventListener('load',invalidate,{once:true});
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(invalidate);
+      sections.forEach(section=>ro.observe(section));
+      window.addEventListener('pagehide',()=>ro.disconnect(),{once:true});
+    }
+    raf = requestAnimationFrame(frame);
+    window.addEventListener('pagehide',()=>cancelAnimationFrame(raf),{once:true});
+  }
+
   function initHeaderMerge() {
     const header = $('.site-header');
     const hero = $('.hero');
@@ -1304,8 +1551,7 @@
   safeRun('theme', applyTheme);
   safeRun('language', applyLanguage);
   safeRun('header merge', initHeaderMerge);
-  safeRun('scroll scenes', initMyntScrollMotion);
-  safeRun('kinetic scroll', initKineticScroll);
+  safeRun('pear motion engine', initPearMotionEngine);
   safeRun('hero orbit', initHeroOrbit);
   safeRun('cursor motion', initCursorMotion);
   safeRun('feed loop', initFeedLoop);

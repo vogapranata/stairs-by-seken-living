@@ -49,3 +49,11 @@ Player Instagram kini memakai endpoint embed resmi `/embed/captioned/` langsung,
 Password demo: `stairs`
 
 Catatan: CMS masih berbasis `localStorage`, sehingga perubahan tersimpan per browser/perangkat. Untuk CMS production multi-device, pindahkan data dan upload media ke Supabase/Storage.
+
+
+## v6.0 — Pear Motion System
+Layout dan ukuran STAIRS dipertahankan. Motion diganti dengan sistem scroll-scrub ala Pear: pinned background canvas, eased virtual scroll yang mengejar scroll target setiap frame, chapter pacing, velocity-linked media drift, clip/reveal, dan staggered DOM layers.
+
+
+## v6.1 — Pear-inspired typography
+Typography now mirrors Pear's editorial treatment: oversized sentence-case display lines, tight leading and tracking, medium rather than heavy headline weights, short readable body lines, and small functional labels. The exact Pear family is served through Adobe Typekit; this build uses DM Sans as an available neutral-grotesk substitute while preserving the CMS font controls.

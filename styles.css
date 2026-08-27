@@ -985,3 +985,97 @@ html.reference-motion.force-motion .visit-panel{transform-origin:50% 58%}
   .instagram-fallback a{padding:7px 8px}
 }
 
+
+
+/* v6.0 — Pear-inspired scroll motion engine
+   STAIRS layout dimensions stay intact; only the motion system is replaced.
+   The real page scroll remains accessible while a virtual eased scroll value
+   chases the target and drives every visual chapter frame-by-frame. */
+.pear-motion-canvas{
+  position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  opacity:1;mix-blend-mode:normal;
+}
+.pear-motion-progress{
+  position:fixed;z-index:92;left:4vw;right:4vw;bottom:12px;height:1px;
+  background:color-mix(in srgb,var(--text) 10%,transparent);pointer-events:none;
+  overflow:hidden;
+}
+.pear-motion-progress i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left center;background:var(--red);will-change:transform}
+html.pear-motion{scroll-behavior:auto}
+html.pear-motion body{isolation:isolate}
+html.pear-motion .noise{z-index:91}
+html.pear-motion .site-header{z-index:94}
+html.pear-motion main,html.pear-motion .footer{position:relative;z-index:2}
+
+/* Neutralize every older motion system to avoid transform fights. */
+html.pear-motion .slide-section,
+html.pear-motion .slide-section > .slide-content,
+html.pear-motion .feed-track figure,
+html.pear-motion .cocktail-grid article,
+html.pear-motion .quick-links a,
+html.pear-motion .review-card,
+html.pear-motion .menu-card.menu-card-photo,
+html.pear-motion [data-kinetic]{transition:none!important;will-change:transform,opacity,filter,clip-path}
+
+html.pear-motion .slide-section{
+  opacity:var(--pear-section-opacity,1)!important;
+  transform:translate3d(var(--pear-section-x,0px),var(--pear-section-y,0px),0) scale(var(--pear-section-scale,1))!important;
+  filter:blur(var(--pear-section-blur,0px));
+  transform-origin:50% 48%;
+}
+html.pear-motion .slide-section > .slide-content:not([data-kinetic]){
+  opacity:var(--pear-opacity,1)!important;
+  transform:translate3d(var(--pear-x,0px),var(--pear-y,0px),0) scale(var(--pear-scale,1))!important;
+  filter:blur(var(--pear-blur,0px));
+}
+html.pear-motion .feed-track figure,
+html.pear-motion .cocktail-grid article,
+html.pear-motion .quick-links a,
+html.pear-motion .review-card,
+html.pear-motion .menu-card.menu-card-photo,
+html.pear-motion .location-card,
+html.pear-motion .kinetic-card{
+  opacity:var(--pear-micro-o,1)!important;
+  transform:translate3d(var(--pear-micro-x,0px),var(--pear-micro-y,0px),0) rotate(var(--pear-micro-r,0deg)) scale(var(--pear-micro-s,1))!important;
+}
+html.pear-motion .pear-media{
+  clip-path:inset(var(--pear-media-clip,0%) 0 var(--pear-media-clip,0%) 0 round var(--pear-media-radius,18px));
+  transform:translate3d(0,var(--pear-media-y,0px),0) scale(var(--pear-media-scale,1))!important;
+  transform-origin:center center;will-change:transform,clip-path;
+}
+html.pear-motion .hero-copy{
+  opacity:var(--pear-hero-opacity,1)!important;
+  transform:translate3d(0,var(--pear-hero-y,0px),0) scale(var(--pear-hero-scale,1))!important;
+  will-change:transform,opacity;
+}
+html.pear-motion .hero-visual{
+  opacity:var(--pear-hero-opacity,1)!important;
+  transform:translate3d(0,var(--pear-hero-y,0px),0) scale(var(--pear-hero-scale,1)) perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))!important;
+  will-change:transform,opacity;
+}
+html.pear-motion h1,html.pear-motion h2{
+  letter-spacing:var(--pear-heading-track,-.045em)!important;
+  translate:0 var(--pear-heading-y,0px);
+  will-change:translate,letter-spacing;
+}
+
+/* Pear's experience feels like a film: make image internals lag slightly behind their frames. */
+html.pear-motion .pear-media img:not(.instagram-embed-frame),
+html.pear-motion .pear-media video{
+  transform:translate3d(0,var(--pear-media-lag,0px),0) scale(1.035);
+  will-change:transform;
+}
+
+/* Keep the established STAIRS proportions untouched. */
+html.pear-motion .section-shell{width:min(1240px,calc(100% - 48px))}
+html.pear-motion .hero{min-height:720px}
+html.pear-motion .hero-visual{height:590px}
+
+@media(max-width:720px){
+  .pear-motion-progress{left:14px;right:14px;bottom:8px}
+  html.pear-motion .section-shell{width:min(100% - 28px,1240px)}
+  html.pear-motion .hero{min-height:auto}
+  html.pear-motion .hero-visual{height:480px}
+  html.pear-motion .pear-media{clip-path:inset(var(--pear-media-clip,0%) 0 var(--pear-media-clip,0%) 0 round 16px)}
+}
+\n\n/* v6.1 — Pear-inspired typography system\n   The exact Pear typeface is served through Adobe Typekit; this project mirrors\n   Pear's typographic treatment with an available neutral grotesk (DM Sans):\n   very large sentence-case headlines, restrained weights, tight leading,\n   short editorial line lengths, and small functional labels. */\n:root{\n  --font-display:'DM Sans',Arial,sans-serif;\n  --font-body:'DM Sans',Arial,sans-serif;\n  --pear-type-display-weight:500;\n  --pear-type-body-weight:400;\n  --pear-type-tight:-.058em;\n  --pear-type-copy:54ch;\n}\nbody{font-family:var(--font-body);font-weight:var(--pear-type-body-weight);font-size:15px;line-height:1.45;letter-spacing:-.012em}\n.brand{font-family:var(--font-display);font-weight:600;letter-spacing:.025em}\n.nav{font-size:12px;letter-spacing:-.005em}\n.nav a,.lang-toggle,.theme-toggle,.pill,.text-link{font-weight:500}\n.pill{letter-spacing:-.012em}\n\n/* Pear-style display writing: sentence case, soft grotesk, very tight rhythm. */\n.hero h1{\n  font-family:var(--font-display)!important;\n  font-size:clamp(68px,7.15vw,112px);\n  line-height:.865;\n  font-weight:var(--pear-type-display-weight);\n  letter-spacing:-.068em!important;\n  text-transform:none;\n  max-width:8.7ch;\n  text-wrap:balance;\n  margin:22px 0 28px;\n}\n.hero h1 span{font-weight:inherit}\n.hero-sub{font-size:clamp(15px,1.22vw,18px);line-height:1.48;letter-spacing:-.022em;max-width:47ch;color:color-mix(in srgb,var(--text) 67%,transparent)}\n.hero-meta b{font-family:var(--font-display);font-weight:500;letter-spacing:-.04em}\n.hero-meta small{font-size:9px;letter-spacing:.075em;font-weight:500}\n\n.eyebrow,.section-label{\n  font-family:var(--font-body)!important;\n  font-size:9px;\n  line-height:1;\n  font-weight:600;\n  letter-spacing:.105em;\n  text-transform:uppercase;\n}\nh2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{\n  font-family:var(--font-display)!important;\n  font-size:clamp(50px,5.7vw,84px);\n  line-height:.91;\n  font-weight:var(--pear-type-display-weight);\n  letter-spacing:-.06em!important;\n  text-transform:none;\n  text-wrap:balance;\n}\n.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2{max-width:11.6ch}\n.night-grid p,.feed-head p,.bar-head p,.links-head p,.section-intro,.gallery-slide-copy p,.review-score p{\n  max-width:var(--pear-type-copy);\n  font-size:14px;\n  line-height:1.48;\n  letter-spacing:-.014em;\n}\n\n/* Cards: less visual shouting, more editorial hierarchy. */\n.menu-copy h3,.cocktail-grid h3,.gallery-slide-copy h3,.quick-links b,.footer-logo,.orbit-core strong,.orbit-label b{\n  font-family:var(--font-display)!important;\n  font-weight:500!important;\n  letter-spacing:-.035em!important;\n}\n.menu-copy h3{font-size:20px;line-height:1.04}\n.menu-copy span,.gallery-source,.feed-track figcaption,.admin-entry{letter-spacing:.085em;text-transform:uppercase;font-weight:500}\n.menu-copy p{font-size:12px;line-height:1.42;letter-spacing:-.01em}\n.menu-card>strong{font-family:var(--font-display);font-weight:500;letter-spacing:-.03em}\n.cocktail-grid h3{font-size:30px;line-height:.98}\n.gallery-slide-copy h3{font-size:clamp(30px,3vw,42px);line-height:.96}\n.quick-links b{font-size:19px}\n.review-score>strong{font-family:var(--font-display)!important;font-weight:500!important;letter-spacing:-.075em!important}\n.review-card p{font-size:clamp(17px,1.65vw,21px);line-height:1.42;letter-spacing:-.025em;max-width:46ch}\n.footer-logo{font-size:40px}\n\n/* Pear uses fine rules and compact information type around oversized display text. */\n.ticker-track{font-family:var(--font-body)!important;font-weight:600;letter-spacing:.08em;font-size:10px}\n.color-scan span,.menu-index,.gallery-no,.score-kicker,.visit-info .label{font-family:var(--font-body)!important;letter-spacing:.085em;font-weight:500}\n.orbit-core span,.orbit-core small{font-family:var(--font-body)!important;font-weight:500}\n\n@media(max-width:900px){\n  .hero h1{font-size:clamp(58px,11vw,90px);max-width:9ch}\n  h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{font-size:clamp(44px,8.8vw,68px)}\n}\n@media(max-width:720px){\n  body{font-size:14px}\n  .hero h1{font-size:clamp(54px,15vw,76px);line-height:.87;letter-spacing:-.064em!important;margin-top:18px}\n  .hero-sub{font-size:15px;line-height:1.45;max-width:34ch}\n  h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.links-head h2,.visit h2{font-size:clamp(40px,12.5vw,58px);line-height:.92;letter-spacing:-.057em!important}\n  .section-label,.eyebrow{font-size:8px;letter-spacing:.09em}\n}\n
