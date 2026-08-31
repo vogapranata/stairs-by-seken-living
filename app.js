@@ -1581,6 +1581,16 @@
 
   function initPearTypesetting() {
     const roots = $$('.hero h1, .night-grid h2, .feed-head h2, .bar-head h2, .menu-head h2, .gallery-head h2, .links-head h2, .visit h2');
+
+    // Mobile: keep headings as normal text. The desktop glyph split looks great
+    // on wide screens, but on narrow Android/iPhone widths it creates hundreds
+    // of inline nodes and can make wrapping look cramped/overlapped.
+    if (mobilePerformance) {
+      document.documentElement.classList.add('mobile-clean-type');
+      roots.forEach(root => root.classList.add('pear-typeset-mobile'));
+      return;
+    }
+
     let globalIndex = 0;
 
     const splitTextNode = node => {
