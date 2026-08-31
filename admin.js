@@ -116,13 +116,26 @@
     {id:'g4',type:'image',url:'assets/ig-cocktail.png',titleId:'Cocktail Culture',titleEn:'Cocktail Culture',captionId:'Visual cocktail dari feed Instagram yang kamu kirim untuk menguatkan karakter bar.',captionEn:'A cocktail visual from the supplied Instagram feed to reinforce the bar identity.',source:'Instagram @stairsprawirotaman · supplied feed reference'}
   ];
 
+  const orbitDefault = [
+    {id:'o1',url:'assets/ig-pour-show-poster.png',shape:'portrait',alt:'STAIRS Pour and Show event poster',angle:0,radius:1.00},
+    {id:'o2',url:'assets/ig-cocktail.png',shape:'square',alt:'STAIRS cocktail visual',angle:45,radius:.87},
+    {id:'o3',url:'assets/ig-must21.png',shape:'portrait',alt:'STAIRS Must 21 Plus festival poster',angle:90,radius:1.03},
+    {id:'o4',url:'assets/ig-pour-show-photo.png',shape:'square',alt:'STAIRS late night guest bar atmosphere',angle:135,radius:.88},
+    {id:'o5',url:'assets/ig-greatest-showman.png',shape:'portrait',alt:'STAIRS The Greatest Showman event poster',angle:180,radius:1.02},
+    {id:'o6',url:'assets/ig-night-crowd.png',shape:'square',alt:'STAIRS late night crowd',angle:225,radius:.88},
+    {id:'o7',url:'assets/ig-drysol.png',shape:'portrait',alt:'STAIRS Drysol event poster',angle:270,radius:1.02},
+    {id:'o8',url:'assets/ig-craft.png',shape:'square',alt:'STAIRS bar craft visual',angle:315,radius:.86},
+    {id:'o9',url:'assets/ig-madlab.png',shape:'mini',alt:'STAIRS Mad Lab event poster',angle:22,radius:.58},
+    {id:'o10',url:'assets/ig-crowd.png',shape:'square secondary',alt:'STAIRS crowd and nightlife atmosphere',angle:338,radius:.68}
+  ];
+
   const reviewsDefault = [
     {id:'r1',name:'Google visitor',textId:'Tempatnya nyaman dengan banyak pilihan seating. Suasananya jadi nilai paling kuat.',textEn:'A comfortable place with plenty of seating options, with atmosphere as a clear highlight.',rating:5},
     {id:'r2',name:'Google visitor',textId:'Pelayanan, makanan, dan tempatnya terasa cocok untuk dinner dan chill.',textEn:'Service, food and the overall place work especially well for dinner and a relaxed night out.',rating:5},
     {id:'r3',name:'Public review summary',textId:'Pizza, beef, coffee, dekorasi dan ambience sering muncul sebagai hal yang disukai pengunjung.',textEn:'Pizza, beef, coffee, décor and atmosphere are frequently mentioned positively by visitors.',rating:5}
   ];
 
-  const defaults = { settings:settingsDefault, menu:menuDefault, gallery:galleryDefault, reviews:reviewsDefault };
+  const defaults = { settings:settingsDefault, menu:menuDefault, orbit:orbitDefault, gallery:galleryDefault, reviews:reviewsDefault };
   const clone = value => typeof structuredClone === 'function' ? structuredClone(value) : JSON.parse(JSON.stringify(value));
   const $ = (selector, context=document) => context.querySelector(selector);
   const $$ = (selector, context=document) => [...context.querySelectorAll(selector)];
@@ -159,6 +172,7 @@
       return {
         settings:{...defaults.settings,...(saved.settings||{})},
         menu:Array.isArray(saved.menu)?saved.menu:clone(defaults.menu),
+        orbit:Array.isArray(saved.orbit)?saved.orbit:clone(defaults.orbit),
         gallery:Array.isArray(saved.gallery)?saved.gallery:clone(defaults.gallery),
         reviews:Array.isArray(saved.reviews)?saved.reviews:clone(defaults.reviews)
       };
@@ -171,8 +185,8 @@
   let adminTheme = localStorage.getItem(ADMIN_THEME_KEY) || 'dark';
 
   const adminText = {
-    id:{overview:'Overview',menu:'Menu',gallery:'Galeri',reviews:'Ulasan',settings:'Pengaturan',viewWebsite:'Lihat website ↗',logout:'Keluar demo',dashboardTitle:'Ringkasan konten.',dashboardIntro:'Semua perubahan demo tersimpan di browser ini dan langsung dibaca website.',openSite:'Buka website ↗',editableContent:'konten dapat diedit',visualRefs:'referensi visual',curatedNotes:'catatan terpilih',featureStatus:'Status fitur',featureLanguage:'Bahasa Indonesia / English',featureTheme:'Dark / Light mode',featureSlides:'Animasi section & gallery slide pada website',featureResponsive:'Tampilan responsive untuk HP',featureAdminStatic:'Dashboard tanpa animasi',sourcePolicy:'Referensi foto & menu',sourceText:'Untuk demo, visual memakai foto publik yang terindeks dan terkait dengan STAIRS/Instagram. Sebelum produksi resmi, ganti dengan aset milik STAIRS atau aset yang sudah diizinkan.',menuManagement:'Kelola menu',menuDesc:'Tambah, edit, atau hapus menu bilingual.',addMenu:'+ Tambah menu',galleryManagement:'Galeri',galleryDesc:'Kelola foto/video, judul bilingual, caption, dan sumber aset.',addMedia:'+ Tambah media',reviewManagement:'Catatan ulasan',reviewDesc:'Review demo disimpan manual. Google Reviews realtime memerlukan API.',addReview:'+ Tambah ulasan',siteSettings:'Pengaturan website',settingsDesc:'Kontrol informasi utama dan default bahasa/theme website.',saveChanges:'Simpan perubahan'},
-    en:{overview:'Overview',menu:'Menu',gallery:'Gallery',reviews:'Reviews',settings:'Settings',viewWebsite:'View website ↗',logout:'Exit demo',dashboardTitle:'Content at a glance.',dashboardIntro:'All demo changes are stored in this browser and read directly by the website.',openSite:'Open website ↗',editableContent:'editable content',visualRefs:'visual references',curatedNotes:'curated notes',featureStatus:'Feature status',featureLanguage:'Indonesian / English language',featureTheme:'Dark / Light mode',featureSlides:'Animated website sections & gallery slides',featureResponsive:'Responsive mobile layout',featureAdminStatic:'Dashboard without animation',sourcePolicy:'Photo & menu references',sourceText:'For the demo, visuals use publicly indexed photos associated with STAIRS/Instagram. Before official production, replace them with STAIRS-owned or licensed assets.',menuManagement:'Menu management',menuDesc:'Add, edit or remove bilingual menu items.',addMenu:'+ Add menu',galleryManagement:'Gallery',galleryDesc:'Manage photo/video URLs, bilingual titles, captions and asset sources.',addMedia:'+ Add media',reviewManagement:'Review notes',reviewDesc:'Demo reviews are stored manually. Realtime Google Reviews require an API.',addReview:'+ Add review',siteSettings:'Site settings',settingsDesc:'Control main information and website default language/theme.',saveChanges:'Save changes'}
+    id:{overview:'Overview',menu:'Menu',orbit:'Hero visual',gallery:'Galeri',reviews:'Ulasan',settings:'Pengaturan',viewWebsite:'Lihat website ↗',logout:'Keluar demo',dashboardTitle:'Ringkasan konten.',dashboardIntro:'Semua perubahan demo tersimpan di browser ini dan langsung dibaca website.',openSite:'Buka website ↗',editableContent:'konten dapat diedit',visualRefs:'referensi visual',curatedNotes:'catatan terpilih',featureStatus:'Status fitur',featureLanguage:'Bahasa Indonesia / English',featureTheme:'Dark / Light mode',featureSlides:'Animasi section & gallery slide pada website',featureResponsive:'Tampilan responsive untuk HP',featureAdminStatic:'Dashboard tanpa animasi',sourcePolicy:'Referensi foto & menu',sourceText:'Untuk demo, visual memakai foto publik yang terindeks dan terkait dengan STAIRS/Instagram. Sebelum produksi resmi, ganti dengan aset milik STAIRS atau aset yang sudah diizinkan.',menuManagement:'Kelola menu',menuDesc:'Tambah, edit, atau hapus menu bilingual.',addMenu:'+ Tambah menu',galleryManagement:'Galeri',galleryDesc:'Kelola foto/video, judul bilingual, caption, dan sumber aset.',addMedia:'+ Tambah media',reviewManagement:'Catatan ulasan',reviewDesc:'Review demo disimpan manual. Google Reviews realtime memerlukan API.',addReview:'+ Tambah ulasan',siteSettings:'Pengaturan website',settingsDesc:'Kontrol informasi utama dan default bahasa/theme website.',saveChanges:'Simpan perubahan'},
+    en:{overview:'Overview',menu:'Menu',orbit:'Hero visual',gallery:'Gallery',reviews:'Reviews',settings:'Settings',viewWebsite:'View website ↗',logout:'Exit demo',dashboardTitle:'Content at a glance.',dashboardIntro:'All demo changes are stored in this browser and read directly by the website.',openSite:'Open website ↗',editableContent:'editable content',visualRefs:'visual references',curatedNotes:'curated notes',featureStatus:'Feature status',featureLanguage:'Indonesian / English language',featureTheme:'Dark / Light mode',featureSlides:'Animated website sections & gallery slides',featureResponsive:'Responsive mobile layout',featureAdminStatic:'Dashboard without animation',sourcePolicy:'Photo & menu references',sourceText:'For the demo, visuals use publicly indexed photos associated with STAIRS/Instagram. Before official production, replace them with STAIRS-owned or licensed assets.',menuManagement:'Menu management',menuDesc:'Add, edit or remove bilingual menu items.',addMenu:'+ Add menu',galleryManagement:'Gallery',galleryDesc:'Manage photo/video URLs, bilingual titles, captions and asset sources.',addMedia:'+ Add media',reviewManagement:'Review notes',reviewDesc:'Demo reviews are stored manually. Realtime Google Reviews require an API.',addReview:'+ Add review',siteSettings:'Site settings',settingsDesc:'Control main information and website default language/theme.',saveChanges:'Save changes'}
   };
 
   function applyAdminLanguage() {
@@ -208,13 +222,14 @@
   function renderAll() {
     $('#menuCount').textContent = data.menu.length;
     $('#galleryCount').textContent = data.gallery.length;
+    if ($('#orbitCount')) $('#orbitCount').textContent = data.orbit.length;
     $('#reviewCount').textContent = data.reviews.length;
-    renderMenu(); renderGallery(); renderReviews(); renderSettings(); renderAppearance();
+    renderMenu(); renderOrbit(); renderGallery(); renderReviews(); renderSettings(); renderAppearance();
   }
 
   function setViewTitle(view) {
-    const mapping = {overview:'overview',menu:'menu',gallery:'gallery',reviews:'reviews',appearance:'appearance',settings:'settings'};
-    $('#viewTitle').textContent = adminText[adminLanguage][mapping[view]] || (view === 'appearance' ? 'Appearance' : view);
+    const mapping = {overview:'overview',menu:'menu',orbit:'orbit',gallery:'gallery',reviews:'reviews',appearance:'appearance',settings:'settings'};
+    $('#viewTitle').textContent = adminText[adminLanguage][mapping[view]] || (view === 'appearance' ? 'Appearance' : view === 'orbit' ? 'Hero visual' : view);
   }
 
   function switchView(view) {
@@ -260,6 +275,14 @@
     $$('img',table).forEach(img=>img.addEventListener('error',()=>{img.hidden=true;img.closest('.menu-thumb')?.classList.add('media-broken');}));
     $$('[data-edit-menu]',table).forEach(button=>button.addEventListener('click',()=>openEditor('menu',button.dataset.editMenu)));
     $$('[data-del-menu]',table).forEach(button=>button.addEventListener('click',()=>removeItem('menu',button.dataset.delMenu)));
+  }
+
+  function renderOrbit() {
+    const wrap=$('#adminOrbit'); if(!wrap)return;
+    wrap.innerHTML=data.orbit.map((item,index)=>`<article class="media-admin-card"><div class="media-thumb orbit-admin-thumb"><img src="${esc(item.url||'')}" alt="${esc(item.alt||`Orbit visual ${index+1}`)}"><span>${esc(item.shape||'square')}</span></div><div class="media-admin-copy"><b>${esc(item.alt||`Orbit visual ${index+1}`)}</b><small>Angle ${esc(item.angle ?? Math.round(index*360/Math.max(data.orbit.length,1)))}° · radius ${esc(item.radius ?? 1)}</small><div class="row-actions"><button type="button" data-edit-orbit="${esc(item.id)}">Edit</button><button type="button" class="danger" data-del-orbit="${esc(item.id)}">Delete</button></div></div></article>`).join('')||'<p class="empty-row">No hero orbit images yet.</p>';
+    $$('img',wrap).forEach(img=>img.addEventListener('error',()=>{img.hidden=true;img.closest('.media-thumb')?.classList.add('media-broken');}));
+    $$('[data-edit-orbit]',wrap).forEach(button=>button.addEventListener('click',()=>openEditor('orbit',button.dataset.editOrbit)));
+    $$('[data-del-orbit]',wrap).forEach(button=>button.addEventListener('click',()=>removeItem('orbit',button.dataset.delOrbit)));
   }
 
   function renderGallery() {
@@ -325,7 +348,7 @@
   });
   $('#importCmsInput')?.addEventListener('change',async event=>{
     const file=event.target.files?.[0]; if(!file)return;
-    try { const parsed=JSON.parse(await file.text()); if(!parsed||!Array.isArray(parsed.menu)||!Array.isArray(parsed.gallery)||!parsed.settings) throw new Error('Invalid CMS file'); data={settings:{...settingsDefault,...parsed.settings},menu:parsed.menu,gallery:parsed.gallery,reviews:Array.isArray(parsed.reviews)?parsed.reviews:[]}; save('CMS JSON imported.'); }
+    try { const parsed=JSON.parse(await file.text()); if(!parsed||!Array.isArray(parsed.menu)||!Array.isArray(parsed.gallery)||!parsed.settings) throw new Error('Invalid CMS file'); data={settings:{...settingsDefault,...parsed.settings},menu:parsed.menu,orbit:Array.isArray(parsed.orbit)?parsed.orbit:clone(orbitDefault),gallery:parsed.gallery,reviews:Array.isArray(parsed.reviews)?parsed.reviews:[]}; save('CMS JSON imported.'); }
     catch(error){showToast('Import failed','File JSON tidak sesuai format STAIRS CMS.');}
     event.target.value='';
   });
@@ -339,6 +362,7 @@
   }
 
   $('#addMenuBtn')?.addEventListener('click',()=>openEditor('menu'));
+  $('#addOrbitBtn')?.addEventListener('click',()=>openEditor('orbit'));
   $('#addGalleryBtn')?.addEventListener('click',()=>openEditor('gallery'));
   $('#addReviewBtn')?.addEventListener('click',()=>openEditor('reviews'));
 
@@ -357,6 +381,7 @@
   }
 
   function fieldsFor(type,item={}) {
+    if(type==='orbit') return [optionalField('url','Image URL',item.url,'url',true),fileField('orbitUpload','Atau upload foto orbit',true),selectField('shape','Card shape',item.shape||'square',['portrait','square','mini','square secondary']),optionalField('alt','Alt / label',item.alt,'text',true),optionalField('angle','Orbit angle (0–359)',item.angle ?? '','number'),optionalField('radius','Orbit radius (0.45–1.12)',item.radius ?? '','number')];
     if(type==='menu') return [optionalField('image','Menu image URL',item.image,'url',true),fileField('imageUpload','Atau upload foto menu',true),field('name','Item name',item.name),selectField('category','Category',item.category||'Breakfast',['Breakfast','Bites','Pizza','Salads','Comfort','Pasta','Mains','Coffee','Tea','Fermented','Non Coffee','Cocktails']),field('price','Price',item.price),field('descriptionId','Description ID',item.descriptionId,'textarea',true),field('descriptionEn','Description EN',item.descriptionEn,'textarea',true)];
     if(type==='gallery') return [selectField('type','Media type',isInstagramMediaUrl(item.url)?'instagram':(item.type||'image'),['image','video','instagram']),optionalField('url','Media URL — gambar, direct video, atau URL Instagram Reel/Post',item.url,'url',true),fileField('mediaUpload','Atau upload foto',true),field('titleId','Title ID',item.titleId),field('titleEn','Title EN',item.titleEn),field('captionId','Caption ID',item.captionId,'textarea',true),field('captionEn','Caption EN',item.captionEn,'textarea',true),field('source','Source / credit',item.source,'text',true)];
     return [field('name','Display name',item.name),field('rating','Rating 1–5',item.rating||5,'number',false,'1','5'),field('textId','Review ID',item.textId,'textarea',true),field('textEn','Review EN',item.textEn,'textarea',true)];
@@ -374,9 +399,18 @@
   $('#editorForm')?.addEventListener('submit',async event=>{
     event.preventDefault(); const fd=new FormData(event.currentTarget); const existing=editing.id?data[editing.type].find(item=>item.id===editing.id)||{}:{}; const object={};
     for(const [key,value] of fd.entries()) if(!(value instanceof File)) object[key]=String(value).trim();
-    const imageUpload=fd.get('imageUpload'); const mediaUpload=fd.get('mediaUpload');
+    const imageUpload=fd.get('imageUpload'); const mediaUpload=fd.get('mediaUpload'); const orbitUpload=fd.get('orbitUpload');
     try {
       if(editing.type==='menu') { const uploaded=await imageFileToDataUrl(imageUpload); if(uploaded)object.image=uploaded; else if(!object.image&&existing.image)object.image=existing.image; }
+      if(editing.type==='orbit') {
+        const uploaded=await imageFileToDataUrl(orbitUpload,900,.78);
+        if(uploaded)object.url=uploaded; else if(!object.url&&existing.url)object.url=existing.url;
+        if(!object.url){showToast('Image required','Tambahkan URL atau upload foto orbit.');return;}
+        const idx=editing.id?data.orbit.findIndex(x=>x.id===editing.id):data.orbit.length;
+        object.angle=object.angle!==''?Math.max(0,Math.min(359,Number(object.angle)||0)):Math.round(idx*360/Math.max(data.orbit.length+(editing.id?0:1),1));
+        object.radius=object.radius!==''?Math.max(.45,Math.min(1.12,Number(object.radius)||1)):(object.shape==='mini'?.62:object.shape?.includes('secondary')?.7:idx%2?.88:1);
+        object.alt=object.alt||`STAIRS orbit visual ${idx+1}`;
+      }
       if(editing.type==='gallery') {
         const uploaded=await imageFileToDataUrl(mediaUpload);
         if(uploaded){ object.url=uploaded; object.type='image'; }

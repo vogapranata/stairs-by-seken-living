@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=6.3" />
+  <link rel="stylesheet" href="admin.css?v=6.8" />
 </head>
 <body>
   <div class="login-screen" id="loginScreen">
@@ -28,6 +28,7 @@
       <nav class="side-nav" id="sideNav">
         <button type="button" class="nav-item active" data-view="overview"><span>⌂</span><b data-admin-i18n="overview">Overview</b></button>
         <button type="button" class="nav-item" data-view="menu"><span>≡</span><b data-admin-i18n="menu">Menu</b></button>
+        <button type="button" class="nav-item" data-view="orbit"><span>◉</span><b data-admin-i18n="orbit">Hero visual</b></button>
         <button type="button" class="nav-item" data-view="gallery"><span>◇</span><b data-admin-i18n="gallery">Gallery</b></button>
         <button type="button" class="nav-item" data-view="reviews"><span>☆</span><b data-admin-i18n="reviews">Reviews</b></button>
         <button type="button" class="nav-item" data-view="appearance"><span>Aa</span><b>Appearance</b></button>
@@ -62,6 +63,7 @@
           <div class="stat-grid">
             <article class="stat-card"><span>MENU ITEMS</span><strong id="menuCount">0</strong><small data-admin-i18n="editableContent">editable content</small></article>
             <article class="stat-card"><span>GALLERY</span><strong id="galleryCount">0</strong><small data-admin-i18n="visualRefs">visual references</small></article>
+            <article class="stat-card"><span>HERO VISUAL</span><strong id="orbitCount">0</strong><small>orbit images</small></article>
             <article class="stat-card"><span>REVIEWS</span><strong id="reviewCount">0</strong><small data-admin-i18n="curatedNotes">curated notes</small></article>
             <article class="stat-card accent-card"><span>SITE MODE</span><strong>DEMO</strong><small>localStorage CMS</small></article>
           </div>
@@ -92,6 +94,11 @@
         <section class="view" data-view-panel="menu">
           <div class="section-toolbar"><div><span class="micro">FOOD & BEVERAGE</span><h2 data-admin-i18n="menuManagement">Menu management</h2><p data-admin-i18n="menuDesc">Tambah, edit, atau hapus menu bilingual.</p></div><button type="button" class="primary-btn" id="addMenuBtn" data-admin-i18n="addMenu">+ Add menu</button></div>
           <div class="table-panel"><div class="table-scroll"><table><thead><tr><th>Visual</th><th>Item</th><th>Category</th><th>Price</th><th>Description ID</th><th>Description EN</th><th></th></tr></thead><tbody id="menuTable"></tbody></table></div></div>
+        </section>
+
+        <section class="view" data-view-panel="orbit">
+          <div class="section-toolbar"><div><span class="micro">HERO / ORBIT</span><h2>Hero visual</h2><p>Ganti, tambah, atau hapus foto yang mengorbit di hero. Upload foto atau gunakan URL gambar.</p></div><button type="button" class="primary-btn" id="addOrbitBtn">+ Add orbit photo</button></div>
+          <div class="admin-gallery" id="adminOrbit"></div>
         </section>
 
         <section class="view" data-view-panel="gallery">
@@ -163,6 +170,6 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><div><b>Saved</b><small>Website content updated.</small></div></div>
-  <script src="admin.js?v=6.3"></script>
+  <script src="admin.js?v=6.8"></script>
 </body>
 </html>

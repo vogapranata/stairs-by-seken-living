@@ -1751,3 +1751,120 @@ html.mobile-performance .photo-lightbox{backdrop-filter:none!important;-webkit-b
   .cocktail-grid article{flex-basis:84vw!important;width:84vw!important;min-width:84vw!important}
   .quick-links.access-carousel>a{flex-basis:82vw!important;width:82vw!important;min-width:82vw!important;max-width:82vw!important}
 }
+
+/* v6.8 — mobile live orbit + stronger mobile brand */
+.orbit-cards-layer{position:absolute;inset:0;pointer-events:none;z-index:8}
+.orbit-image-missing{background:linear-gradient(145deg,color-mix(in srgb,var(--blue) 65%,#111),color-mix(in srgb,var(--red) 55%,#111))}
+.orbit-image-missing::before{content:"STAIRS";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 10px/1 var(--body-font,'Instrument Sans',sans-serif);letter-spacing:.18em;opacity:.72}
+
+@media (max-width:900px){
+  /* Keep the hero orbit alive on touch devices. It accepts horizontal drag while
+     vertical gestures remain native page scrolling. */
+  .hero-visual{pointer-events:auto!important;touch-action:pan-y!important}
+  .orbit-stage{pointer-events:auto!important;touch-action:pan-y!important;user-select:none;-webkit-user-select:none}
+  .orbit-cards-layer,.orbit-card,.orbit-core,.orbit-hours,.orbit-label,.orbit-halo{pointer-events:none!important}
+  .orbit-stage.mobile-orbit-live .orbit-card{will-change:transform,opacity}
+
+  /* Stronger, more legible brand on Android/iPhone. */
+  .site-header .brand{gap:10px!important;min-height:44px!important}
+  .site-header .brand-mark{width:29px!important;height:28px!important;gap:4px!important}
+  .site-header .brand-mark i{width:6px!important;border-radius:1px!important}
+  .site-header .brand-mark i:nth-child(1){height:9px!important}
+  .site-header .brand-mark i:nth-child(2){height:17px!important}
+  .site-header .brand-mark i:nth-child(3){height:27px!important}
+  .site-header .brand>span:last-child{font-size:14px!important;letter-spacing:.13em!important;font-weight:700!important}
+  .site-header .menu-toggle{width:48px!important;height:44px!important;font-size:0!important;position:relative!important}
+  .site-header .menu-toggle::before,.site-header .menu-toggle::after{content:"";position:absolute;left:13px;right:13px;height:2px;background:currentColor;border-radius:999px}
+  .site-header .menu-toggle::before{top:16px;box-shadow:0 6px 0 currentColor}
+  .site-header .menu-toggle::after{display:none}
+}
+
+@media (max-width:430px){
+  .site-header{padding-left:16px!important;padding-right:8px!important}
+  .site-header .brand-mark{width:27px!important;height:26px!important}
+  .site-header .brand-mark i{width:5.5px!important}
+  .site-header .brand-mark i:nth-child(3){height:25px!important}
+  .site-header .brand>span:last-child{font-size:13px!important}
+}
+
+/* v6.9 — definitive mobile header alignment fix
+   v6.8 accidentally combined left:7px with translateX(-50%), pushing the
+   brand off-screen on <=430px devices. Keep the header centered at all sizes. */
+@media (max-width: 900px){
+  .site-header{
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    width:calc(100% - 20px)!important;
+    max-width:none!important;
+    padding-left:16px!important;
+    padding-right:8px!important;
+    overflow:visible!important;
+  }
+  .site-header .brand{
+    display:flex!important;
+    align-items:center!important;
+    gap:10px!important;
+    flex:0 1 auto!important;
+    min-width:0!important;
+    opacity:1!important;
+    visibility:visible!important;
+    transform:none!important;
+  }
+  .site-header .brand-mark{
+    display:flex!important;
+    width:30px!important;
+    height:29px!important;
+    gap:4px!important;
+    flex:0 0 30px!important;
+  }
+  .site-header .brand-mark i{display:block!important;width:6px!important}
+  .site-header .brand-mark i:nth-child(1){height:10px!important}
+  .site-header .brand-mark i:nth-child(2){height:18px!important}
+  .site-header .brand-mark i:nth-child(3){height:28px!important}
+  .site-header .brand>span:last-child{
+    display:inline-block!important;
+    font-size:14px!important;
+    line-height:1!important;
+    letter-spacing:.12em!important;
+    white-space:nowrap!important;
+    opacity:1!important;
+    visibility:visible!important;
+  }
+  .site-header .header-actions{
+    display:flex!important;
+    margin-left:auto!important;
+    flex:0 0 auto!important;
+  }
+  .site-header .menu-toggle{
+    display:grid!important;
+    place-items:center!important;
+    width:52px!important;
+    height:46px!important;
+    min-width:52px!important;
+    border-radius:15px!important;
+    margin:0!important;
+  }
+  .site-header .menu-toggle::before{
+    left:14px!important;
+    right:14px!important;
+    top:16px!important;
+    height:2.2px!important;
+    box-shadow:0 6.5px 0 currentColor!important;
+  }
+}
+@media (max-width:430px){
+  .site-header{
+    left:50%!important;
+    width:calc(100% - 16px)!important;
+    padding-left:14px!important;
+    padding-right:7px!important;
+  }
+  .site-header .brand-mark{width:28px!important;height:27px!important;flex-basis:28px!important}
+  .site-header .brand-mark i{width:5.5px!important}
+  .site-header .brand-mark i:nth-child(1){height:9px!important}
+  .site-header .brand-mark i:nth-child(2){height:17px!important}
+  .site-header .brand-mark i:nth-child(3){height:26px!important}
+  .site-header .brand>span:last-child{font-size:13px!important;letter-spacing:.105em!important}
+  .site-header .menu-toggle{width:50px!important;height:44px!important;min-width:50px!important}
+}
