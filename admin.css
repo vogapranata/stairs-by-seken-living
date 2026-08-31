@@ -194,3 +194,7 @@ button,input,select,textarea{font-family:var(--font-body)}
 
 /* v6.2 typography preview defaults */
 .appearance-preview{--preview-display:'Inter Tight','Helvetica Neue',Arial,sans-serif;--preview-body:'Instrument Sans','Helvetica Neue',Arial,sans-serif}
+
+/* v6.8 hero orbit CMS */
+.orbit-admin-thumb{background:linear-gradient(145deg,color-mix(in srgb,var(--panel2) 85%,var(--secondary)),var(--bg2))}
+.orbit-admin-thumb img{object-fit:cover}

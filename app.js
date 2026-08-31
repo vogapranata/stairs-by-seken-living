@@ -37,6 +37,18 @@
       defaultLanguage: 'id',
       defaultTheme: 'dark'
     },
+    orbit: [
+      { id:'o1', url:'assets/ig-pour-show-poster.png', shape:'portrait', alt:'STAIRS Pour and Show event poster', angle:0, radius:1.00 },
+      { id:'o2', url:'assets/ig-cocktail.png', shape:'square', alt:'STAIRS cocktail visual', angle:45, radius:.87 },
+      { id:'o3', url:'assets/ig-must21.png', shape:'portrait', alt:'STAIRS Must 21 Plus festival poster', angle:90, radius:1.03 },
+      { id:'o4', url:'assets/ig-pour-show-photo.png', shape:'square', alt:'STAIRS late night guest bar atmosphere', angle:135, radius:.88 },
+      { id:'o5', url:'assets/ig-greatest-showman.png', shape:'portrait', alt:'STAIRS The Greatest Showman event poster', angle:180, radius:1.02 },
+      { id:'o6', url:'assets/ig-night-crowd.png', shape:'square', alt:'STAIRS late night crowd', angle:225, radius:.88 },
+      { id:'o7', url:'assets/ig-drysol.png', shape:'portrait', alt:'STAIRS Drysol event poster', angle:270, radius:1.02 },
+      { id:'o8', url:'assets/ig-craft.png', shape:'square', alt:'STAIRS bar craft visual', angle:315, radius:.86 },
+      { id:'o9', url:'assets/ig-madlab.png', shape:'mini', alt:'STAIRS Mad Lab event poster', angle:22, radius:.58 },
+      { id:'o10', url:'assets/ig-crowd.png', shape:'square secondary', alt:'STAIRS crowd and nightlife atmosphere', angle:338, radius:.68 }
+    ],
     menu: [
       { id:"m1", name:"Bananarama", category:"Breakfast", price:"Rp60K", descriptionId:"Menu all-day breakfast manis untuk brunch santai.", descriptionEn:"A sweet all-day breakfast pick for a slow brunch." },
       { id:"m2", name:"French Toast", category:"Breakfast", price:"Rp65K", descriptionId:"French toast untuk brunch dengan karakter manis dan buttery.", descriptionEn:"Buttery, sweet French toast made for brunch." },
@@ -259,6 +271,7 @@
       return {
         settings: { ...defaults.settings, ...savedSettings },
         menu: Array.isArray(saved.menu) ? saved.menu : clone(defaults.menu),
+        orbit: Array.isArray(saved.orbit) ? saved.orbit : clone(defaults.orbit),
         gallery: Array.isArray(saved.gallery) ? saved.gallery : clone(defaults.gallery),
         reviews: Array.isArray(saved.reviews) ? saved.reviews : clone(defaults.reviews)
       };
@@ -739,6 +752,28 @@
 
 
 
+  function renderHeroOrbitCards() {
+    const layer = $('#orbitCards');
+    if (!layer) return;
+    const items = Array.isArray(data.orbit) && data.orbit.length ? data.orbit : defaults.orbit;
+    const total = Math.max(1, items.length);
+    layer.innerHTML = items.map((item, index) => {
+      const rawShape = String(item.shape || (index % 2 ? 'square' : 'portrait'));
+      const classes = rawShape.split(/\s+/).filter(Boolean).map(x => `orbit-${esc(x)}`).join(' ');
+      const angle = Number.isFinite(Number(item.angle)) ? Number(item.angle) : (index * 360 / total);
+      const radius = Number.isFinite(Number(item.radius)) ? Number(item.radius) : (rawShape.includes('mini') ? .62 : index % 2 ? .88 : 1.0);
+      const eager = index < 4 ? 'eager' : 'lazy';
+      return `<figure class="orbit-card ${classes}" data-orbit-card data-angle="${angle}" data-radius="${radius}">
+        <img src="${esc(item.url || '')}" alt="${esc(item.alt || `STAIRS orbit visual ${index + 1}`)}" decoding="async" loading="${eager}">
+      </figure>`;
+    }).join('');
+    $$('img', layer).forEach(img => img.addEventListener('error', () => {
+      const card = img.closest('.orbit-card');
+      if (card) card.classList.add('orbit-image-missing');
+      img.hidden = true;
+    }, { once:true }));
+  }
+
   function initHeroOrbit() {
     const stage = $('#heroOrbit');
     if (!stage) return;
@@ -747,12 +782,13 @@
 
     const visual = $('#heroVisual');
     const deg = Math.PI / 180;
-    let raf = 0;
-    let active = true;
-    let hovering = false;
-    let lastTime = performance.now();
+    const isTouchOrbit = mobilePerformance || window.matchMedia?.('(pointer:coarse)').matches;
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-    // Orbit state: slow autonomous loop + mouse-driven camera/orbit control.
+    let raf = 0;
+    let visible = true;
+    let lastTime = performance.now();
+    let lastRenderedAt = 0;
     let orbitAngle = 0;
     let orbitVelocity = 0;
     let pointerAngle = 0;
@@ -765,107 +801,93 @@
     let centerY = 0;
     let centerXTarget = 0;
     let centerYTarget = 0;
-    let lastPointerX = null;
-    let lastPointerY = null;
-    let lastPointerAt = performance.now();
+    let hovering = false;
+    let dragging = false;
+    let dragPointerId = null;
+    let lastDragX = 0;
+    let lastDragY = 0;
+    let lastDragAt = performance.now();
 
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-
-    const setStaticMobileOrbit = () => {
-      if (!mobilePerformance) return false;
-      const rect = stage.getBoundingClientRect();
-      const rx = Math.max(105, Math.min(rect.width * .31, 158));
-      const ry = Math.max(86, Math.min(rect.height * .25, 126));
-      cards.forEach((card, index) => {
-        const angle = ((Number(card.dataset.angle) || index * (360 / cards.length)) - 18) * deg;
-        const radius = clamp(Number(card.dataset.radius) || 1, .46, 1.1);
-        const depth = (Math.sin(angle) + 1) / 2;
-        const x = Math.cos(angle) * rx * radius;
-        const y = Math.sin(angle) * ry * radius;
-        const scale = .64 + depth * .30;
-        card.style.setProperty('--ox', `${x.toFixed(1)}px`);
-        card.style.setProperty('--oy', `${y.toFixed(1)}px`);
-        card.style.setProperty('--os', scale.toFixed(3));
-        card.style.setProperty('--or', `${(Math.cos(angle) * 1.2).toFixed(1)}deg`);
-        card.style.opacity = (.58 + depth * .42).toFixed(3);
-        card.style.filter = 'none';
-        card.style.zIndex = String(5 + Math.round(depth * 20));
-      });
-      stage.classList.add('mobile-orbit-static');
-      return true;
-    };
-
-    if (setStaticMobileOrbit()) return;
-
-    const setPointerTarget = (event) => {
+    const pointerTargetFromPoint = (clientX, clientY) => {
       const rect = stage.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
-
-      const localX = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-      const localY = clamp((event.clientY - rect.top) / rect.height, 0, 1);
+      const localX = clamp((clientX - rect.left) / rect.width, 0, 1);
+      const localY = clamp((clientY - rect.top) / rect.height, 0, 1);
       const nx = localX * 2 - 1;
       const ny = localY * 2 - 1;
-
       pointerXTarget = nx;
       pointerYTarget = ny;
-
-      // Moving horizontally actually turns the ring; vertical movement changes its camera tilt.
-      pointerAngleTarget = nx * 1.18 + ny * 0.18;
-      centerXTarget = nx * Math.min(46, rect.width * .065);
-      centerYTarget = ny * Math.min(30, rect.height * .05);
-
-      const now = performance.now();
-      const elapsed = Math.max(8, now - lastPointerAt);
-      if (lastPointerX !== null && lastPointerY !== null) {
-        const dx = event.clientX - lastPointerX;
-        const dy = event.clientY - lastPointerY;
-        // Mouse velocity gives the ring a small inertial "throw", like the reference motion.
-        orbitVelocity += clamp((dx + dy * .22) / elapsed * .0048, -.010, .010);
-        orbitVelocity = clamp(orbitVelocity, -.015, .015);
-      }
-      lastPointerX = event.clientX;
-      lastPointerY = event.clientY;
-      lastPointerAt = now;
+      pointerAngleTarget = nx * (isTouchOrbit ? .42 : 1.18) + ny * .12;
+      centerXTarget = nx * Math.min(isTouchOrbit ? 18 : 46, rect.width * .06);
+      centerYTarget = ny * Math.min(isTouchOrbit ? 12 : 30, rect.height * .05);
     };
 
-    const enter = (event) => {
-      hovering = true;
-      lastPointerX = event.clientX;
-      lastPointerY = event.clientY;
-      lastPointerAt = performance.now();
-      setPointerTarget(event);
-      stage.classList.add('is-orbiting');
-    };
+    if (!isTouchOrbit && !reduceMotion && window.matchMedia?.('(pointer:fine)').matches) {
+      stage.addEventListener('pointerenter', event => {
+        hovering = true;
+        pointerTargetFromPoint(event.clientX, event.clientY);
+        stage.classList.add('is-orbiting');
+      }, { passive:true });
+      stage.addEventListener('pointermove', event => pointerTargetFromPoint(event.clientX, event.clientY), { passive:true });
+      stage.addEventListener('pointerleave', () => {
+        hovering = false;
+        pointerAngleTarget = pointerXTarget = pointerYTarget = centerXTarget = centerYTarget = 0;
+        stage.classList.remove('is-orbiting');
+      }, { passive:true });
+    }
 
-    const leave = () => {
-      hovering = false;
-      pointerAngleTarget = 0;
-      pointerXTarget = 0;
-      pointerYTarget = 0;
-      centerXTarget = 0;
-      centerYTarget = 0;
-      lastPointerX = null;
-      lastPointerY = null;
-      stage.classList.remove('is-orbiting');
-    };
-
-    if (!reduceMotion && window.matchMedia?.('(pointer:fine)').matches) {
-      stage.addEventListener('pointerenter', enter, { passive: true });
-      stage.addEventListener('pointermove', setPointerTarget, { passive: true });
-      stage.addEventListener('pointerleave', leave, { passive: true });
+    if (isTouchOrbit && !reduceMotion) {
+      stage.classList.add('mobile-orbit-live');
+      const orbitLabel = $('.orbit-label b', stage);
+      if (orbitLabel) orbitLabel.textContent = 'SWIPE · STAIRS NIGHTS';
+      stage.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'mouse') return;
+        dragging = true;
+        dragPointerId = event.pointerId;
+        lastDragX = event.clientX;
+        lastDragY = event.clientY;
+        lastDragAt = performance.now();
+        pointerTargetFromPoint(event.clientX, event.clientY);
+        try { stage.setPointerCapture(event.pointerId); } catch {}
+      });
+      stage.addEventListener('pointermove', event => {
+        if (!dragging || event.pointerId !== dragPointerId) return;
+        const now = performance.now();
+        const dt = Math.max(8, now - lastDragAt);
+        const dx = event.clientX - lastDragX;
+        const dy = event.clientY - lastDragY;
+        pointerTargetFromPoint(event.clientX, event.clientY);
+        // Horizontal finger drag rotates the ring. Vertical movement remains free for page scroll.
+        if (Math.abs(dx) > Math.abs(dy) * .75) {
+          orbitAngle += dx * .0065;
+          orbitVelocity += clamp((dx / dt) * .0018, -.008, .008);
+        }
+        lastDragX = event.clientX;
+        lastDragY = event.clientY;
+        lastDragAt = now;
+      }, { passive:true });
+      const release = event => {
+        if (dragPointerId !== null && event.pointerId !== undefined && event.pointerId !== dragPointerId) return;
+        dragging = false;
+        dragPointerId = null;
+        pointerAngleTarget *= .35;
+        pointerXTarget *= .35;
+        pointerYTarget *= .35;
+        centerXTarget = centerYTarget = 0;
+      };
+      stage.addEventListener('pointerup', release, { passive:true });
+      stage.addEventListener('pointercancel', release, { passive:true });
     }
 
     const render = (time = performance.now()) => {
-      const dt = clamp(time - lastTime, 0, 34);
+      const dt = clamp(time - lastTime, 0, 50);
       lastTime = time;
-
-      // Reference-like behavior: always gently circulating, but mouse position becomes the dominant control.
-      const autoSpeed = hovering ? .000105 : .00034;
+      const autoSpeed = isTouchOrbit ? .00017 : (hovering ? .000105 : .00034);
       orbitAngle += autoSpeed * dt + orbitVelocity * dt;
-      orbitVelocity *= Math.pow(.86, dt / 16.67);
+      orbitVelocity *= Math.pow(isTouchOrbit ? .90 : .86, dt / 16.67);
 
-      const follow = 1 - Math.pow(.82, dt / 16.67);
-      const centerFollow = 1 - Math.pow(.86, dt / 16.67);
+      const follow = 1 - Math.pow(isTouchOrbit ? .88 : .82, dt / 16.67);
+      const centerFollow = 1 - Math.pow(.88, dt / 16.67);
       pointerAngle += (pointerAngleTarget - pointerAngle) * follow;
       pointerX += (pointerXTarget - pointerX) * follow;
       pointerY += (pointerYTarget - pointerY) * follow;
@@ -873,83 +895,70 @@
       centerY += (centerYTarget - centerY) * centerFollow;
 
       const rect = stage.getBoundingClientRect();
-      const rx = Math.max(124, Math.min(rect.width * .35, 242));
-      const ryBase = Math.max(100, Math.min(rect.height * .31, 186));
-      // Mouse Y squashes / opens the ellipse slightly, giving a camera-tilt feel.
-      const ry = ryBase * (1 - Math.abs(pointerY) * .09);
-      const tilt = pointerY * .44;
-      const sideLean = pointerX * .13;
+      const rx = isTouchOrbit
+        ? Math.max(100, Math.min(rect.width * .31, 150))
+        : Math.max(124, Math.min(rect.width * .35, 242));
+      const ryBase = isTouchOrbit
+        ? Math.max(76, Math.min(rect.height * .24, 116))
+        : Math.max(100, Math.min(rect.height * .31, 186));
+      const ry = ryBase * (1 - Math.abs(pointerY) * .07);
+      const tilt = pointerY * (isTouchOrbit ? .18 : .44);
+      const sideLean = pointerX * (isTouchOrbit ? .07 : .13);
 
       stage.style.setProperty('--orbit-cx', `${centerX.toFixed(2)}px`);
       stage.style.setProperty('--orbit-cy', `${centerY.toFixed(2)}px`);
-      stage.style.setProperty('--orbit-tilt', `${(pointerY * 6).toFixed(2)}deg`);
-      stage.style.setProperty('--orbit-lean', `${(pointerX * 4).toFixed(2)}deg`);
+      stage.style.setProperty('--orbit-tilt', `${(pointerY * (isTouchOrbit ? 2.2 : 6)).toFixed(2)}deg`);
+      stage.style.setProperty('--orbit-lean', `${(pointerX * (isTouchOrbit ? 2 : 4)).toFixed(2)}deg`);
 
       cards.forEach((card, index) => {
         const base = (Number(card.dataset.angle) || index * (360 / cards.length)) * deg;
-        const radius = clamp(Number(card.dataset.radius) || 1, .46, 1.10);
+        const radius = clamp(Number(card.dataset.radius) || 1, .45, 1.12);
         const angle = base + orbitAngle + pointerAngle;
-
-        // Elliptical ring, with a subtle mouse-controlled plane tilt.
         const cos = Math.cos(angle);
         const sin = Math.sin(angle);
-        const x = cos * rx * radius + centerX + sin * sideLean * 22;
-        const y = (sin * ry + cos * tilt * 52) * radius + centerY;
-
-        // Bottom/front cards are intentionally much larger, matching the showreel reference.
-        const depthPhase = Math.sin(angle + tilt * .35);
-        const depth = (depthPhase + 1) / 2;
-        const depthEase = depth * depth * (3 - 2 * depth);
-        const scale = .55 + depthEase * .72;
-        const rotation = cos * 2.2 + pointerX * 1.4 + (index % 2 ? .45 : -.45);
-        const opacity = .42 + depthEase * .58;
-        const blur = (1 - depthEase) * 1.15;
-        const brightness = .72 + depthEase * .34;
-
+        const x = cos * rx * radius + centerX + sin * sideLean * 18;
+        const y = (sin * ry + cos * tilt * 44) * radius + centerY;
+        const depth = (Math.sin(angle + tilt * .3) + 1) / 2;
+        const eased = depth * depth * (3 - 2 * depth);
+        const scale = isTouchOrbit ? (.61 + eased * .38) : (.55 + eased * .72);
+        const rotation = cos * (isTouchOrbit ? 1.1 : 2.2) + pointerX * (isTouchOrbit ? .5 : 1.4);
         card.style.setProperty('--ox', `${x.toFixed(2)}px`);
         card.style.setProperty('--oy', `${y.toFixed(2)}px`);
         card.style.setProperty('--os', scale.toFixed(3));
         card.style.setProperty('--or', `${rotation.toFixed(2)}deg`);
-        card.style.opacity = opacity.toFixed(3);
-        card.style.filter = `saturate(${(.78 + depthEase * .38).toFixed(2)}) brightness(${brightness.toFixed(2)}) blur(${blur.toFixed(2)}px)`;
-        card.style.zIndex = String(6 + Math.round(depthEase * 48));
+        card.style.opacity = (isTouchOrbit ? .68 + eased * .32 : .42 + eased * .58).toFixed(3);
+        card.style.filter = isTouchOrbit ? 'none' : `saturate(${(.78 + eased * .38).toFixed(2)}) brightness(${(.72 + eased * .34).toFixed(2)}) blur(${((1-eased)*1.15).toFixed(2)}px)`;
+        card.style.zIndex = String(6 + Math.round(eased * 48));
       });
-
-      // Make the center label breathe with the camera instead of blocking the negative space.
-      const core = $('.orbit-core', stage);
-      if (core) {
-        core.style.setProperty('--core-scale', (1 + Math.abs(pointerX) * .025).toFixed(3));
-      }
     };
 
     if (reduceMotion) {
       render(performance.now());
-      cards.forEach(card => {
-        card.style.filter = 'none';
-        card.style.opacity = '1';
-      });
       return;
     }
 
     const loop = time => {
-      if (active) render(time);
-      else lastTime = time;
+      if (visible) {
+        // ~24fps on phones; full refresh on desktop. This keeps Android/iPhone smooth enough without burning GPU.
+        if (!isTouchOrbit || time - lastRenderedAt >= 40) {
+          render(time);
+          lastRenderedAt = time;
+        }
+      } else {
+        lastTime = time;
+      }
       raf = requestAnimationFrame(loop);
     };
 
     if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(entries => {
-        active = Boolean(entries[0]?.isIntersecting);
-        if (active) lastTime = performance.now();
-      }, { threshold: 0 });
-      observer.observe(stage);
-      window.addEventListener('pagehide', () => observer.disconnect(), { once:true });
+      const io = new IntersectionObserver(entries => {
+        visible = entries.some(entry => entry.isIntersecting);
+      }, { rootMargin:'100px 0px 100px' });
+      io.observe(stage);
     }
-
     raf = requestAnimationFrame(loop);
     window.addEventListener('pagehide', () => cancelAnimationFrame(raf), { once:true });
   }
-
 
   function initFeedLoop() {
     const track = $('.feed-track');
@@ -1761,6 +1770,7 @@
   safeRun('header merge', initHeaderMerge);
   safeRun('pear typesetting', initPearTypesetting);
   safeRun('pear motion engine', initPearMotionEngine);
+  safeRun('hero orbit cards', renderHeroOrbitCards);
   safeRun('hero orbit', initHeroOrbit);
   safeRun('cursor motion', initCursorMotion);
   safeRun('feed loop', initFeedLoop);

@@ -1600,3 +1600,189 @@ html.mobile-performance .photo-lightbox{backdrop-filter:none!important;-webkit-b
   /* Keep normal page hit testing above the fixed Pear canvas. */
   main,.footer,.slide-section,.section-shell{pointer-events:auto!important}
 }
+
+/* v6.7 — mobile layout repair
+   Fixes cramped header, oversized stacked cocktail cards, and All Access cards
+   collapsing into unreadable narrow columns on Android/iPhone. Desktop unchanged. */
+@media (max-width: 900px){
+  /* Header: brand + one clear MENU action. Language/theme stay inside drawer. */
+  .site-header{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    grid-template-columns:none!important;
+    overflow:visible!important;
+    height:58px!important;
+    padding:0 10px 0 14px!important;
+  }
+  .site-header .brand{
+    display:flex!important;
+    visibility:visible!important;
+    flex:0 0 auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    color:var(--text)!important;
+    opacity:1!important;
+  }
+  .site-header .brand>span:last-child{display:inline!important;font-size:12px!important;letter-spacing:.12em!important}
+  .site-header .brand-mark{width:20px!important;height:19px!important;flex:none!important}
+  .site-header .lang-toggle,
+  .site-header .theme-toggle,
+  .site-header .pill-small{display:none!important}
+  .site-header .header-actions{margin-left:auto!important;justify-self:auto!important;flex:0 0 auto!important;gap:0!important}
+  .site-header .menu-toggle{
+    display:grid!important;place-items:center!important;
+    width:44px!important;height:40px!important;
+    border-radius:14px!important;
+    background:color-mix(in srgb,var(--panel) 82%,transparent)!important;
+  }
+
+  /* More compact chapter rhythm. */
+  .slide-section{padding-top:46px!important;padding-bottom:46px!important}
+  .night-story{padding-top:50px!important;padding-bottom:46px!important}
+  .night-grid{gap:14px!important}
+  .night-grid h2{font-size:clamp(36px,10vw,44px)!important;line-height:.98!important;max-width:9.3ch!important;margin-bottom:16px!important}
+  .night-grid p{font-size:12.5px!important;line-height:1.52!important;max-width:32ch!important}
+  .night-stat-grid{margin-top:18px!important;border-radius:16px!important}
+  .night-stat-grid article{padding:12px 9px!important;min-height:70px!important}
+  .night-stat-grid b{font-size:16px!important}.night-stat-grid small{font-size:7.5px!important;line-height:1.25!important}
+  .color-scan{
+    display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(68px,1fr)!important;
+    grid-template-columns:none!important;overflow-x:auto!important;overflow-y:hidden!important;
+    margin-top:10px!important;border-radius:16px!important;scroll-snap-type:x proximity;
+    scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;
+  }
+  .color-scan::-webkit-scrollbar{display:none!important}
+  .color-scan span{height:62px!important;min-width:68px!important;padding:8px!important;font-size:7.5px!important;scroll-snap-align:start}
+
+  /* THE BAR: horizontal swipe cards instead of a very tall vertical stack. */
+  .cocktail-grid{
+    display:flex!important;
+    grid-template-columns:none!important;
+    gap:10px!important;
+    margin:20px -12px 0!important;
+    padding:0 12px 12px!important;
+    border:0!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    scroll-snap-type:x mandatory!important;
+    scrollbar-width:none!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x pan-y!important;
+  }
+  .cocktail-grid::-webkit-scrollbar{display:none!important}
+  .cocktail-grid article{
+    flex:0 0 min(78vw,300px)!important;
+    width:min(78vw,300px)!important;
+    min-width:min(78vw,300px)!important;
+    min-height:178px!important;
+    padding:18px 18px 20px!important;
+    border:1px solid var(--line)!important;
+    border-radius:20px!important;
+    scroll-snap-align:start!important;
+    overflow:hidden!important;
+  }
+  .cocktail-grid article:first-child{margin-left:0!important}
+  .cocktail-grid span{font-size:9px!important}
+  .cocktail-grid h3{font-size:25px!important;line-height:1!important;margin:30px 0 9px!important;white-space:normal!important}
+  .cocktail-grid p{font-size:11.5px!important;line-height:1.42!important;padding-right:26px!important;margin:0!important;max-width:29ch!important}
+  .cocktail-grid strong{right:16px!important;bottom:15px!important;font-size:17px!important}
+
+  /* ALL ACCESS: robust native swipe rail. Explicit flex sizing prevents the
+     cards from shrinking into 20px columns / breaking words letter-by-letter. */
+  .links-section{overflow:hidden!important;padding-top:44px!important;padding-bottom:44px!important}
+  .links-head-compact{gap:10px!important}
+  .links-head-compact h2{font-size:clamp(34px,9.8vw,42px)!important;line-height:.98!important;max-width:8.8ch!important;margin-bottom:8px!important}
+  .links-head-compact p{font-size:12px!important;line-height:1.48!important;max-width:31ch!important}
+  .quick-links.access-carousel{
+    display:flex!important;
+    grid-auto-flow:unset!important;
+    grid-auto-columns:unset!important;
+    flex-wrap:nowrap!important;
+    gap:10px!important;
+    width:auto!important;
+    max-width:none!important;
+    margin:18px -12px 0!important;
+    padding:0 12px 10px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    scroll-snap-type:x mandatory!important;
+    scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x pan-y!important;
+  }
+  .quick-links.access-carousel::-webkit-scrollbar{display:none!important}
+  .quick-links.access-carousel>a{
+    display:flex!important;
+    flex:0 0 min(72vw,270px)!important;
+    width:min(72vw,270px)!important;
+    min-width:min(72vw,270px)!important;
+    max-width:min(72vw,270px)!important;
+    min-height:112px!important;
+    padding:16px!important;
+    gap:12px!important;
+    border-radius:18px!important;
+    scroll-snap-align:start!important;
+    overflow:hidden!important;
+  }
+  .quick-links.access-carousel>a>span{font-size:8px!important;line-height:1!important;letter-spacing:.13em!important;white-space:nowrap!important}
+  .quick-links.access-carousel>a>b{
+    display:block!important;
+    width:auto!important;max-width:82%!important;
+    font-size:18px!important;line-height:1.05!important;
+    white-space:normal!important;
+    word-break:normal!important;overflow-wrap:normal!important;hyphens:none!important;
+  }
+  .quick-links.access-carousel>a>i{right:14px!important;bottom:13px!important;font-size:17px!important}
+  .access-controls{margin-top:8px!important;padding-inline:0!important}
+
+  /* Prevent any mobile card title from inheriting the glyph split behaviour. */
+  .cocktail-grid h3,.quick-links b,.menu-copy h3,.gallery-slide-copy h3{
+    word-break:normal!important;overflow-wrap:normal!important;hyphens:none!important;
+  }
+}
+
+@media (max-width: 430px){
+  .section-shell,html.pear-motion .section-shell,html.mobile-performance .section-shell{width:calc(100% - 20px)!important}
+  .site-header{width:calc(100% - 14px)!important;left:7px!important}
+  .cocktail-grid article{flex-basis:80vw!important;width:80vw!important;min-width:80vw!important}
+  .quick-links.access-carousel>a{flex-basis:76vw!important;width:76vw!important;min-width:76vw!important;max-width:76vw!important}
+}
+
+@media (max-width: 360px){
+  .site-header .brand>span:last-child{font-size:11px!important}
+  .cocktail-grid article{flex-basis:84vw!important;width:84vw!important;min-width:84vw!important}
+  .quick-links.access-carousel>a{flex-basis:82vw!important;width:82vw!important;min-width:82vw!important;max-width:82vw!important}
+}
+
+/* v6.8 — mobile live orbit + stronger mobile brand */
+.orbit-cards-layer{position:absolute;inset:0;pointer-events:none;z-index:8}
+.orbit-image-missing{background:linear-gradient(145deg,color-mix(in srgb,var(--blue) 65%,#111),color-mix(in srgb,var(--red) 55%,#111))}
+.orbit-image-missing::before{content:"STAIRS";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 10px/1 var(--body-font,'Instrument Sans',sans-serif);letter-spacing:.18em;opacity:.72}
+
+@media (max-width:900px){
+  /* Keep the hero orbit alive on touch devices. It accepts horizontal drag while
+     vertical gestures remain native page scrolling. */
+  .hero-visual{pointer-events:auto!important;touch-action:pan-y!important}
+  .orbit-stage{pointer-events:auto!important;touch-action:pan-y!important;user-select:none;-webkit-user-select:none}
+  .orbit-cards-layer,.orbit-card,.orbit-core,.orbit-hours,.orbit-label,.orbit-halo{pointer-events:none!important}
+  .orbit-stage.mobile-orbit-live .orbit-card{will-change:transform,opacity}
+
+  /* Stronger, more legible brand on Android/iPhone. */
+  .site-header .brand{gap:10px!important;min-height:44px!important}
+  .site-header .brand-mark{width:29px!important;height:28px!important;gap:4px!important}
+  .site-header .brand-mark i{width:6px!important;border-radius:1px!important}
+  .site-header .brand-mark i:nth-child(1){height:9px!important}
+  .site-header .brand-mark i:nth-child(2){height:17px!important}
+  .site-header .brand-mark i:nth-child(3){height:27px!important}
+  .site-header .brand>span:last-child{font-size:14px!important;letter-spacing:.13em!important;font-weight:700!important}
+  .site-header .menu-toggle{width:48px!important;height:44px!important;font-size:0!important;position:relative!important}
+  .site-header .menu-toggle::before,.site-header .menu-toggle::after{content:"";position:absolute;left:13px;right:13px;height:2px;background:currentColor;border-radius:999px}
+  .site-header .menu-toggle::before{top:16px;box-shadow:0 6px 0 currentColor}
+  .site-header .menu-toggle::after{display:none}
+}
+
+@media (max-width:430px){
+  .site-header{padding-left:16px!important;padding-right:8px!important}
+  .site-header .brand-mark{width:27px!important;height:26px!important}
+  .site-header .brand-mark i{width:5.5px!important}
+  .site-header .brand-mark i:nth-child(3){height:25px!important}
+  .site-header .brand>span:last-child{font-size:13px!important}
+}
