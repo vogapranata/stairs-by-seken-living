@@ -1484,6 +1484,17 @@
   }
 
   function initPhotoLightbox() {
+    let touchStartX = 0, touchStartY = 0, suppressPhotoTapUntil = 0;
+    document.addEventListener('touchstart', event => {
+      const t = event.touches?.[0];
+      if (!t) return;
+      touchStartX = t.clientX; touchStartY = t.clientY;
+    }, { passive:true });
+    document.addEventListener('touchmove', event => {
+      const t = event.touches?.[0];
+      if (!t) return;
+      if (Math.hypot(t.clientX-touchStartX,t.clientY-touchStartY) > 10) suppressPhotoTapUntil = Date.now()+420;
+    }, { passive:true });
     const lightbox = $('#photoLightbox');
     const image = $('#photoLightboxImage');
     const titleNode = $('#photoLightboxTitle');
@@ -1561,6 +1572,7 @@
     };
 
     document.addEventListener('click', event => {
+      if (Date.now() < suppressPhotoTapUntil) return;
       const img = event.target.closest?.('img');
       if (!isEligiblePhoto(img)) return;
       event.preventDefault();
@@ -1643,6 +1655,7 @@
       mobileNav?.classList.remove('open');
       mobileNav?.setAttribute('aria-hidden', 'true');
       menuToggle?.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('mobile-nav-open');
 
       // Scroll the actual document to 0 rather than relying on #top.
       // This stays reliable while the header is morphing/floating.
@@ -1659,8 +1672,19 @@
     const toggle = $('.menu-toggle');
     const nav = $('#mobileNav');
     if (!toggle || !nav) return;
-    const close = () => { nav.classList.remove('open'); nav.setAttribute('aria-hidden','true'); toggle.setAttribute('aria-expanded','false'); };
-    toggle.addEventListener('click', () => { nav.classList.add('open'); nav.setAttribute('aria-hidden','false'); toggle.setAttribute('aria-expanded','true'); });
+    const close = () => {
+      nav.classList.remove('open');
+      nav.setAttribute('aria-hidden','true');
+      toggle.setAttribute('aria-expanded','false');
+      document.body.classList.remove('mobile-nav-open');
+    };
+    const open = () => {
+      nav.classList.add('open');
+      nav.setAttribute('aria-hidden','false');
+      toggle.setAttribute('aria-expanded','true');
+      document.body.classList.add('mobile-nav-open');
+    };
+    toggle.addEventListener('click', () => nav.classList.contains('open') ? close() : open());
     $('.mobile-close', nav)?.addEventListener('click', close);
     $$('a', nav).forEach(link => link.addEventListener('click', close));
   }

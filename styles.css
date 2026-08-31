@@ -1537,3 +1537,66 @@ html.mobile-performance .photo-lightbox{backdrop-filter:none!important;-webkit-b
   .hero-meta span{padding:11px 7px!important}
   .quick-links.access-carousel{grid-auto-columns:minmax(0,82vw)!important}
 }
+
+
+/* v6.6 — Mobile touch interaction repair
+   Keep the v6.5 mobile visuals but never let decorative/motion layers capture taps.
+   Horizontal rails keep native swipe; the document keeps normal vertical scrolling. */
+@media (max-width: 900px){
+  html,body{
+    touch-action:pan-y pinch-zoom!important;
+    overscroll-behavior-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  body{overflow-y:auto!important}
+
+  /* Decorative / cinematic layers must be completely transparent to hit testing. */
+  .noise,.cursor-light,.beam,.pear-motion-canvas,.pear-motion-progress,
+  .hero-visual::after,.orbit-stage::before,.orbit-stage::after,.orbit-halo,
+  .night-story::before,.bar-section::before,.links-section::before,
+  .quick-links.access-carousel a::before{
+    pointer-events:none!important;
+  }
+
+  /* Hero orbit is visual-only on touch devices; don't let it sit above the page as a hit target. */
+  .hero-visual,.orbit-stage,.orbit-core,.orbit-card,.orbit-hours{
+    pointer-events:none!important;
+  }
+
+  /* Closed mobile drawer must not cover the document even though it is fixed full-screen. */
+  .mobile-nav{
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  .mobile-nav.open{
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+  body.mobile-nav-open{overflow:hidden!important;touch-action:none!important}
+
+  /* Real controls stay explicitly tappable. */
+  .site-header,.brand,.menu-toggle,.pill,.text-link,
+  .menu-filter button,.gallery-arrow,.gallery-dots button,
+  .menu-carousel-controls button,.access-carousel-controls button,
+  .quick-links a,.feed-track a,.mobile-nav a,.mobile-close,.mobile-controls button,
+  .photo-lightbox-close,.instagram-open-pill,[data-load-instagram],button,a{
+    pointer-events:auto;
+  }
+  button,a,[role="button"]{
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:rgba(242,11,15,.12);
+  }
+
+  /* Rails must accept finger swipes without disabling page scrolling. */
+  .menu-carousel-viewport,.access-carousel-viewport,.feed-marquee,.menu-filter,.ticker{
+    touch-action:pan-x pan-y!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-inline:auto!important;
+  }
+  .menu-carousel-viewport img,.feed-track img,.gallery-media img,.location-card img,.kinetic-card img{
+    -webkit-user-drag:none;
+  }
+
+  /* Keep normal page hit testing above the fixed Pear canvas. */
+  main,.footer,.slide-section,.section-shell{pointer-events:auto!important}
+}
