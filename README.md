@@ -1,16 +1,34 @@
-# STAIRS — Pear Motion v6.8
+# STAIRS v6.4 — Mobile Performance
 
-v6.8 fokus pada mobile orbit + CMS hero visual.
+Desktop keeps the full Pear-style motion. Android/iPhone automatically use a lighter performance mode.
 
-## Perubahan utama
-- Orbit hero kembali bergerak di Android/iPhone dengan mode ringan (~24fps saat hero terlihat).
-- Orbit bisa digeser horizontal dengan jari tanpa mengunci scroll vertikal halaman.
-- Foto orbit hero sekarang dikelola dari CMS: tambah, edit, upload, URL, shape, angle, radius, dan hapus.
-- Logo/brand STAIRS dan tombol menu mobile dibesarkan agar lebih jelas.
-- Desktop Pear-style motion dan CMS fitur sebelumnya tetap dipertahankan.
+## Mobile optimizations
+- Pear motion uses an event-driven lightweight path instead of a continuous animation loop.
+- Hero orbit becomes a static depth composition on touch devices.
+- Fixed canvas, cursor glow, beams, noise, animated blur/filter and backdrop blur are disabled on mobile.
+- Instagram Reel/Post embeds load only after the visitor taps Play Instagram Reel.
+- Off-screen Instagram iframes are released to reduce RAM usage.
+- Gallery autoplay is disabled on mobile.
+- Instagram/feed row becomes native horizontal swipe instead of an infinite animation.
+- Offscreen sections use content-visibility to reduce painting work.
+- Menu Unsplash fallback images request a smaller mobile size/quality.
+- Images use async decoding/lazy loading where possible.
 
-## CMS
-Buka `admin.html`, password demo: `stairs`.
-Menu baru: **Hero visual**.
+## Test locally
+Restart Live Server, then hard refresh. Test using a real Android/iPhone as desktop DevTools does not perfectly reproduce mobile GPU/memory constraints.
 
-Catatan: CMS demo masih memakai localStorage browser. Upload gambar dikompres ke data URL agar dapat dipakai tanpa backend.
+## Deploy
+```powershell
+git add -A
+git commit -m "Optimize STAIRS mobile performance v6.4"
+git push origin main
+```
+
+Vercel will redeploy automatically.
+
+
+## v6.6 Mobile Touch Fix
+Restores reliable taps, swipes, and vertical scrolling on Android/iPhone while preserving the v6.5 mobile design.
+
+## v6.7 mobile repair
+Mobile header, After Dark rhythm, cocktail rail, palette chips and All Access carousel were repaired for narrow Android/iPhone screens. Desktop behavior remains unchanged.
