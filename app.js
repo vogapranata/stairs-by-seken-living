@@ -179,8 +179,13 @@
   const $ = (selector, context = document) => context.querySelector(selector);
   const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
   const esc = (value='') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  const reduceMotion = false; // Full-motion art direction requested for this experience.
+  const reduceMotion = false; // Desktop keeps the full-motion art direction.
+  const mobilePerformance = Boolean(
+    window.matchMedia?.('(max-width: 900px)').matches ||
+    ((navigator.maxTouchPoints || 0) > 0 && window.innerWidth <= 1024)
+  );
   document.documentElement.classList.add('force-motion');
+  document.documentElement.classList.toggle('mobile-performance', mobilePerformance);
 
   const FONT_STACKS = {
     'Inter Tight': "'Inter Tight','Helvetica Neue',Arial,sans-serif",
@@ -220,7 +225,13 @@
     'Non Coffee':'assets/ig-cocktail.png',
     Cocktails:'assets/ig-cocktail.png'
   };
-  const getMenuImage = item => item.image || MENU_IMAGE_FALLBACKS[item.id] || CATEGORY_IMAGE_FALLBACKS[item.category] || 'assets/ig-cocktail.png';
+  const getMenuImage = item => {
+    let url = item.image || MENU_IMAGE_FALLBACKS[item.id] || CATEGORY_IMAGE_FALLBACKS[item.category] || 'assets/ig-cocktail.png';
+    if (mobilePerformance && /images\.unsplash\.com/i.test(url)) {
+      url = url.replace(/([?&])w=\d+/i, '$1w=560').replace(/([?&])q=\d+/i, '$1q=72');
+    }
+    return url;
+  };
 
   function applyAppearance() {
     const root = document.documentElement;
@@ -374,7 +385,7 @@
       const driftX = index % 2 === 0 ? -22 : 22;
       const driftY = 18 + (index % 3) * 7;
       return `<article class="menu-card menu-card-photo" data-kinetic data-depth="${(.35 + (index%4)*.08).toFixed(2)}" data-drift-x="${driftX}" data-drift-y="${driftY}" data-photo-title="${esc(item.name)}" data-photo-description="${esc(description)}" data-photo-source="${esc(tr(item.category))} · ${esc(item.price || '—')}">
-        <div class="menu-photo"><img src="${esc(image)}" alt="${esc(item.name)}" loading="lazy" referrerpolicy="no-referrer"><span>${esc(tr(item.category))}</span></div>
+        <div class="menu-photo"><img src="${esc(image)}" alt="${esc(item.name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>${esc(tr(item.category))}</span></div>
         <div class="menu-card-body">
           <div class="menu-index">${String(index+1).padStart(2,'0')}</div>
           <div class="menu-copy"><span>${esc(tr(item.category))}</span><h3>${esc(item.name)}</h3><p>${esc(description)}</p></div>
@@ -523,9 +534,18 @@
     requestAnimationFrame(update);
   }
 
-  async function hydrateInstagramShell(shell) {
+  async function hydrateInstagramShell(shell, force = false) {
     if (!shell || shell.dataset.instagramHydrated === '1') return;
+    if (mobilePerformance && !force) {
+      shell.classList.add('instagram-deferred');
+      if (!shell.querySelector('[data-load-instagram]')) {
+        shell.innerHTML = `<button type="button" class="instagram-load-button" data-load-instagram>${language === 'id' ? 'Putar Reel Instagram' : 'Play Instagram Reel'} <span>↗</span></button>`;
+        shell.querySelector('[data-load-instagram]')?.addEventListener('click', () => hydrateInstagramShell(shell, true), { once:true });
+      }
+      return;
+    }
     shell.dataset.instagramHydrated = '1';
+    shell.classList.remove('instagram-deferred');
 
     const rawUrl = shell.dataset.instagramUrl || '';
     const title = shell.dataset.instagramTitle || 'Instagram';
@@ -567,9 +587,9 @@
       return `<div class="instagram-embed-shell" data-instagram-embed data-instagram-url="${esc(url)}" data-instagram-title="${esc(title)}"><div class="instagram-embed-loading"><i></i><span>${language === 'id' ? 'Memuat Reel / Post Instagram…' : 'Loading Instagram Reel / Post…'}</span></div></div>`;
     }
     if (item?.type === 'video') {
-      return `<video src="${esc(url)}" controls playsinline preload="metadata"></video>`;
+      return `<video src="${esc(url)}" controls playsinline preload="${mobilePerformance ? 'none' : 'metadata'}"></video>`;
     }
-    return `<img src="${esc(url)}" alt="${esc(title)}" loading="${index === 0 ? 'eager' : 'lazy'}" referrerpolicy="no-referrer">`;
+    return `<img src="${esc(url)}" alt="${esc(title)}" loading="${index === 0 ? 'eager' : 'lazy'}" decoding="async" referrerpolicy="no-referrer">`;
   }
 
   function renderFeed() {
@@ -607,7 +627,8 @@
     dots.innerHTML = data.gallery.map((_,index) => `<button type="button" class="${index === galleryIndex ? 'active' : ''}" data-gallery-dot="${index}" aria-label="Slide ${index+1}"></button>`).join('');
     bindImageFallbacks(track);
     updateGallery(false);
-    hydrateInstagramEmbeds(track);
+    const activeSlide = $('.gallery-slide.active', track);
+    if (activeSlide) hydrateInstagramEmbeds(activeSlide);
     $$('[data-gallery-dot]', dots).forEach(button => button.addEventListener('click', () => goGallery(Number(button.dataset.galleryDot), true)));
     renderFeed();
   }
@@ -619,12 +640,25 @@
     track.style.transform = `translateX(-${galleryIndex * 100}%)`;
     requestAnimationFrame(() => { if (!animate) track.style.removeProperty('transition'); });
     $$('.gallery-slide', track).forEach((slide,index) => {
-      slide.classList.toggle('active', index === galleryIndex);
-      slide.setAttribute('aria-hidden', index === galleryIndex ? 'false' : 'true');
+      const isActive = index === galleryIndex;
+      slide.classList.toggle('active', isActive);
+      slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
       const video = $('video', slide);
       if (video) {
-        if (index === galleryIndex) video.play().catch(() => {});
-        else { video.pause(); video.currentTime = 0; }
+        if (isActive && !mobilePerformance) video.play().catch(() => {});
+        else { video.pause(); if (!isActive) video.currentTime = 0; }
+      }
+      if (isActive) {
+        hydrateInstagramEmbeds(slide);
+      } else if (mobilePerformance) {
+        const shell = $('[data-instagram-embed]', slide);
+        const frame = $('.instagram-embed-frame', slide);
+        if (shell && frame) {
+          shell.dataset.instagramHydrated = '';
+          shell.classList.remove('instagram-embed-ready','instagram-embed-failed');
+          shell.innerHTML = `<button type="button" class="instagram-load-button" data-load-instagram>${language === 'id' ? 'Putar Reel Instagram' : 'Play Instagram Reel'} <span>↗</span></button>`;
+          shell.querySelector('[data-load-instagram]')?.addEventListener('click', () => hydrateInstagramShell(shell, true), { once:true });
+        }
       }
     });
     $$('[data-gallery-dot]').forEach((button,index) => button.classList.toggle('active', index === galleryIndex));
@@ -645,7 +679,7 @@
   function startGalleryAutoplay() {
     if (galleryTimer) clearInterval(galleryTimer);
     galleryTimer = null;
-    if (reduceMotion || data.gallery.length < 2 || isInstagramMediaUrl(data.gallery[galleryIndex]?.url)) return;
+    if (reduceMotion || mobilePerformance || data.gallery.length < 2 || isInstagramMediaUrl(data.gallery[galleryIndex]?.url)) return;
     galleryTimer = setInterval(() => goGallery(galleryIndex + 1, false), 5500);
   }
 
@@ -736,6 +770,32 @@
     let lastPointerAt = performance.now();
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    const setStaticMobileOrbit = () => {
+      if (!mobilePerformance) return false;
+      const rect = stage.getBoundingClientRect();
+      const rx = Math.max(105, Math.min(rect.width * .31, 158));
+      const ry = Math.max(86, Math.min(rect.height * .25, 126));
+      cards.forEach((card, index) => {
+        const angle = ((Number(card.dataset.angle) || index * (360 / cards.length)) - 18) * deg;
+        const radius = clamp(Number(card.dataset.radius) || 1, .46, 1.1);
+        const depth = (Math.sin(angle) + 1) / 2;
+        const x = Math.cos(angle) * rx * radius;
+        const y = Math.sin(angle) * ry * radius;
+        const scale = .64 + depth * .30;
+        card.style.setProperty('--ox', `${x.toFixed(1)}px`);
+        card.style.setProperty('--oy', `${y.toFixed(1)}px`);
+        card.style.setProperty('--os', scale.toFixed(3));
+        card.style.setProperty('--or', `${(Math.cos(angle) * 1.2).toFixed(1)}deg`);
+        card.style.opacity = (.58 + depth * .42).toFixed(3);
+        card.style.filter = 'none';
+        card.style.zIndex = String(5 + Math.round(depth * 20));
+      });
+      stage.classList.add('mobile-orbit-static');
+      return true;
+    };
+
+    if (setStaticMobileOrbit()) return;
 
     const setPointerTarget = (event) => {
       const rect = stage.getBoundingClientRect();
@@ -895,6 +955,7 @@
     const track = $('.feed-track');
     if (!track || track.dataset.loopReady === '1') return;
     track.dataset.loopReady = '1';
+    if (mobilePerformance) return; // Swipe natively on phones; do not duplicate the whole feed.
     const originals = [...track.children];
     originals.forEach(node => track.appendChild(node.cloneNode(true)));
   }
@@ -1089,7 +1150,48 @@
 
 
 
+  function initMobilePearMotionLite() {
+    const sections = $$('.slide-section');
+    if (!sections.length) return;
+    const root = document.documentElement;
+    const progressBar = $('#pearMotionProgress');
+    root.classList.remove('motion-ready','mynt-motion','reference-motion','pear-motion');
+    root.classList.add('pear-motion','mobile-pear-lite');
+
+    const reveal = section => section.classList.add('mobile-inview');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) reveal(entry.target);
+        });
+      }, { rootMargin:'8% 0px -10% 0px', threshold:.06 });
+      sections.forEach(io.observe.bind(io));
+      window.addEventListener('pagehide', () => io.disconnect(), { once:true });
+    } else sections.forEach(reveal);
+
+    let raf = 0;
+    const draw = () => {
+      raf = 0;
+      const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      const gp = Math.max(0, Math.min(1, (window.scrollY || 0) / max));
+      if (progressBar) progressBar.style.transform = `scaleX(${gp.toFixed(4)})`;
+      const hero = $('.hero');
+      if (hero) {
+        const p = Math.max(0, Math.min(1, (window.scrollY || 0) / Math.max(window.innerHeight * .8, 1)));
+        const copy = $('.hero-copy', hero);
+        const visual = $('.hero-visual', hero);
+        copy?.style.setProperty('--pear-hero-y', `${(-p * 28).toFixed(1)}px`);
+        visual?.style.setProperty('--pear-hero-y', `${(p * 18).toFixed(1)}px`);
+      }
+    };
+    const request = () => { if (!raf) raf = requestAnimationFrame(draw); };
+    window.addEventListener('scroll', request, { passive:true });
+    window.addEventListener('resize', request, { passive:true });
+    draw();
+  }
+
   function initPearMotionEngine() {
+    if (mobilePerformance) return initMobilePearMotionLite();
     const sections = $$('.slide-section');
     if (!sections.length) return;
 

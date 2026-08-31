@@ -1173,3 +1173,123 @@ h2,.night-grid h2,.feed-head h2,.bar-head h2,.menu-head h2,.gallery-head h2,.lin
   .hero-sub{font-size:14px!important;line-height:1.42!important}
 }
 \n\n/* v6.3 — Instagram/Reel fit fix\n   Keep the compact STAIRS gallery, but fit the full portrait player inside it.\n   No crop, no nested scrolling; direct videos also use contain. */\n.gallery-media video{object-fit:contain!important;background:#050505}\n.gallery-slide.is-video-slide .gallery-media{display:grid;place-items:center;background:#050505}\n.gallery-slide.is-instagram-slide .gallery-media{\n  position:relative;display:grid!important;place-items:center!important;\n  overflow:hidden!important;background:#070707!important;\n}\n.gallery-slide.is-instagram-slide .instagram-embed-shell{\n  position:relative!important;width:100%!important;height:100%!important;min-height:0!important;\n  padding:0!important;overflow:hidden!important;background:#070707!important;\n  display:block!important;overscroll-behavior:none!important;scrollbar-width:none!important;\n}\n.gallery-slide.is-instagram-slide .instagram-embed-shell::-webkit-scrollbar{display:none!important}\n.gallery-slide.is-instagram-slide .instagram-frame-wrap{\n  position:absolute!important;left:50%!important;top:50%!important;\n  width:540px!important;height:700px!important;min-height:0!important;max-width:none!important;\n  margin:0!important;border-radius:16px!important;overflow:hidden!important;background:#fff!important;\n  transform:translate(-50%,-50%) scale(var(--ig-fit,.56))!important;\n  transform-origin:center center!important;box-shadow:0 20px 60px rgba(0,0,0,.25);\n}\n.gallery-slide.is-instagram-slide .instagram-embed-frame{\n  width:540px!important;height:700px!important;min-height:0!important;max-height:none!important;\n  border:0!important;display:block!important;overflow:hidden!important;background:#fff!important;\n}\n.instagram-open-pill{\n  position:absolute;right:12px;bottom:12px;z-index:5;display:inline-flex;align-items:center;justify-content:center;\n  min-height:32px;padding:0 11px;border-radius:999px;background:rgba(255,255,255,.9);color:#111;\n  border:1px solid rgba(0,0,0,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);\n  font:600 10px/1 var(--font-body);letter-spacing:-.01em;box-shadow:0 6px 22px rgba(0,0,0,.12);\n}\n.gallery-slide.is-instagram-slide .instagram-fallback{display:none!important}\n\n@media(max-width:720px){\n  .gallery-slide.is-instagram-slide .gallery-media{height:430px!important;min-height:430px!important}\n  .instagram-open-pill{right:9px;bottom:9px}\n}\n
+/* v6.4 — Mobile Performance Mode
+   Desktop keeps the full Pear-style cinematic engine. Phones/tablets switch to
+   a lower-cost motion path: no continuous canvas/orbit RAF, no fixed blur beams,
+   no backdrop-filter, no filter animation, lazy Instagram embeds, and native
+   swipe for long horizontal rails. */
+html.mobile-performance .pear-motion-canvas,
+html.mobile-performance .cursor-light,
+html.mobile-performance .beam,
+html.mobile-performance .noise{display:none!important}
+
+html.mobile-performance .site-header{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  background:color-mix(in srgb,var(--bg) 96%,transparent)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.06)
+}
+html.mobile-performance .instagram-open-pill{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important
+}
+html.mobile-performance .slide-section{
+  content-visibility:auto;
+  contain-intrinsic-size:760px;
+  filter:none!important;
+  will-change:auto!important;
+  opacity:1!important;
+  transform:none!important
+}
+html.mobile-performance .slide-section > .slide-content,
+html.mobile-performance .feed-track figure,
+html.mobile-performance .cocktail-grid article,
+html.mobile-performance .menu-card.menu-card-photo,
+html.mobile-performance .quick-links a,
+html.mobile-performance .review-card,
+html.mobile-performance .location-card,
+html.mobile-performance .kinetic-card,
+html.mobile-performance [data-kinetic]{
+  filter:none!important;
+  will-change:auto!important;
+  transform:none;
+  opacity:1
+}
+html.mobile-performance.mobile-pear-lite .slide-section > .slide-content{
+  opacity:.78;
+  transform:translate3d(0,22px,0) scale(.992);
+  transition:transform .62s cubic-bezier(.16,1,.3,1),opacity .48s ease
+}
+html.mobile-performance.mobile-pear-lite .slide-section.mobile-inview > .slide-content{
+  opacity:1;
+  transform:translate3d(0,0,0) scale(1)
+}
+html.mobile-performance.mobile-pear-lite .hero-copy{
+  transform:translate3d(0,var(--pear-hero-y,0px),0)!important;
+  filter:none!important
+}
+html.mobile-performance.mobile-pear-lite .hero-visual{
+  transform:translate3d(0,var(--pear-hero-y,0px),0)!important;
+  filter:none!important;
+  transition:none!important
+}
+html.mobile-performance .pear-media,
+html.mobile-performance .pear-media img,
+html.mobile-performance .pear-media video{
+  filter:none!important;
+  clip-path:none!important;
+  transform:none!important;
+  will-change:auto!important
+}
+html.mobile-performance .orbit-halo{display:none!important}
+html.mobile-performance .orbit-stage{perspective:none!important;transform:none!important}
+html.mobile-performance .orbit-card{transition:none!important;filter:none!important;will-change:auto!important}
+html.mobile-performance .orbit-card:nth-of-type(n+7){display:none!important}
+html.mobile-performance .feed-marquee{
+  overflow-x:auto!important;
+  overflow-y:hidden;
+  mask-image:none!important;
+  -webkit-mask-image:none!important;
+  scrollbar-width:none;
+  overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch
+}
+html.mobile-performance .feed-marquee::-webkit-scrollbar{display:none}
+html.mobile-performance .feed-track{
+  animation:none!important;
+  transform:none!important;
+  padding-right:14px
+}
+html.mobile-performance .ticker-track{animation:none!important}
+html.mobile-performance .ticker{overflow-x:auto;scrollbar-width:none}
+html.mobile-performance .ticker::-webkit-scrollbar{display:none}
+html.mobile-performance .live-pulse{animation:none!important;box-shadow:none}
+html.mobile-performance .gallery-track{transition:transform .32s cubic-bezier(.22,1,.36,1)!important}
+html.mobile-performance .gallery-slide-copy,
+html.mobile-performance .gallery-media{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.mobile-performance .photo-lightbox{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+
+.instagram-load-button{
+  appearance:none;border:1px solid rgba(255,255,255,.18);background:#101010;color:#fff;
+  min-height:48px;padding:0 18px;border-radius:999px;font:600 13px/1 var(--font-body);
+  display:inline-flex;align-items:center;gap:12px;cursor:pointer
+}
+.instagram-load-button span{color:var(--red)}
+.instagram-embed-shell.instagram-deferred{display:grid!important;place-items:center!important;background:#070707!important}
+
+@media(max-width:900px){
+  html.mobile-performance body{overscroll-behavior-y:none}
+  html.mobile-performance .section-shell{width:min(100% - 28px,1240px)}
+  html.mobile-performance .hero-visual{height:430px}
+  html.mobile-performance .orbit-label{display:none}
+  html.mobile-performance .orbit-hours{transform:scale(.9);transform-origin:right bottom}
+  html.mobile-performance .feed-track figure{width:min(72vw,240px)}
+  html.mobile-performance .menu-carousel-viewport,
+  html.mobile-performance .access-carousel-viewport{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+}
+
+@media(max-width:520px){
+  html.mobile-performance .hero-visual{height:390px}
+  html.mobile-performance .orbit-card:nth-of-type(n+6){display:none!important}
+  html.mobile-performance .slide-section{contain-intrinsic-size:640px}
+}
