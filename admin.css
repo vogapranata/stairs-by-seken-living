@@ -245,3 +245,21 @@ button,input,select,textarea{font-family:var(--font-body)}
 /* v6.8 hero orbit CMS */
 .orbit-admin-thumb{background:linear-gradient(145deg,color-mix(in srgb,var(--panel2) 85%,var(--secondary)),var(--bg2))}
 .orbit-admin-thumb img{object-fit:cover}
+
+/* v7.2 — authentic STAIRS brand assets + wordmark-inspired typography */
+:root{--font-brand:'OCR A Extended','OCR-A BT','Share Tech Mono',ui-monospace,monospace}
+.admin-brand-lockup{display:inline-flex;align-items:center;gap:8px}
+.admin-brand-symbol,.admin-brand-wordmark{display:block;object-fit:contain;flex:none}
+.admin-brand-symbol{width:30px;height:30px;border:1px solid rgba(255,255,255,.12)}
+.admin-brand-wordmark{width:106px;height:45px}
+.login-brand{gap:12px}.login-brand .admin-brand-symbol{width:34px;height:34px}.login-brand .admin-brand-wordmark{width:118px;height:50px}
+.side-brand{gap:10px}.side-brand .admin-brand-symbol{width:34px;height:34px}.side-brand .admin-brand-wordmark{width:112px;height:48px}.side-brand small{padding-left:2px}
+.login-card h1,.top-kicker,.micro,.nav-item b,.stat-card>span,.login-brand small,.side-brand small,
+.preview-device-switch button b,.appearance-preview>span{font-family:var(--font-brand)}
+.login-card h1{font-weight:400;letter-spacing:.01em}
+.appearance-preview h3 em{font-family:var(--font-brand);font-weight:400;letter-spacing:.005em}
+
+@media(max-width:620px){
+  .login-brand .admin-brand-wordmark{width:104px;height:44px}
+  .login-brand .admin-brand-symbol{width:30px;height:30px}
+}

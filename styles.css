@@ -1944,3 +1944,40 @@ html.mobile-performance .photo-lightbox{backdrop-filter:none!important;-webkit-b
 @media(prefers-reduced-motion:reduce){
   .mobile-booking-dock,.mobile-nav{transition-duration:.01ms!important}
 }
+
+/* v7.2 — authentic STAIRS brand assets + wordmark-inspired typography */
+:root{--font-brand:'OCR A Extended','OCR-A BT','Share Tech Mono',ui-monospace,monospace}
+
+.brand{gap:10px;min-width:max-content}
+.brand-symbol,.brand-wordmark,.footer-symbol,.footer-wordmark{display:block;object-fit:contain;flex:none}
+.brand-symbol{width:32px;height:32px;border:1px solid rgba(255,255,255,.12)}
+.brand-wordmark{width:112px;height:48px}
+
+.footer-brand{display:flex;align-items:center;gap:12px;min-width:max-content}
+.footer-symbol{width:48px;height:48px;border:1px solid rgba(255,255,255,.12)}
+.footer-wordmark{width:128px;height:55px}
+
+.eyebrow,.section-label,.ticker-track,.orbit-core span,.orbit-core small,.orbit-label,
+.hero-card span,.menu-index,.menu-copy h3,.gallery-no,.gallery-slide-copy h3,
+.quick-links span,.quick-links b,.score-kicker,.visit-info .label,.admin-entry,
+.photo-lightbox-meta>span{font-family:var(--font-brand)}
+
+.hero h1 span,.night-grid h2 span,.feed-head h2 span,.bar-head h2 span,
+.gallery-head h2 span,.links-head h2 span,.visit h2 span{
+  font-family:var(--font-brand);
+  font-weight:400;
+  letter-spacing:.005em;
+}
+
+@media(max-width:900px){
+  .site-header .brand{gap:8px!important;min-height:44px!important}
+  .site-header .brand-symbol{display:block!important;width:29px!important;height:29px!important;flex:0 0 29px!important}
+  .site-header .brand-wordmark{display:block!important;width:88px!important;height:38px!important}
+  .footer-brand{gap:9px}.footer-symbol{width:42px;height:42px}.footer-wordmark{width:108px;height:47px}
+}
+
+@media(max-width:430px){
+  .site-header .brand-symbol{width:27px!important;height:27px!important;flex-basis:27px!important}
+  .site-header .brand-wordmark{width:80px!important;height:35px!important}
+  .footer-brand{grid-column:1/-1}
+}

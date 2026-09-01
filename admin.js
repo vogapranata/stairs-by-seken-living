@@ -114,6 +114,7 @@
   const getMenuImage = item => item.image || MENU_IMAGE_FALLBACKS[item.id] || CATEGORY_IMAGE_FALLBACKS[item.category] || 'assets/ig-cocktail.png';
   const FONT_STACKS = {
     'Inter Tight':"'Inter Tight','Helvetica Neue',Arial,sans-serif",'Instrument Sans':"'Instrument Sans','Helvetica Neue',Arial,sans-serif",
+    'Share Tech Mono':"'OCR A Extended','OCR-A BT','Share Tech Mono',ui-monospace,monospace",
     'Bricolage Grotesque':"'Bricolage Grotesque',system-ui,sans-serif",'Manrope':"'Manrope',system-ui,sans-serif",'Space Grotesk':"'Space Grotesk',system-ui,sans-serif",'Plus Jakarta Sans':"'Plus Jakarta Sans',system-ui,sans-serif",'DM Sans':"'DM Sans',system-ui,sans-serif",'Sora':"'Sora',system-ui,sans-serif",'Outfit':"'Outfit',system-ui,sans-serif",'Syne':"'Syne',system-ui,sans-serif"
   };
 

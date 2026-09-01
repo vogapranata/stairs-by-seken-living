@@ -6,13 +6,13 @@
   <title>STAIRS — Admin Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=7.1" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Share+Tech+Mono&family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=7.2" />
 </head>
 <body>
   <div class="login-screen" id="loginScreen">
     <form class="login-card" id="loginForm">
-      <div class="login-brand"><span class="mini-stairs"><i></i><i></i><i></i></span><strong>STAIRS</strong><small>CMS / CONTROL ROOM</small></div>
+      <div class="login-brand"><span class="admin-brand-lockup"><img class="admin-brand-symbol" src="assets/stairs-symbol.png" alt=""><img class="admin-brand-wordmark" src="assets/stairs-wordmark.png" alt="STAIRS Tea Mixology"></span><small>CMS / CONTROL ROOM</small></div>
       <h1>STAIRS CMS.</h1>
       <p>Kelola halaman, menu, foto, link, dan tampilan website dari satu dashboard CMS.</p>
       <label>Password demo<input id="demoPassword" type="password" placeholder="Ketik: stairs" autocomplete="current-password" required></label>
@@ -24,7 +24,7 @@
 
   <div class="dashboard" id="dashboard" hidden>
     <aside class="sidebar">
-      <a class="side-brand" href="index.html" target="_blank"><span class="mini-stairs"><i></i><i></i><i></i></span><span><b>STAIRS</b><small>CONTROL ROOM</small></span></a>
+      <a class="side-brand" href="index.html" target="_blank" aria-label="Buka website STAIRS"><img class="admin-brand-symbol" src="assets/stairs-symbol.png" alt=""><span><img class="admin-brand-wordmark" src="assets/stairs-wordmark.png" alt="STAIRS Tea Mixology"><small>CONTROL ROOM</small></span></a>
       <nav class="side-nav" id="sideNav">
         <button type="button" class="nav-item active" data-view="overview"><span>⌂</span><b data-admin-i18n="overview">Overview</b></button>
         <button type="button" class="nav-item" data-view="preview"><span>▣</span><b data-admin-i18n="preview">Preview</b></button>
@@ -152,7 +152,7 @@
           <div class="section-toolbar"><div><span class="micro">DESIGN SYSTEM</span><h2>Appearance</h2><p>Ubah model font dan warna utama website tanpa menyentuh kode.</p></div><button type="button" class="primary-btn" id="saveAppearanceBtn">Save appearance</button></div>
           <div class="appearance-layout">
             <form class="appearance-form" id="appearanceForm">
-              <label class="field-card"><span>Headline / display font</span><select name="displayFont"><option>Inter Tight</option><option>Instrument Sans</option><option>Bricolage Grotesque</option><option>Space Grotesk</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Sora</option><option>Outfit</option><option>Syne</option><option>Manrope</option></select></label>
+              <label class="field-card"><span>Headline / display font</span><select name="displayFont"><option>Inter Tight</option><option>Share Tech Mono</option><option>Instrument Sans</option><option>Bricolage Grotesque</option><option>Space Grotesk</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Sora</option><option>Outfit</option><option>Syne</option><option>Manrope</option></select></label>
               <label class="field-card"><span>Body / UI font</span><select name="bodyFont"><option>Instrument Sans</option><option>Inter Tight</option><option>Manrope</option><option>Plus Jakarta Sans</option><option>DM Sans</option><option>Space Grotesk</option><option>Sora</option><option>Outfit</option><option>Bricolage Grotesque</option></select></label>
               <label class="field-card"><span>Primary accent</span><input name="accentColor" type="color" value="#ef2d27"></label>
               <label class="field-card"><span>Secondary / night blue</span><input name="secondaryColor" type="color" value="#2118a8"></label>
@@ -207,6 +207,6 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><div><b>Saved</b><small>Website content updated.</small></div></div>
-  <script src="admin.js?v=7.1"></script>
+  <script src="admin.js?v=7.2"></script>
 </body>
 </html>

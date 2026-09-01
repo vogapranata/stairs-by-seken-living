@@ -1,4 +1,13 @@
-# STAIRS — Conversion Layer v7.1
+# STAIRS — Brand Layer v7.2
+
+v7.2 menerapkan wordmark dan simbol tangga yang diberikan user pada website publik serta dashboard admin.
+
+## Identitas visual
+- Header dan footer website memakai wordmark `STAIRS TEA MIXOLOGY` serta simbol tangga merah-biru.
+- Login dan sidebar admin memakai lockup logo yang sama.
+- Gaya OCR/monospace diterapkan secara selektif pada eyebrow, label section, judul aksen, menu, dan CTA pendukung.
+- `Share Tech Mono` menjadi fallback web yang dekat dengan wordmark, sementara `OCR A Extended` dipakai jika tersedia di perangkat.
+- Opsi `Share Tech Mono` juga tersedia pada pengaturan display font di CMS.
 
 v7.1 menambahkan studio preview responsif langsung di dashboard admin.
 

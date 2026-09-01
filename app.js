@@ -206,6 +206,7 @@
   const FONT_STACKS = {
     'Inter Tight': "'Inter Tight','Helvetica Neue',Arial,sans-serif",
     'Instrument Sans': "'Instrument Sans','Helvetica Neue',Arial,sans-serif",
+    'Share Tech Mono': "'OCR A Extended','OCR-A BT','Share Tech Mono',ui-monospace,monospace",
     'Bricolage Grotesque': "'Bricolage Grotesque',system-ui,sans-serif",
     'Manrope': "'Manrope',system-ui,sans-serif",
     'Space Grotesk': "'Space Grotesk',system-ui,sans-serif",
@@ -1747,7 +1748,14 @@
     window.addEventListener('scroll', request, {passive:true});
     window.addEventListener('resize', request, {passive:true});
     media.addEventListener?.('change', request);
-    new MutationObserver(request).observe(document.body, {attributes:true, attributeFilter:['class']});
+    const observerTarget = dock.ownerDocument?.body;
+    if (observerTarget) {
+      try {
+        new MutationObserver(request).observe(observerTarget, {attributes:true, attributeFilter:['class']});
+      } catch {
+        // The dock still updates through scroll, resize, and media-query events.
+      }
+    }
     draw();
   }
 
