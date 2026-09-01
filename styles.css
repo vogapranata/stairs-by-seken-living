@@ -1868,3 +1868,79 @@ html.mobile-performance .photo-lightbox{backdrop-filter:none!important;-webkit-b
   .site-header .brand>span:last-child{font-size:13px!important;letter-spacing:.105em!important}
   .site-header .menu-toggle{width:50px!important;height:44px!important;min-width:50px!important}
 }
+
+/* v7.0 — conversion dock + accessible off-canvas navigation */
+.mobile-booking-dock{display:none}
+
+/* Keep the closed drawer inside the viewport. The previous translated panel
+   was visually hidden, but still increased the desktop document width. */
+.mobile-nav{
+  transform:none!important;
+  clip-path:inset(0 0 0 100%);
+  visibility:hidden;
+  pointer-events:none!important;
+  overflow-x:hidden!important;
+  transition:clip-path .38s cubic-bezier(.22,1,.36,1),visibility 0s linear .38s!important;
+}
+.mobile-nav.open{
+  transform:none!important;
+  clip-path:inset(0);
+  visibility:visible;
+  pointer-events:auto!important;
+  transition-delay:0s!important;
+}
+
+@media(max-width:900px){
+  .mobile-booking-dock{
+    position:fixed;
+    left:50%;
+    bottom:calc(9px + env(safe-area-inset-bottom,0px));
+    z-index:92;
+    display:grid;
+    grid-template-columns:minmax(72px,1fr) auto auto;
+    align-items:center;
+    gap:6px;
+    width:calc(100% - 18px);
+    max-width:520px;
+    min-height:64px;
+    padding:7px;
+    border:1px solid color-mix(in srgb,var(--text) 14%,transparent);
+    border-radius:22px;
+    background:color-mix(in srgb,var(--bg) 91%,transparent);
+    box-shadow:0 18px 55px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.045);
+    backdrop-filter:blur(20px) saturate(1.18);
+    -webkit-backdrop-filter:blur(20px) saturate(1.18);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translate3d(-50%,calc(100% + 24px),0) scale(.97);
+    transition:opacity .26s ease,transform .42s cubic-bezier(.22,1,.36,1),visibility 0s linear .42s;
+  }
+  .mobile-booking-dock.is-visible{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translate3d(-50%,0,0) scale(1);
+    transition-delay:0s;
+  }
+  .mobile-booking-status{display:flex;align-items:center;gap:8px;min-width:0;padding-left:7px}
+  .mobile-booking-status>i{width:8px;height:8px;flex:0 0 auto;border-radius:50%;background:var(--red);box-shadow:0 0 0 5px color-mix(in srgb,var(--red) 14%,transparent)}
+  .mobile-booking-status>span{display:grid;gap:3px;min-width:0}
+  .mobile-booking-status b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 8px/1 var(--font-body);letter-spacing:.07em;text-transform:uppercase;color:var(--text)}
+  .mobile-booking-status small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 10px/1 var(--font-display);letter-spacing:-.02em;color:var(--muted)}
+  .mobile-booking-map,.mobile-booking-cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 15px;border-radius:16px;font:700 10px/1 var(--font-body);letter-spacing:.015em;white-space:nowrap}
+  .mobile-booking-map{border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 84%,transparent);color:var(--text)}
+  .mobile-booking-cta{border:1px solid var(--red);background:var(--red);color:#fff;box-shadow:0 9px 24px color-mix(in srgb,var(--red) 24%,transparent)}
+  .footer{padding-bottom:calc(116px + env(safe-area-inset-bottom,0px))!important}
+}
+
+@media(max-width:360px){
+  .mobile-booking-dock{grid-template-columns:minmax(58px,1fr) auto auto;width:calc(100% - 12px);gap:4px}
+  .mobile-booking-map,.mobile-booking-cta{padding-inline:11px}
+  .mobile-booking-status{gap:6px;padding-left:5px}
+  .mobile-booking-status>i{width:7px;height:7px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .mobile-booking-dock,.mobile-nav{transition-duration:.01ms!important}
+}

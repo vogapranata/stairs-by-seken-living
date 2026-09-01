@@ -153,6 +153,7 @@
   const i18n = {
     id: {
       navStory:'Cerita', navMenu:'Menu', navSpace:'Suasana', navVisit:'Lokasi', reserve:'Reservasi', themeDark:'Gelap', themeLight:'Terang',
+      quickActions:'Akses cepat', mobileNavigation:'Navigasi mobile', openMenu:'Buka menu', closeMenu:'Tutup menu', directionsShort:'Arah',
       exploreMenu:'Lihat Menu', openMaps:'Buka Maps ↗', googleRating:'rating Google', opensDaily:'buka setiap hari', lateNights:'sampai larut',
       photoReference:'Referensi foto publik', openDaily:'BUKA SETIAP HARI', weekendHours:'Sabtu–Minggu sampai 02.00', storyLabel:'CERITA',
       storyTitle:'Salah satu tangga<br><em>paling ikonik di Prawirotaman.</em>',
@@ -170,6 +171,7 @@
     },
     en: {
       navStory:'Story', navMenu:'Menu', navSpace:'Space', navVisit:'Visit', reserve:'Reserve', themeDark:'Dark', themeLight:'Light',
+      quickActions:'Quick actions', mobileNavigation:'Mobile navigation', openMenu:'Open menu', closeMenu:'Close menu', directionsShort:'Directions',
       exploreMenu:'Explore Menu', openMaps:'Open Maps ↗', googleRating:'Google rating', opensDaily:'opens daily', lateNights:'late nights',
       photoReference:'Public photo reference', openDaily:'OPEN DAILY', weekendHours:'Sat–Sun until 02.00', storyLabel:'THE STORY',
       storyTitle:'One of Prawirotaman\'s<br><em>most recognisable steps.</em>',
@@ -329,6 +331,9 @@
     document.documentElement.lang = language;
     $$('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
     $$('[data-i18n-html]').forEach(el => { el.innerHTML = tr(el.dataset.i18nHtml); });
+    $$('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', tr(el.dataset.i18nAriaLabel)); });
+    const mobileToggle = $('.menu-toggle');
+    if (mobileToggle) mobileToggle.setAttribute('aria-label', tr(mobileToggle.getAttribute('aria-expanded') === 'true' ? 'closeMenu' : 'openMenu'));
     const current = $('.lang-current');
     const other = $('.lang-other');
     if (current) current.textContent = language.toUpperCase();
@@ -1681,21 +1686,66 @@
     const toggle = $('.menu-toggle');
     const nav = $('#mobileNav');
     if (!toggle || !nav) return;
-    const close = () => {
+    const closeButton = $('.mobile-close', nav);
+    const setPageInert = active => {
+      $$('main, .footer, .site-header').forEach(region => {
+        if (active) region.setAttribute('inert','');
+        else region.removeAttribute('inert');
+      });
+    };
+    nav.setAttribute('inert','');
+    const close = (restoreFocus = true) => {
       nav.classList.remove('open');
       nav.setAttribute('aria-hidden','true');
+      nav.setAttribute('inert','');
+      setPageInert(false);
       toggle.setAttribute('aria-expanded','false');
+      toggle.setAttribute('aria-label', tr('openMenu'));
       document.body.classList.remove('mobile-nav-open');
+      if (restoreFocus) toggle.focus({preventScroll:true});
     };
     const open = () => {
       nav.classList.add('open');
       nav.setAttribute('aria-hidden','false');
+      nav.removeAttribute('inert');
+      setPageInert(true);
       toggle.setAttribute('aria-expanded','true');
+      toggle.setAttribute('aria-label', tr('closeMenu'));
       document.body.classList.add('mobile-nav-open');
+      requestAnimationFrame(() => closeButton?.focus({preventScroll:true}));
     };
     toggle.addEventListener('click', () => nav.classList.contains('open') ? close() : open());
-    $('.mobile-close', nav)?.addEventListener('click', close);
-    $$('a', nav).forEach(link => link.addEventListener('click', close));
+    closeButton?.addEventListener('click', () => close());
+    $$('a', nav).forEach(link => link.addEventListener('click', () => close(false)));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && nav.classList.contains('open')) close();
+    });
+  }
+
+  function initMobileBookingDock() {
+    const dock = $('#mobileBookingDock');
+    if (!dock) return;
+    const media = window.matchMedia('(max-width: 900px)');
+    let raf = 0;
+    const draw = () => {
+      raf = 0;
+      const blocked = document.body.classList.contains('mobile-nav-open') || document.body.classList.contains('lightbox-open');
+      const visible = media.matches && window.scrollY > 360 && !blocked;
+      dock.classList.toggle('is-visible', visible);
+      dock.setAttribute('aria-hidden', String(!visible));
+      if (visible) dock.removeAttribute('inert');
+      else dock.setAttribute('inert','');
+    };
+    const request = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(draw);
+    };
+    dock.setAttribute('inert','');
+    window.addEventListener('scroll', request, {passive:true});
+    window.addEventListener('resize', request, {passive:true});
+    media.addEventListener?.('change', request);
+    new MutationObserver(request).observe(document.body, {attributes:true, attributeFilter:['class']});
+    draw();
   }
 
   $('#langToggle')?.addEventListener('click', () => setLanguage(language === 'id' ? 'en' : 'id'));
@@ -1779,5 +1829,6 @@
   safeRun('photo lightbox', initPhotoLightbox);
   safeRun('home logo', initHomeLogo);
   safeRun('mobile navigation', initMobileNav);
+  safeRun('mobile booking dock', initMobileBookingDock);
   safeRun('gallery autoplay', startGalleryAutoplay);
 })();

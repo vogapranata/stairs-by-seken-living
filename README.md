@@ -1,13 +1,13 @@
-# STAIRS — Pear Motion v6.8
+# STAIRS — Conversion Layer v7.0
 
-v6.8 fokus pada mobile orbit + CMS hero visual.
+v7.0 melanjutkan perbaikan mobile v6.9 dengan fokus pada akses reservasi dan kesiapan presentasi penjualan.
 
 ## Perubahan utama
-- Orbit hero kembali bergerak di Android/iPhone dengan mode ringan (~24fps saat hero terlihat).
-- Orbit bisa digeser horizontal dengan jari tanpa mengunci scroll vertikal halaman.
-- Foto orbit hero sekarang dikelola dari CMS: tambah, edit, upload, URL, shape, angle, radius, dan hapus.
-- Logo/brand STAIRS dan tombol menu mobile dibesarkan agar lebih jelas.
-- Desktop Pear-style motion dan CMS fitur sebelumnya tetap dipertahankan.
+- Dock aksi mobile muncul setelah hero agar Reservasi dan Arah tetap mudah dijangkau sepanjang halaman.
+- Dock memakai link dari CMS, mendukung bahasa Indonesia/English, safe area iPhone, dan otomatis tersembunyi saat menu atau lightbox terbuka.
+- Drawer menu tidak lagi memperlebar dokumen desktop ketika tertutup.
+- Navigasi mobile sekarang memiliki state inert, label aksesibel yang mengikuti bahasa, fokus yang terkelola, dan dukungan tombol Escape.
+- Orbit hero mobile, CMS hero visual, desktop Pear-style motion, dan fitur CMS sebelumnya tetap dipertahankan.
 
 ## CMS
 Buka `admin.html`, password demo: `stairs`.
