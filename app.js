@@ -2,8 +2,10 @@
   'use strict';
 
   const CONTENT_KEY = 'stairsDemoContentV4';
+  const ADMIN_PREVIEW_KEY = 'stairsAdminPreviewContentV1';
   const LANG_KEY = 'stairsUiLanguage';
   const THEME_KEY = 'stairsUiTheme';
+  const isAdminPreview = new URLSearchParams(window.location.search).get('adminPreview') === '1';
 
   const defaults = {
     settings: {
@@ -259,7 +261,8 @@
 
   function loadData() {
     try {
-      const raw = localStorage.getItem(CONTENT_KEY);
+      const previewRaw = isAdminPreview ? sessionStorage.getItem(ADMIN_PREVIEW_KEY) : null;
+      const raw = previewRaw || localStorage.getItem(CONTENT_KEY);
       const saved = raw ? JSON.parse(raw) : null;
       if (!saved) return clone(defaults);
       const savedSettings = { ...(saved.settings || {}) };

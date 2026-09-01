@@ -5,6 +5,14 @@
   const SESSION_KEY = 'stairsDemoAdminSessionV4';
   const ADMIN_LANG_KEY = 'stairsAdminLanguage';
   const ADMIN_THEME_KEY = 'stairsAdminTheme';
+  const PREVIEW_CONTENT_KEY = 'stairsAdminPreviewContentV1';
+  const PREVIEW_DEVICE_KEY = 'stairsAdminPreviewDeviceV1';
+  const PREVIEW_ORIENTATION_KEY = 'stairsAdminPreviewLandscapeV1';
+  const PREVIEW_SIZES = {
+    mobile:{width:390,height:844},
+    tablet:{width:820,height:1024},
+    desktop:{width:1366,height:768}
+  };
 
   const settingsDefault = {
     heroTitleId:'Food.<br><span>Cocktails.</span><br>Late nights.', heroTitleEn:'Food.<br><span>Cocktails.</span><br>Late nights.',
@@ -183,18 +191,52 @@
   let editing = {type:null,id:null};
   let adminLanguage = localStorage.getItem(ADMIN_LANG_KEY) || 'id';
   let adminTheme = localStorage.getItem(ADMIN_THEME_KEY) || 'dark';
+  let previewDevice = PREVIEW_SIZES[localStorage.getItem(PREVIEW_DEVICE_KEY)] ? localStorage.getItem(PREVIEW_DEVICE_KEY) : 'mobile';
+  let previewLandscape = localStorage.getItem(PREVIEW_ORIENTATION_KEY) === '1';
+  let previewRefreshTimer = 0;
+  let previewScrollY = 0;
+
+  sessionStorage.removeItem(PREVIEW_CONTENT_KEY);
 
   const adminText = {
     id:{overview:'Overview',menu:'Menu',orbit:'Hero visual',gallery:'Galeri',reviews:'Ulasan',settings:'Pengaturan',viewWebsite:'Lihat website ↗',logout:'Keluar demo',dashboardTitle:'Ringkasan konten.',dashboardIntro:'Semua perubahan demo tersimpan di browser ini dan langsung dibaca website.',openSite:'Buka website ↗',editableContent:'konten dapat diedit',visualRefs:'referensi visual',curatedNotes:'catatan terpilih',featureStatus:'Status fitur',featureLanguage:'Bahasa Indonesia / English',featureTheme:'Dark / Light mode',featureSlides:'Animasi section & gallery slide pada website',featureResponsive:'Tampilan responsive untuk HP',featureAdminStatic:'Dashboard tanpa animasi',sourcePolicy:'Referensi foto & menu',sourceText:'Untuk demo, visual memakai foto publik yang terindeks dan terkait dengan STAIRS/Instagram. Sebelum produksi resmi, ganti dengan aset milik STAIRS atau aset yang sudah diizinkan.',menuManagement:'Kelola menu',menuDesc:'Tambah, edit, atau hapus menu bilingual.',addMenu:'+ Tambah menu',galleryManagement:'Galeri',galleryDesc:'Kelola foto/video, judul bilingual, caption, dan sumber aset.',addMedia:'+ Tambah media',reviewManagement:'Catatan ulasan',reviewDesc:'Review demo disimpan manual. Google Reviews realtime memerlukan API.',addReview:'+ Tambah ulasan',siteSettings:'Pengaturan website',settingsDesc:'Kontrol informasi utama dan default bahasa/theme website.',saveChanges:'Simpan perubahan'},
     en:{overview:'Overview',menu:'Menu',orbit:'Hero visual',gallery:'Gallery',reviews:'Reviews',settings:'Settings',viewWebsite:'View website ↗',logout:'Exit demo',dashboardTitle:'Content at a glance.',dashboardIntro:'All demo changes are stored in this browser and read directly by the website.',openSite:'Open website ↗',editableContent:'editable content',visualRefs:'visual references',curatedNotes:'curated notes',featureStatus:'Feature status',featureLanguage:'Indonesian / English language',featureTheme:'Dark / Light mode',featureSlides:'Animated website sections & gallery slides',featureResponsive:'Responsive mobile layout',featureAdminStatic:'Dashboard without animation',sourcePolicy:'Photo & menu references',sourceText:'For the demo, visuals use publicly indexed photos associated with STAIRS/Instagram. Before official production, replace them with STAIRS-owned or licensed assets.',menuManagement:'Menu management',menuDesc:'Add, edit or remove bilingual menu items.',addMenu:'+ Add menu',galleryManagement:'Gallery',galleryDesc:'Manage photo/video URLs, bilingual titles, captions and asset sources.',addMedia:'+ Add media',reviewManagement:'Review notes',reviewDesc:'Demo reviews are stored manually. Realtime Google Reviews require an API.',addReview:'+ Add review',siteSettings:'Site settings',settingsDesc:'Control main information and website default language/theme.',saveChanges:'Save changes'}
   };
 
+  Object.assign(adminText.id,{
+    preview:'Preview responsif',
+    previewTitle:'Studio preview mobile.',
+    previewDesc:'Lihat hasil pengeditan pada ukuran mobile, tablet, atau desktop sebelum disimpan.',
+    rotatePreview:'Putar layar',
+    reloadPreview:'Muat ulang preview',
+    previewSaved:'Konten tersimpan',
+    previewDraft:'Preview draft langsung',
+    previewLoading:'Memuat preview',
+    previewHint:'Draft form diperbarui otomatis; klik Simpan untuk menerbitkan.'
+  });
+  Object.assign(adminText.en,{
+    preview:'Responsive preview',
+    previewTitle:'Mobile preview studio.',
+    previewDesc:'See edits at mobile, tablet, or desktop sizes before saving.',
+    rotatePreview:'Rotate',
+    reloadPreview:'Reload preview',
+    previewSaved:'Saved content',
+    previewDraft:'Live draft preview',
+    previewLoading:'Loading preview',
+    previewHint:'Form drafts update automatically; click Save to publish.'
+  });
+
   function applyAdminLanguage() {
     document.documentElement.lang = adminLanguage;
     $$('[data-admin-i18n]').forEach(el => { el.textContent = adminText[adminLanguage][el.dataset.adminI18n] || el.textContent; });
+    $$('[data-admin-i18n-title]').forEach(el => {
+      const label = adminText[adminLanguage][el.dataset.adminI18nTitle];
+      if (label) { el.title = label; el.setAttribute('aria-label',label); }
+    });
     $('#adminLangToggle').textContent = adminLanguage === 'id' ? 'ID / EN' : 'EN / ID';
     const active = $('#sideNav .nav-item.active')?.dataset.view || 'overview';
     setViewTitle(active);
+    setPreviewStatus($('#previewLiveStatus')?.dataset.mode || 'saved');
   }
 
   function applyAdminTheme() {
@@ -203,8 +245,11 @@
   }
 
   function save(message='Website content updated.') {
+    clearTimeout(previewRefreshTimer);
+    sessionStorage.removeItem(PREVIEW_CONTENT_KEY);
     localStorage.setItem(KEY, JSON.stringify(data));
     renderAll();
+    refreshSitePreview({saved:true,preserveScroll:true});
     showToast('Saved', message);
   }
 
@@ -228,7 +273,7 @@
   }
 
   function setViewTitle(view) {
-    const mapping = {overview:'overview',menu:'menu',orbit:'orbit',gallery:'gallery',reviews:'reviews',appearance:'appearance',settings:'settings'};
+    const mapping = {overview:'overview',preview:'preview',menu:'menu',orbit:'orbit',gallery:'gallery',reviews:'reviews',appearance:'appearance',settings:'settings'};
     $('#viewTitle').textContent = adminText[adminLanguage][mapping[view]] || (view === 'appearance' ? 'Appearance' : view === 'orbit' ? 'Hero visual' : view);
   }
 
@@ -237,6 +282,10 @@
     $$('[data-view-panel]').forEach(panel => panel.classList.toggle('active',panel.dataset.viewPanel===view));
     setViewTitle(view);
     document.body.classList.remove('side-open');
+    if (view === 'preview') {
+      applyPreviewViewport();
+      queuePreviewDraft(true);
+    }
   }
 
   function openDashboard() {
@@ -245,13 +294,103 @@
     renderAll();
     applyAdminLanguage();
     applyAdminTheme();
+    applyPreviewViewport();
   }
 
   function closeDashboard() {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(PREVIEW_CONTENT_KEY);
     $('#dashboard').hidden = true;
     $('#loginScreen').hidden = false;
     $('#demoPassword').value = '';
+  }
+
+  function getPreviewSize() {
+    const preset = PREVIEW_SIZES[previewDevice] || PREVIEW_SIZES.mobile;
+    return previewLandscape ? {width:preset.height,height:preset.width} : {...preset};
+  }
+
+  function setPreviewStatus(mode='saved') {
+    const status = $('#previewLiveStatus');
+    if (!status) return;
+    const key = mode === 'draft' ? 'previewDraft' : mode === 'loading' ? 'previewLoading' : 'previewSaved';
+    status.dataset.mode = mode;
+    status.classList.toggle('is-draft',mode === 'draft');
+    status.classList.toggle('is-loading',mode === 'loading');
+    const label = $('span',status);
+    if (label) label.textContent = adminText[adminLanguage][key];
+  }
+
+  function applyPreviewViewport() {
+    const stage = $('#previewStage');
+    const wrap = $('#previewScaleWrap');
+    const frame = $('#previewDeviceFrame');
+    const iframe = $('#sitePreview');
+    if (!stage || !wrap || !frame || !iframe) return;
+    const {width,height} = getPreviewSize();
+    const fallbackWidth = Math.max(280,window.innerWidth - (window.innerWidth > 780 ? 310 : 36));
+    const availableWidth = Math.max(260,(stage.clientWidth || fallbackWidth) - 32);
+    const scale = Math.min(1,availableWidth / width);
+    frame.dataset.device = previewDevice;
+    frame.style.width = `${width}px`;
+    frame.style.transform = `scale(${scale})`;
+    iframe.style.height = `${height}px`;
+    wrap.style.width = `${Math.round(width * scale)}px`;
+    wrap.style.height = `${Math.round((height + 38) * scale)}px`;
+    $('#previewViewportLabel').textContent = `${width} × ${height} · ${Math.round(scale * 100)}%`;
+    $$('[data-preview-device]').forEach(button => button.classList.toggle('active',button.dataset.previewDevice === previewDevice));
+  }
+
+  function refreshSitePreview({saved=false,preserveScroll=true}={}) {
+    const iframe = $('#sitePreview');
+    if (!iframe) return;
+    if (saved) sessionStorage.removeItem(PREVIEW_CONTENT_KEY);
+    if (preserveScroll) {
+      try { previewScrollY = iframe.contentWindow?.scrollY || 0; } catch { previewScrollY = 0; }
+    } else previewScrollY = 0;
+    iframe.dataset.nextMode = sessionStorage.getItem(PREVIEW_CONTENT_KEY) ? 'draft' : 'saved';
+    setPreviewStatus('loading');
+    iframe.src = `index.html?adminPreview=1&t=${Date.now()}`;
+  }
+
+  function collectPreviewDraft() {
+    const draft = clone(data);
+    [$('#settingsForm'),$('#appearanceForm')].forEach(form => {
+      if (!form) return;
+      for (const [key,value] of new FormData(form).entries()) {
+        if (!(value instanceof File)) draft.settings[key] = String(value).trim();
+      }
+    });
+
+    const dialog = $('#editorDialog');
+    const editorForm = $('#editorForm');
+    if (editing.type && editorForm && (dialog?.open || dialog?.hasAttribute('open'))) {
+      const existing = editing.id ? draft[editing.type].find(item => item.id === editing.id) || {} : {};
+      const object = {...existing};
+      for (const [key,value] of new FormData(editorForm).entries()) {
+        if (!(value instanceof File)) object[key] = String(value).trim();
+      }
+      object.id = editing.id || `preview-${editing.type}`;
+      if (editing.id) draft[editing.type] = draft[editing.type].map(item => item.id === editing.id ? object : item);
+      else draft[editing.type] = [...draft[editing.type],object];
+    }
+    return draft;
+  }
+
+  function queuePreviewDraft(immediate=false) {
+    clearTimeout(previewRefreshTimer);
+    const update = () => {
+      const draft = collectPreviewDraft();
+      const hasChanges = JSON.stringify(draft) !== JSON.stringify(data);
+      if (hasChanges) sessionStorage.setItem(PREVIEW_CONTENT_KEY,JSON.stringify(draft));
+      else sessionStorage.removeItem(PREVIEW_CONTENT_KEY);
+      refreshSitePreview({saved:!hasChanges,preserveScroll:true});
+    };
+    if (immediate) update();
+    else {
+      setPreviewStatus('draft');
+      previewRefreshTimer = setTimeout(update,500);
+    }
   }
 
   $('#loginForm')?.addEventListener('submit',event => {
@@ -265,9 +404,27 @@
   $('#logoutBtn')?.addEventListener('click',closeDashboard);
   $$('#sideNav .nav-item').forEach(button => button.addEventListener('click',()=>switchView(button.dataset.view)));
   $('#mobileSideToggle')?.addEventListener('click',()=>document.body.classList.toggle('side-open'));
-  $('#refreshPreview')?.addEventListener('click',()=>{data=load();renderAll();showToast('Refreshed','Latest browser content loaded.');});
+  $('#openPreviewBtn')?.addEventListener('click',()=>switchView('preview'));
+  $('#refreshPreview')?.addEventListener('click',()=>{data=load();sessionStorage.removeItem(PREVIEW_CONTENT_KEY);renderAll();refreshSitePreview({saved:true,preserveScroll:true});showToast('Refreshed','Latest browser content loaded.');});
   $('#adminLangToggle')?.addEventListener('click',()=>{adminLanguage=adminLanguage==='id'?'en':'id';localStorage.setItem(ADMIN_LANG_KEY,adminLanguage);applyAdminLanguage();});
   $('#adminThemeToggle')?.addEventListener('click',()=>{adminTheme=adminTheme==='dark'?'light':'dark';localStorage.setItem(ADMIN_THEME_KEY,adminTheme);applyAdminTheme();});
+  $$('[data-preview-device]').forEach(button => button.addEventListener('click',()=>{
+    previewDevice = button.dataset.previewDevice;
+    localStorage.setItem(PREVIEW_DEVICE_KEY,previewDevice);
+    applyPreviewViewport();
+  }));
+  $('#previewRotateBtn')?.addEventListener('click',()=>{
+    previewLandscape = !previewLandscape;
+    localStorage.setItem(PREVIEW_ORIENTATION_KEY,previewLandscape ? '1' : '0');
+    applyPreviewViewport();
+  });
+  $('#previewReloadBtn')?.addEventListener('click',()=>refreshSitePreview({preserveScroll:true}));
+  $('#sitePreview')?.addEventListener('load',event=>{
+    try { event.currentTarget.contentWindow?.scrollTo(0,previewScrollY); } catch { /* same-origin preview may still be initializing */ }
+    setPreviewStatus(event.currentTarget.dataset.nextMode || (sessionStorage.getItem(PREVIEW_CONTENT_KEY) ? 'draft' : 'saved'));
+  });
+  if (typeof ResizeObserver === 'function' && $('#previewStage')) new ResizeObserver(applyPreviewViewport).observe($('#previewStage'));
+  else window.addEventListener('resize',applyPreviewViewport);
 
   function renderMenu() {
     const table=$('#menuTable'); if(!table)return;
@@ -329,7 +486,8 @@
     preview.style.setProperty('--preview-body',FONT_STACKS[body]||FONT_STACKS['DM Sans']);
     preview.style.setProperty('--preview-accent',accent); preview.style.setProperty('--preview-secondary',secondary);
   }
-  $('#appearanceForm')?.addEventListener('input',updateAppearancePreview);
+  $('#appearanceForm')?.addEventListener('input',()=>{updateAppearancePreview();queuePreviewDraft();});
+  $('#appearanceForm')?.addEventListener('change',()=>queuePreviewDraft());
   $('#saveAppearanceBtn')?.addEventListener('click',()=>{
     const form=$('#appearanceForm'); if(!form)return; const fd=new FormData(form);
     for(const [key,value] of fd.entries()) data.settings[key]=String(value).trim();
@@ -341,6 +499,8 @@
     const fd=new FormData(form); for(const [key,value] of fd.entries()) data.settings[key]=String(value).trim();
     save();
   });
+  $('#settingsForm')?.addEventListener('input',()=>queuePreviewDraft());
+  $('#settingsForm')?.addEventListener('change',()=>queuePreviewDraft());
 
   $('#exportCmsBtn')?.addEventListener('click',()=>{
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a');
@@ -393,9 +553,11 @@
     $('#dialogFields').innerHTML=fieldsFor(type,item).join('');
     const dialog=$('#editorDialog'); if(typeof dialog.showModal==='function')dialog.showModal(); else dialog.setAttribute('open','');
   }
-  function closeEditor(){const dialog=$('#editorDialog'); if(typeof dialog.close==='function')dialog.close(); else dialog.removeAttribute('open');}
+  function closeEditor(){const dialog=$('#editorDialog'); if(typeof dialog.close==='function')dialog.close(); else dialog.removeAttribute('open');queuePreviewDraft();}
   $('#dialogCancel')?.addEventListener('click',closeEditor);
   $('.dialog-close')?.addEventListener('click',event=>{event.preventDefault();closeEditor();});
+  $('#dialogFields')?.addEventListener('input',()=>queuePreviewDraft());
+  $('#dialogFields')?.addEventListener('change',()=>queuePreviewDraft());
   $('#editorForm')?.addEventListener('submit',async event=>{
     event.preventDefault(); const fd=new FormData(event.currentTarget); const existing=editing.id?data[editing.type].find(item=>item.id===editing.id)||{}:{}; const object={};
     for(const [key,value] of fd.entries()) if(!(value instanceof File)) object[key]=String(value).trim();

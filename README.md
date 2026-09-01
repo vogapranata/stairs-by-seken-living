@@ -1,4 +1,12 @@
-# STAIRS — Conversion Layer v7.0
+# STAIRS — Conversion Layer v7.1
+
+v7.1 menambahkan studio preview responsif langsung di dashboard admin.
+
+## Preview admin responsif
+- Preview website asli tersedia dalam preset Mobile 390 × 844, Tablet 820 × 1024, dan Desktop 1366 × 768.
+- Setiap preset dapat diputar antara portrait dan landscape serta otomatis diskalakan agar tetap muat pada layar admin.
+- Perubahan pada Settings, Appearance, dan dialog editor tampil sebagai draft langsung tanpa menerbitkan konten.
+- Tombol Save tetap menjadi satu-satunya aksi yang menyimpan draft ke website, sementara Reload mengembalikan preview ke kondisi terakhir.
 
 v7.0 melanjutkan perbaikan mobile v6.9 dengan fokus pada akses reservasi dan kesiapan presentasi penjualan.
 
